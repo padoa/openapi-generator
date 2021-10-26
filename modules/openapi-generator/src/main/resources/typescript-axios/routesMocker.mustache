@@ -19,7 +19,7 @@ type RouteMock = {
 }
 
 
-class routesMocker {
+export class RoutesMocker {
     private readonly routeMocks: Array<RouteMock>;
     private runningNockMocks: Record<string, Record<string, nock>>;
     private rootHttpPath: string;
