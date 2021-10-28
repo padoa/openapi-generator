@@ -1,12 +1,9 @@
-/* tslint:disable */
-/* eslint-disable */
-{{>licenseInfo}}
-
 /*
 Ce fichier n'est pas utile en soit pour le package swagger.
 Il est utilisé pour la génération du client ici: https://github.com/padoa/openapi-generator/tree/master/modules/openapi-generator/src/main/resources/typescript-axios/
 Avoir le fichier ici permet de le tester avec le package. En effet le repo openapi-generator n'a pas vraiment d'architecture de test
  */
+import fs from 'fs';
 
 import _ from 'lodash';
 import nock from 'nock';
@@ -53,8 +50,11 @@ export class RoutesMocker {
   private runningNockMocks: Record<string, Record<string, nock.Interceptor>>;
   private rootHttpPath: string;
 
-  constructor(routeMocks: RoutesDataOpenApi) {
-    this.rootHttpPath = process.env.ROUTE_MOCKER_{{npmName}} || 'http://localhost'; // TEMPLATE: ROUTE_MOCKER_{{npmName}}
+  constructor(openApiFilepath: string = '/local/swagger.json') {
+    // eslint-disable-next-line no-sync
+    const routeMocks: RoutesDataOpenApi = JSON.parse(fs.readFileSync(openApiFilepath).toString()).paths;
+
+    this.rootHttpPath = process.env.ROUTE_MOCKER_{{npmName}} || 'http://localhost';
 
     const nestedMockRoutes = Object.entries(routeMocks).map(([routePath, routeData]) => {
       return Object.entries(routeData).map(([httpVerb, verbData]) => {
