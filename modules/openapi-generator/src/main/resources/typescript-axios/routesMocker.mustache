@@ -1,98 +1,164 @@
+/* tslint:disable */
+/* eslint-disable */
+{{>licenseInfo}}
+
+/*
+Ce fichier n'est pas utile en soit pour le package swagger.
+Il est utilisé pour la génération du client ici: https://github.com/padoa/openapi-generator/tree/master/modules/openapi-generator/src/main/resources/typescript-axios/
+Avoir le fichier ici permet de le tester avec le package. En effet le repo openapi-generator n'a pas vraiment d'architecture de test
+ */
+
+import _ from 'lodash';
 import nock from 'nock';
 
 const DEFAULT_EXAMPLE_NAME = 'default';
 const DEFAULT_EXAMPLE_STATUS = 200;
+const DEFAULT_EXAMPLE_MOCK_CALL_COUNT = Infinity;
 
 type HttpVerb = string;
 type HttpStatus = number;
 
-type Route = { httpVerb: HttpVerb, routePath: string };
-type RouteMock = {
-    [route: string]: {
-        [httpVerb: string]: {
-            mockCallCount: number,
-            currentExampleName: string,
-            currentStatusCode: number,
-            [statusCode: number]: { examples: Record<any, any> }
-        }
-    }
-}
+type Route = { httpVerb: HttpVerb; path: string };
 
+type RoutesDataOpenApi = {
+  [route: string]: {
+    [httpVerb: string]: {
+      responses: {
+        [statusCode: number]: {
+          content: {
+            [requestType: string]: {
+              scheme: Record<string, unknown>;
+              examples?: Record<string, unknown>;
+            };
+          };
+        };
+      };
+    };
+  };
+};
+
+type RoutesMocks = {
+  [route: string]: {
+    [httpVerb: string]: {
+      mockCallCount: number;
+      currentExampleName: string;
+      currentStatusCode: number;
+      [statusCode: number]: { examples: Record<string, { value: Record<string, unknown> }> };
+    };
+  };
+};
 
 export class RoutesMocker {
-    private readonly routeMocks: Array<RouteMock>;
-    private runningNockMocks: Record<string, Record<string, nock>>;
-    private rootHttpPath: string;
+  private readonly routeMocks: RoutesMocks;
+  private runningNockMocks: Record<string, Record<string, nock.Interceptor>>;
+  private rootHttpPath: string;
 
-    constructor(routeMocks) {
-        this.rootHttpPath = process.env.ROUTE_MOCKER_{{npmName}};
-        this.routeMocks = routeMocks;
-        this.runningNockMocks = {};
+  constructor(routeMocks: RoutesDataOpenApi) {
+    this.rootHttpPath = process.env.ROUTE_MOCKER_{{npmName}} || 'http://localhost'; // TEMPLATE: ROUTE_MOCKER_{{npmName}}
+
+    const nestedMockRoutes = Object.entries(routeMocks).map(([routePath, routeData]) => {
+      return Object.entries(routeData).map(([httpVerb, verbData]) => {
+        return Object.entries(verbData.responses).map(([statusCode, responseData]) => {
+          const requestTypes = Object.keys(responseData.content);
+          /* istanbul ignore if */
+          if (requestTypes.length !== 1) {
+            throw new Error(
+              `Can't handle multiple request type ${requestTypes} for route ${routePath} with verb ${httpVerb} and statusCode ${statusCode}`,
+            );
+          }
+
+          const examples = responseData.content[requestTypes[0]]?.examples;
+          if (!examples) {
+            return {};
+          }
+
+          return {
+            [routePath]: {
+              [httpVerb.toUpperCase()]: {
+                [statusCode]: { examples },
+                mockCallCount: DEFAULT_EXAMPLE_MOCK_CALL_COUNT,
+                currentExampleName: DEFAULT_EXAMPLE_NAME,
+                currentStatusCode: DEFAULT_EXAMPLE_STATUS,
+              },
+            },
+          };
+        });
+      });
+    });
+
+    this.routeMocks = Object.assign({}, ..._.flattenDeep(nestedMockRoutes));
+    this.runningNockMocks = {};
+  }
+
+  private startAMock(mockRoutePath: string, mockVerb: HttpVerb): void {
+    const { mockCallCount, currentExampleName, currentStatusCode } = this.routeMocks[mockRoutePath][mockVerb];
+
+    const exampleData = this.routeMocks[mockRoutePath][mockVerb][currentStatusCode].examples[currentExampleName].value;
+
+    // https://github.com/nock/nock#http-verbs
+    const nockMockInterceptor = nock(this.rootHttpPath).intercept(mockRoutePath, mockVerb).times(mockCallCount);
+
+    nockMockInterceptor.reply(currentStatusCode, exampleData);
+
+    this.runningNockMocks = { ...this.runningNockMocks, [mockRoutePath]: { [mockVerb]: nockMockInterceptor } };
+  }
+
+  private stopAMock(mockRoutePath: string, mockVerb: HttpVerb): void {
+    nock.removeInterceptor(this.runningNockMocks[mockRoutePath][mockVerb]);
+
+    delete this.runningNockMocks[mockRoutePath][mockVerb];
+    /* istanbul ignore else */
+    if (Object.keys(this.runningNockMocks[mockRoutePath]).length === 0) {
+      delete this.runningNockMocks[mockRoutePath];
+    }
+  }
+
+  private restartAMock(mockRoutePath: string, mockVerb: HttpVerb): void {
+    const existingMock = this.runningNockMocks?.[mockRoutePath]?.[mockVerb];
+    /* istanbul ignore else */
+    if (existingMock) {
+      this.stopAMock(mockRoutePath, mockVerb);
+    }
+    this.startAMock(mockRoutePath, mockVerb);
+  }
+
+  public startAllMocks(): void {
+    Object.entries(this.routeMocks).forEach(([routePath, routePathValues]) => {
+      Object.keys(routePathValues).forEach((httpVerb) => {
+        this.startAMock(routePath, httpVerb);
+      });
+    });
+  }
+
+  public stopAllMocks(): void {
+    nock.cleanAll();
+    this.runningNockMocks = {};
+  }
+
+  public restartAllMocks(): void {
+    this.stopAllMocks();
+    this.startAllMocks();
+  }
+
+  public changeRouteExample(
+    route: Route,
+    {
+      numberOfCall = DEFAULT_EXAMPLE_MOCK_CALL_COUNT,
+      exampleName = DEFAULT_EXAMPLE_NAME,
+      httpStatus = DEFAULT_EXAMPLE_STATUS,
+    }: { httpStatus?: HttpStatus; exampleName?: string; numberOfCall?: number } = {},
+  ): void {
+    const httpVerb = route.httpVerb.toUpperCase();
+    const theRouteMock = this.routeMocks[route.path][httpVerb];
+
+    if (!theRouteMock?.[httpStatus]?.examples?.[exampleName]) {
+      throw new Error(`Route ${route.path} with verb ${httpVerb} doesn't have example with name ${exampleName} with status ${httpStatus}`);
     }
 
-    private startAMock(mockRoutePath: string, mockVerb: HttpVerb) {
-        const {
-            mockCallCount,
-            currentExampleName,
-            currentStatusCode,
-        } = this.routeMocks[mockRoutePath][mockVerb];
+    theRouteMock.mockCallCount = numberOfCall;
+    theRouteMock.currentExampleName = exampleName;
+    theRouteMock.currentStatusCode = httpStatus;
 
-        const exampleData = this.routeMocks[mockRoutePath][mockVerb][currentStatusCode].examples[currentExampleName];
-
-        // https://github.com/nock/nock#http-verbs
-        const nockMock = nock(this.rootHttpPath)
-            .intercept(mockRoutePath, mockVerb)
-            .reply(currentStatusCode, exampleData)
-            .times(mockCallCount);
-
-        this.runningNockMocks = { ...this.runningNockMocks, mockRoutePath: { mockVerb: nockMock } };
-    }
-
-    private stopAMock(mockRoutePath: string, mockVerb: HttpVerb) {
-        nock.removeInterceptor(this.routeMocks[mockRoutePath][mockVerb]);
-    }
-
-    private restartAMock(mockRoutePath: string, mockVerb: HttpVerb) {
-        this.stopAMock(mockRoutePath, mockVerb);
-        this.startAMock(mockRoutePath, mockVerb);
-    }
-
-    public startAllMocks() {
-        Object.entries(this.routeMocks).forEach(([routePath, routePathValues]) => {
-            Object.keys(routePathValues).map(httpVerb => {
-                this.startAMock(routePath, httpVerb);
-            });
-        })
-    }
-
-    public stopAllMocks() {
-        nock.cleanAll();
-        this.runningNockMocks = {};
-
-    }
-
-    public restartMocks() {
-        this.stopAllMocks();
-        this.startAllMocks();
-    }
-
-
-    public changeRouteExample(route: Route, {
-        numberOfCall = Infinity,
-        exampleName = DEFAULT_EXAMPLE_NAME,
-        httpStatus = DEFAULT_EXAMPLE_STATUS,
-    }: { httpStatus?: HttpStatus, exampleName?: string, numberOfCall?: number } = {}) {
-
-        const theRouteMock = this.routeMocks[route.routePath][route.httpVerb];
-        if (!theRouteMock?.[status]?.['examples']?.[exampleName]) {
-            throw new Error(`Route ${route.routePath} wih verb ${route.httpVerb}
-             doesn't have example with name ${exampleName} with status ${status}`);
-        }
-        theRouteMock['mockCallCount'] = numberOfCall;
-        theRouteMock['currentExampleName'] = exampleName;
-        theRouteMock['currentStatusCode'] = httpStatus;
-
-        this.restartAMock(route.routePath, route.httpVerb);
-    }
-
+    this.restartAMock(route.path, httpVerb);
+  }
 }
