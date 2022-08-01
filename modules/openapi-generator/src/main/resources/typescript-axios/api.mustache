@@ -6,7 +6,7 @@
 import * as fs from 'fs';
 import { Stream } from 'stream';
 import { Configuration } from './configuration';
-import globalAxios, { AxiosPromise, AxiosInstance } from 'axios';
+import globalAxios, { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
 import { v4 as uuid } from 'uuid';
 {{#withNodeImports}}
 // URLSearchParams not necessarily used
