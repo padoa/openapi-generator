@@ -119,8 +119,8 @@ public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
         supportingFiles.add(new SupportingFile("gitignore", "", ".gitignore"));
         supportingFiles.add(new SupportingFile("README.mustache", getIndexDirectory(), "README.md"));
 
-        if (additionalProperties.containsKey(NPM_NAME)) {
-            addNpmPackageGeneration(ngVersion);
+        if (additionalProperties.containsKey(NPM_REPOSITORY)) {
+            this.setNpmRepository(additionalProperties.get(NPM_REPOSITORY).toString());
         }
 
         if (additionalProperties.containsKey(STRING_ENUMS)) {
@@ -141,12 +141,8 @@ public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
         if (additionalProperties.containsKey(TAGGED_UNIONS)) {
             taggedUnions = Boolean.parseBoolean(additionalProperties.get(TAGGED_UNIONS).toString());
         }
-
-        if (ngVersion.atLeast("9.0.0")) {
-            additionalProperties.put(ENFORCE_GENERIC_MODULE_WITH_PROVIDERS, true);
-        } else {
-            additionalProperties.put(ENFORCE_GENERIC_MODULE_WITH_PROVIDERS, false);
-        }
+        
+        additionalProperties.put(ENFORCE_GENERIC_MODULE_WITH_PROVIDERS, true);
 
         additionalProperties.put(TS_VERSION, typescriptVersion);
 
@@ -162,17 +158,6 @@ public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
             this.setFileNaming(additionalProperties.get(FILE_NAMING).toString());
         }
 
-    }
-
-    private void addNpmPackageGeneration(SemVer ngVersion) {
-
-        if (additionalProperties.containsKey(NPM_REPOSITORY)) {
-            this.setNpmRepository(additionalProperties.get(NPM_REPOSITORY).toString());
-        }
-
-        //Files for building our lib
-        supportingFiles.add(new SupportingFile("package.mustache", getIndexDirectory(), "package.json"));
-        supportingFiles.add(new SupportingFile("tsconfig.mustache", getIndexDirectory(), "tsconfig.json"));
     }
 
     private String getIndexDirectory() {
@@ -219,9 +204,6 @@ public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
     @Override
     public Map<String, Object> postProcessOperationsWithModels(Map<String, Object> operations, List<Object> allModels) {
         Map<String, Object> objs = (Map<String, Object>) operations.get("operations");
-
-        // Add filename information for api imports
-        objs.put("apiFilename", getApiFilenameFromClassname(objs.get("classname").toString()));
 
         List<CodegenOperation> ops = (List<CodegenOperation>) objs.get("operation");
         boolean hasSomeFormParams = false;
@@ -287,12 +269,7 @@ public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
 
         return operations;
     }
-
-    private String getApiFilenameFromClassname(String classname) {
-        String name = classname.substring(0, classname.length() - serviceSuffix.length());
-        return toApiFilename(name);
-    }
-
+    
     /**
      * Finds and returns a path parameter of an operation by its name
      *
