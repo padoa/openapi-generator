@@ -33,8 +33,8 @@ import java.util.stream.Stream;
 import static org.apache.commons.lang3.StringUtils.capitalize;
 import static org.openapitools.codegen.utils.StringUtils.*;
 
-public class TypeScriptModelClientCodegen extends AbstractTypeScriptClientCodegen {
-    private final Logger LOGGER = LoggerFactory.getLogger(TypeScriptModelClientCodegen.class);
+public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
+    private final Logger LOGGER = LoggerFactory.getLogger(TypeScriptModelCodegen.class);
 
     private static String CLASS_NAME_PREFIX_PATTERN = "^[a-zA-Z0-9]*$";
     private static String CLASS_NAME_SUFFIX_PATTERN = "^[a-zA-Z0-9]*$";
@@ -80,7 +80,7 @@ public class TypeScriptModelClientCodegen extends AbstractTypeScriptClientCodege
 
     private boolean taggedUnions = false;
 
-    public TypeScriptModelClientCodegen() {
+    public TypeScriptModelCodegen() {
         super();
 
         modifyFeatureSet(features -> features.includeDocumentationFeatures(DocumentationFeature.Readme));
