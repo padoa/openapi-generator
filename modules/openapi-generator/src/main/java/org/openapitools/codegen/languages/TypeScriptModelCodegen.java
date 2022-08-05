@@ -91,7 +91,6 @@ public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
         this.cliOptions.add(new CliOption(MODEL_FILE_SUFFIX, "The suffix of the file of the generated model (model<suffix>.ts)."));
         this.cliOptions.add(new CliOption(FILE_NAMING, "Naming convention for the output files: 'camelCase', 'kebab-case'.").defaultValue(this.fileNaming));
         this.cliOptions.add(new CliOption(STRING_ENUMS, STRING_ENUMS_DESC).defaultValue(String.valueOf(this.stringEnums)));
-        this.cliOptions.add(new CliOption(QUERY_PARAM_OBJECT_FORMAT, "The format for query param objects: 'dot', 'json', 'key'.").defaultValue(this.queryParamObjectFormat.name()));
         this.cliOptions.add(new CliOption(TS_VERSION, "The typescript version'.").defaultValue(this.typescriptVersion));
     }
 
@@ -120,16 +119,6 @@ public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
         supportingFiles.add(new SupportingFile("gitignore", "", ".gitignore"));
         supportingFiles.add(new SupportingFile("README.mustache", getIndexDirectory(), "README.md"));
 
-        // determine NG version
-        SemVer ngVersion;
-        if (additionalProperties.containsKey(NG_VERSION)) {
-            ngVersion = new SemVer(additionalProperties.get(NG_VERSION).toString());
-        } else {
-            ngVersion = new SemVer(this.ngVersion);
-            LOGGER.info("generating code for  {} ...", ngVersion);
-            LOGGER.info("  (you can select the  version by setting the additionalProperty ngVersion)");
-        }
-
         if (additionalProperties.containsKey(NPM_NAME)) {
             addNpmPackageGeneration(ngVersion);
         }
@@ -148,11 +137,6 @@ public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
                 apiTemplateFiles.put("apiInterface.mustache", "Interface.ts");
             }
         }
-
-        if (additionalProperties.containsKey(USE_SINGLE_REQUEST_PARAMETER)) {
-            this.setUseSingleRequestParameter(convertPropertyToBoolean(USE_SINGLE_REQUEST_PARAMETER));
-        }
-        writePropertyBack(USE_SINGLE_REQUEST_PARAMETER, getUseSingleRequestParameter());
 
         if (additionalProperties.containsKey(TAGGED_UNIONS)) {
             taggedUnions = Boolean.parseBoolean(additionalProperties.get(TAGGED_UNIONS).toString());
@@ -178,13 +162,6 @@ public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
             this.setFileNaming(additionalProperties.get(FILE_NAMING).toString());
         }
 
-        if (additionalProperties.containsKey(QUERY_PARAM_OBJECT_FORMAT)) {
-            setQueryParamObjectFormat((String) additionalProperties.get(QUERY_PARAM_OBJECT_FORMAT));
-        }
-        additionalProperties.put("isQueryParamObjectFormatDot", getQueryParamObjectFormatDot());
-        additionalProperties.put("isQueryParamObjectFormatJson", getQueryParamObjectFormatJson());
-        additionalProperties.put("isQueryParamObjectFormatKey", getQueryParamObjectFormatKey());
-
     }
 
     private void addNpmPackageGeneration(SemVer ngVersion) {
@@ -204,23 +181,11 @@ public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
     }
 
     public void setStringEnums(boolean value) {
-        stringEnums = value;
+        this.stringEnums = value;
     }
 
     public Boolean getStringEnums() {
         return stringEnums;
-    }
-
-    public boolean getQueryParamObjectFormatDot() {
-        return QUERY_PARAM_OBJECT_FORMAT_TYPE.dot.equals(queryParamObjectFormat);
-    }
-
-    public boolean getQueryParamObjectFormatJson() {
-        return QUERY_PARAM_OBJECT_FORMAT_TYPE.json.equals(queryParamObjectFormat);
-    }
-
-    public boolean getQueryParamObjectFormatKey() {
-        return QUERY_PARAM_OBJECT_FORMAT_TYPE.key.equals(queryParamObjectFormat);
     }
 
     @Override
@@ -321,6 +286,11 @@ public class TypeScriptModelCodegen extends AbstractTypeScriptClientCodegen {
         }
 
         return operations;
+    }
+
+    private String getApiFilenameFromClassname(String classname) {
+        String name = classname.substring(0, classname.length() - serviceSuffix.length());
+        return toApiFilename(name);
     }
 
     /**
