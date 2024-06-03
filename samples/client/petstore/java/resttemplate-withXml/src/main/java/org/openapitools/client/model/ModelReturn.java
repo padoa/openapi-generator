@@ -20,21 +20,21 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.dataformat.xml.annotation.*;
 import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.*;
+import io.github.threetenjaxb.core.*;
 
 /**
  * Model for testing reserved words
  */
-@ApiModel(description = "Model for testing reserved words")
 @JsonPropertyOrder({
   ModelReturn.JSON_PROPERTY_RETURN
 })
 @JsonTypeName("Return")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
 @XmlRootElement(name = "Return")
 @XmlAccessorType(XmlAccessType.FIELD)
 @JacksonXmlRootElement(localName = "Return")
@@ -43,6 +43,8 @@ public class ModelReturn {
   @XmlElement(name = "return")
   private Integer _return;
 
+  public ModelReturn() {
+  }
 
   public ModelReturn _return(Integer _return) {
     
@@ -55,7 +57,6 @@ public class ModelReturn {
    * @return _return
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
   @JsonProperty(JSON_PROPERTY_RETURN)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
   @JacksonXmlProperty(localName = "return")
@@ -71,7 +72,6 @@ public class ModelReturn {
   public void setReturn(Integer _return) {
     this._return = _return;
   }
-
 
   @Override
   public boolean equals(Object o) {

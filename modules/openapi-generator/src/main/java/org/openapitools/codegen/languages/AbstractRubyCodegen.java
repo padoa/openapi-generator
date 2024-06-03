@@ -23,6 +23,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenConfig;
 import org.openapitools.codegen.DefaultCodegen;
+import org.openapitools.codegen.GeneratorLanguage;
 import org.openapitools.codegen.utils.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,6 +79,7 @@ abstract public class AbstractRubyCodegen extends DefaultCodegen implements Code
         typeMapping.put("float", "Float");
         typeMapping.put("double", "Float");
         typeMapping.put("number", "Float");
+        typeMapping.put("decimal", "Float");
         typeMapping.put("date", "Date");
         typeMapping.put("DateTime", "Time");
         typeMapping.put("array", "Array");
@@ -85,6 +87,7 @@ abstract public class AbstractRubyCodegen extends DefaultCodegen implements Code
         typeMapping.put("List", "Array");
         typeMapping.put("map", "Hash");
         typeMapping.put("object", "Object");
+        typeMapping.put("AnyType", "Object");
         typeMapping.put("file", "File");
         typeMapping.put("binary", "String");
         typeMapping.put("ByteArray", "String");
@@ -116,10 +119,10 @@ abstract public class AbstractRubyCodegen extends DefaultCodegen implements Code
     @Override
     public String getTypeDeclaration(Schema schema) {
         if (ModelUtils.isArraySchema(schema)) {
-            Schema inner = ((ArraySchema) schema).getItems();
+            Schema inner = ModelUtils.getSchemaItems(schema);
             return getSchemaType(schema) + "<" + getTypeDeclaration(inner) + ">";
         } else if (ModelUtils.isMapSchema(schema)) {
-            Schema inner = getAdditionalProperties(schema);
+            Schema inner = ModelUtils.getAdditionalProperties(schema);
             return getSchemaType(schema) + "<String, " + getTypeDeclaration(inner) + ">";
         }
 
@@ -158,7 +161,7 @@ abstract public class AbstractRubyCodegen extends DefaultCodegen implements Code
                 } else if (p.getDefault() instanceof java.time.OffsetDateTime) {
                     return "Time.parse(\"" + String.format(Locale.ROOT, ((java.time.OffsetDateTime) p.getDefault()).atZoneSameInstant(ZoneId.systemDefault()).toString(), "") + "\")";
                 } else {
-                    return "'" + escapeText((String) p.getDefault()) + "'";
+                    return "'" + escapeText((String.valueOf(p.getDefault()))) + "'";
                 }
             }
         }
@@ -173,8 +176,13 @@ abstract public class AbstractRubyCodegen extends DefaultCodegen implements Code
 
     @Override
     public String toVarName(final String name) {
+        // obtain the name from nameMapping directly if provided
+        if (nameMapping.containsKey(name)) {
+            return nameMapping.get(name);
+        }
+
         String varName = sanitizeName(name);
-        // if it's all uppper case, convert to lower case
+        // if it's all upper case, convert to lower case
         if (name.matches("^[A-Z_]*$")) {
             varName = varName.toLowerCase(Locale.ROOT);
         }
@@ -191,12 +199,32 @@ abstract public class AbstractRubyCodegen extends DefaultCodegen implements Code
         return varName;
     }
 
+    @Override
     public String toRegularExpression(String pattern) {
         return addRegularExpressionDelimiter(pattern);
     }
 
     @Override
+    public String addRegularExpressionDelimiter(String pattern) {
+        if (StringUtils.isEmpty(pattern)) {
+            return pattern;
+        }
+
+        if (!pattern.matches("^/.*")) {
+            // Perform a negative lookbehind on each `/` to ensure that it is escaped.
+            return "/" + pattern.replaceAll("(?<!\\\\)\\/", "\\\\/") + "/";
+        }
+
+        return pattern;
+    }
+
+    @Override
     public String toParamName(String name) {
+        // obtain the name from parameterNameMapping directly if provided
+        if (parameterNameMapping.containsKey(name)) {
+            return parameterNameMapping.get(name);
+        }
+
         // should be the same as variable name
         return toVarName(name);
     }
@@ -235,18 +263,19 @@ abstract public class AbstractRubyCodegen extends DefaultCodegen implements Code
         }
         // only process files with rb extension
         if ("rb".equals(FilenameUtils.getExtension(file.toString()))) {
-            String command = rubyPostProcessFile + " " + file.toString();
+            String command = rubyPostProcessFile + " " + file;
             try {
                 Process p = Runtime.getRuntime().exec(command);
                 int exitValue = p.waitFor();
                 if (exitValue != 0) {
-                    try(BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream(), StandardCharsets.UTF_8))) {
+                    try (InputStreamReader inputStreamReader = new InputStreamReader(p.getErrorStream(), StandardCharsets.UTF_8);
+                         BufferedReader br = new BufferedReader(inputStreamReader)) {
                         StringBuilder sb = new StringBuilder();
                         String line;
                         while ((line = br.readLine()) != null) {
                             sb.append(line);
                         }
-                        LOGGER.error("Error running the command ({}). Exit value: {}, Error output: {}", command, exitValue, sb.toString());
+                        LOGGER.error("Error running the command ({}). Exit value: {}, Error output: {}", command, exitValue, sb);
                     }
                 } else {
                     LOGGER.info("Successfully executed: `{}`", command);
@@ -257,5 +286,10 @@ abstract public class AbstractRubyCodegen extends DefaultCodegen implements Code
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    @Override
+    public GeneratorLanguage generatorLanguage() {
+        return GeneratorLanguage.RUBY;
     }
 }

@@ -12,13 +12,13 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
+import type { Part } from './Part';
 import {
-    Part,
     PartFromJSON,
     PartFromJSONTyped,
     PartToJSON,
-} from './';
+} from './Part';
 
 /**
  * Contains all the matching parts
@@ -40,12 +40,21 @@ export interface MatchingParts {
     related: Array<Part>;
 }
 
+/**
+ * Check if a given object implements the MatchingParts interface.
+ */
+export function instanceOfMatchingParts(value: object): value is MatchingParts {
+    if (!('connected' in value) || value['connected'] === undefined) return false;
+    if (!('related' in value) || value['related'] === undefined) return false;
+    return true;
+}
+
 export function MatchingPartsFromJSON(json: any): MatchingParts {
     return MatchingPartsFromJSONTyped(json, false);
 }
 
 export function MatchingPartsFromJSONTyped(json: any, ignoreDiscriminator: boolean): MatchingParts {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
@@ -56,17 +65,13 @@ export function MatchingPartsFromJSONTyped(json: any, ignoreDiscriminator: boole
 }
 
 export function MatchingPartsToJSON(value?: MatchingParts | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'connected': ((value.connected as Array<any>).map(PartToJSON)),
-        'related': ((value.related as Array<any>).map(PartToJSON)),
+        'connected': ((value['connected'] as Array<any>).map(PartToJSON)),
+        'related': ((value['related'] as Array<any>).map(PartToJSON)),
     };
 }
-
 

@@ -2,7 +2,7 @@
 /**
  * Tag
  *
- * PHP version 7.1.3
+ * PHP version 8.1.1
  *
  * @category Class
  * @package  OpenAPI\Server\Model
@@ -31,6 +31,7 @@ namespace OpenAPI\Server\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\Type;
+use JMS\Serializer\Annotation\Accessor;
 use JMS\Serializer\Annotation\SerializedName;
 
 /**
@@ -41,6 +42,7 @@ use JMS\Serializer\Annotation\SerializedName;
  * @package OpenAPI\Server\Model
  * @author  OpenAPI Generator team
  */
+
 class Tag 
 {
         /**
@@ -49,7 +51,7 @@ class Tag
      * @Assert\Type("int")
      * @Type("int")
      */
-    protected $id;
+    protected ?int $id = null;
 
     /**
      * @var string|null
@@ -57,16 +59,18 @@ class Tag
      * @Assert\Type("string")
      * @Type("string")
      */
-    protected $name;
+    protected ?string $name = null;
 
     /**
      * Constructor
-     * @param mixed[] $data Associated array of property values initializing the model
+     * @param array|null $data Associated array of property values initializing the model
      */
     public function __construct(array $data = null)
     {
-        $this->id = isset($data['id']) ? $data['id'] : null;
-        $this->name = isset($data['name']) ? $data['name'] : null;
+        if (is_array($data)) {
+            $this->id = array_key_exists('id', $data) ? $data['id'] : $this->id;
+            $this->name = array_key_exists('name', $data) ? $data['name'] : $this->name;
+        }
     }
 
     /**
@@ -74,10 +78,12 @@ class Tag
      *
      * @return int|null
      */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
+
+
 
     /**
      * Sets id.
@@ -86,7 +92,7 @@ class Tag
      *
      * @return $this
      */
-    public function setId($id = null)
+    public function setId(?int $id = null): self
     {
         $this->id = $id;
 
@@ -98,10 +104,12 @@ class Tag
      *
      * @return string|null
      */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
+
+
 
     /**
      * Sets name.
@@ -110,7 +118,7 @@ class Tag
      *
      * @return $this
      */
-    public function setName($name = null)
+    public function setName(?string $name = null): self
     {
         $this->name = $name;
 

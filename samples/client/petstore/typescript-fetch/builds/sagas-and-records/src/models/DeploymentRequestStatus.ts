@@ -12,24 +12,37 @@
  * Do not edit the class manually.
  */
 
+
 /**
  * Status of the deployment request
  * @export
- * @enum {string}
  */
-export enum DeploymentRequestStatus {
-    New = 'New',
-    Prepared = 'Prepared',
-    Printed = 'Printed',
-    Tested = 'Tested',
-    Completed = 'Completed',
-    Cancelled = 'Cancelled',
-    Promoted = 'Promoted',
-    Assigned = 'Assigned',
-    Ready = 'Ready',
-    Packaged = 'Packaged',
-    Pairing = 'Pairing',
-    Paired = 'Paired'
+export const DeploymentRequestStatus = {
+    New: 'New',
+    Prepared: 'Prepared',
+    Printed: 'Printed',
+    Tested: 'Tested',
+    Completed: 'Completed',
+    Cancelled: 'Cancelled',
+    Promoted: 'Promoted',
+    Assigned: 'Assigned',
+    Ready: 'Ready',
+    Packaged: 'Packaged',
+    Pairing: 'Pairing',
+    Paired: 'Paired'
+} as const;
+export type DeploymentRequestStatus = typeof DeploymentRequestStatus[keyof typeof DeploymentRequestStatus];
+
+
+export function instanceOfDeploymentRequestStatus(value: any): boolean {
+    for (const key in DeploymentRequestStatus) {
+        if (Object.prototype.hasOwnProperty.call(DeploymentRequestStatus, key)) {
+            if ((DeploymentRequestStatus as Record<string, DeploymentRequestStatus>)[key] === value) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 export function DeploymentRequestStatusFromJSON(json: any): DeploymentRequestStatus {

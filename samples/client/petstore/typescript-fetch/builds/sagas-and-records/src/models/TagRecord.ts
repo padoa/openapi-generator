@@ -50,7 +50,7 @@ knownRecordFactories.set(TagRecordEntityProps.recType, TagRecordEntity);
 class TagRecordUtils extends ApiRecordUtils<Tag, TagRecord> {
     public normalize(apiObject: Tag, asEntity?: boolean): Tag {
         (apiObject as any).recType = asEntity ? TagRecordEntityProps.recType : TagRecordProps.recType;
-        if (apiObject.id) { (apiObject as any).id = apiObject.id.toString(); } 
+        if (apiObject['id']) { (apiObject as any)['id'] = apiObject['id'].toString(); } 
         return apiObject;
     }
 
@@ -61,13 +61,14 @@ class TagRecordUtils extends ApiRecordUtils<Tag, TagRecord> {
 
     public *toInlined(entityId?: string | null) {
         if (!entityId) {return undefined; }
+        // @ts-ignore
         const entity = yield select(apiEntityTagSelector, {id: entityId});
         if (!entity) {return undefined; }
 
         const {
             recType,
-		    ...unchangedProperties
-		} = entity;
+            ...unchangedProperties
+        } = entity;
 
         const entityProperties = {
         }
@@ -82,6 +83,7 @@ class TagRecordUtils extends ApiRecordUtils<Tag, TagRecord> {
         if (!entityIds) {return null; }
         let entities = List<TagRecord>();
         for (let entityIndex = 0; entityIndex < entityIds.count(); entityIndex++) {
+            // @ts-ignore
             const entity = yield call(this.toInlined, entityIds.get(entityIndex));
             if (entity) {
                 entities.push(entity);
@@ -92,7 +94,7 @@ class TagRecordUtils extends ApiRecordUtils<Tag, TagRecord> {
 
     public toApi(record: TagRecord): Tag {
         const apiObject = super.toApi(record);
-        if (record.id) { apiObject.id = parseFloat(record.id); } 
+        if (record['id']) { apiObject['id'] = parseFloat(record['id']); } 
         return apiObject;
     }
 }

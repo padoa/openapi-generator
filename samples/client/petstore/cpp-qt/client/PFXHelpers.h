@@ -29,27 +29,6 @@
 
 namespace test_namespace {
 
-template <typename T>
-class OptionalParam {
-public:
-    T m_Value;
-    bool m_hasValue;
-public:
-    OptionalParam(){
-        m_hasValue = false;
-    }
-    OptionalParam(const T &val){
-        m_hasValue = true;
-        m_Value = val;
-    }
-    bool hasValue() const {
-        return m_hasValue;
-    }
-    T value() const{
-        return m_Value;
-    }
-};
-
 bool setDateTimeFormat(const QString &format);
 bool setDateTimeFormat(const Qt::DateFormat &format);
 
@@ -135,6 +114,7 @@ QJsonValue toJsonValue(const double &value);
 QJsonValue toJsonValue(const PFXObject &value);
 QJsonValue toJsonValue(const PFXEnum &value);
 QJsonValue toJsonValue(const PFXHttpFileElement &value);
+QJsonValue toJsonValue(const QJsonValue &value);
 
 template <typename T>
 QJsonValue toJsonValue(const QList<T> &val) {
@@ -221,6 +201,7 @@ bool fromJsonValue(double &value, const QJsonValue &jval);
 bool fromJsonValue(PFXObject &value, const QJsonValue &jval);
 bool fromJsonValue(PFXEnum &value, const QJsonValue &jval);
 bool fromJsonValue(PFXHttpFileElement &value, const QJsonValue &jval);
+bool fromJsonValue(QJsonValue &value, const QJsonValue &jval);
 
 template <typename T>
 bool fromJsonValue(QList<T> &val, const QJsonValue &jval) {
@@ -269,6 +250,37 @@ bool fromJsonValue(QMap<QString, T> &val, const QJsonValue &jval) {
     }
     return ok;
 }
+
+template <typename T>
+class OptionalParam {
+public:
+    T m_Value;
+    bool m_isNull = false;
+    bool m_hasValue;
+public:
+    OptionalParam(){
+        m_hasValue = false;
+    }
+    OptionalParam(const T &val, bool isNull = false){
+        m_hasValue = true;
+        m_Value = val;
+        m_isNull = isNull;
+    }
+    bool hasValue() const {
+        return m_hasValue;
+    }
+    T value() const{
+        return m_Value;
+    }
+
+    QString stringValue() const {
+        if (m_isNull) {
+            return QStringLiteral("");
+        } else {
+            return toStringValue(value());
+        }
+    }
+};
 
 } // namespace test_namespace
 

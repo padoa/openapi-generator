@@ -20,12 +20,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.openapitools.client.model.ReadOnlyFirst;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 /**
  * ArrayTest
@@ -35,18 +35,28 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
   ArrayTest.JSON_PROPERTY_ARRAY_ARRAY_OF_INTEGER,
   ArrayTest.JSON_PROPERTY_ARRAY_ARRAY_OF_MODEL
 })
-@JsonTypeName("ArrayTest")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
 public class ArrayTest {
   public static final String JSON_PROPERTY_ARRAY_OF_STRING = "array_of_string";
-  private List<String> arrayOfString = null;
+  private List<String> arrayOfString;
 
   public static final String JSON_PROPERTY_ARRAY_ARRAY_OF_INTEGER = "array_array_of_integer";
-  private List<List<Long>> arrayArrayOfInteger = null;
+  private List<List<Long>> arrayArrayOfInteger;
 
   public static final String JSON_PROPERTY_ARRAY_ARRAY_OF_MODEL = "array_array_of_model";
-  private List<List<ReadOnlyFirst>> arrayArrayOfModel = null;
+  private List<List<ReadOnlyFirst>> arrayArrayOfModel;
 
+  public ArrayTest() {
+  }
+
+  /**
+  * Constructor with all args parameters
+  */
+  public ArrayTest(@JsonProperty(JSON_PROPERTY_ARRAY_OF_STRING) List<String> arrayOfString, @JsonProperty(JSON_PROPERTY_ARRAY_ARRAY_OF_INTEGER) List<List<Long>> arrayArrayOfInteger, @JsonProperty(JSON_PROPERTY_ARRAY_ARRAY_OF_MODEL) List<List<ReadOnlyFirst>> arrayArrayOfModel) {
+    this.arrayOfString = arrayOfString;
+    this.arrayArrayOfInteger = arrayArrayOfInteger;
+    this.arrayArrayOfModel = arrayArrayOfModel;
+  }
 
   public ArrayTest arrayOfString(List<String> arrayOfString) {
     
@@ -56,7 +66,7 @@ public class ArrayTest {
 
   public ArrayTest addArrayOfStringItem(String arrayOfStringItem) {
     if (this.arrayOfString == null) {
-      this.arrayOfString = new ArrayList<String>();
+      this.arrayOfString = new ArrayList<>();
     }
     this.arrayOfString.add(arrayOfStringItem);
     return this;
@@ -67,7 +77,6 @@ public class ArrayTest {
    * @return arrayOfString
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
   @JsonProperty(JSON_PROPERTY_ARRAY_OF_STRING)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -82,7 +91,6 @@ public class ArrayTest {
     this.arrayOfString = arrayOfString;
   }
 
-
   public ArrayTest arrayArrayOfInteger(List<List<Long>> arrayArrayOfInteger) {
     
     this.arrayArrayOfInteger = arrayArrayOfInteger;
@@ -91,7 +99,7 @@ public class ArrayTest {
 
   public ArrayTest addArrayArrayOfIntegerItem(List<Long> arrayArrayOfIntegerItem) {
     if (this.arrayArrayOfInteger == null) {
-      this.arrayArrayOfInteger = new ArrayList<List<Long>>();
+      this.arrayArrayOfInteger = new ArrayList<>();
     }
     this.arrayArrayOfInteger.add(arrayArrayOfIntegerItem);
     return this;
@@ -102,7 +110,6 @@ public class ArrayTest {
    * @return arrayArrayOfInteger
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
   @JsonProperty(JSON_PROPERTY_ARRAY_ARRAY_OF_INTEGER)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -117,7 +124,6 @@ public class ArrayTest {
     this.arrayArrayOfInteger = arrayArrayOfInteger;
   }
 
-
   public ArrayTest arrayArrayOfModel(List<List<ReadOnlyFirst>> arrayArrayOfModel) {
     
     this.arrayArrayOfModel = arrayArrayOfModel;
@@ -126,7 +132,7 @@ public class ArrayTest {
 
   public ArrayTest addArrayArrayOfModelItem(List<ReadOnlyFirst> arrayArrayOfModelItem) {
     if (this.arrayArrayOfModel == null) {
-      this.arrayArrayOfModel = new ArrayList<List<ReadOnlyFirst>>();
+      this.arrayArrayOfModel = new ArrayList<>();
     }
     this.arrayArrayOfModel.add(arrayArrayOfModelItem);
     return this;
@@ -137,7 +143,6 @@ public class ArrayTest {
    * @return arrayArrayOfModel
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
   @JsonProperty(JSON_PROPERTY_ARRAY_ARRAY_OF_MODEL)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -151,7 +156,6 @@ public class ArrayTest {
   public void setArrayArrayOfModel(List<List<ReadOnlyFirst>> arrayArrayOfModel) {
     this.arrayArrayOfModel = arrayArrayOfModel;
   }
-
 
   @Override
   public boolean equals(Object o) {
@@ -193,6 +197,70 @@ public class ArrayTest {
     }
     return o.toString().replace("\n", "\n    ");
   }
+
+  public static class Builder {
+
+    private ArrayTest instance;
+
+    public Builder() {
+      this(new ArrayTest());
+    }
+
+    protected Builder(ArrayTest instance) {
+      this.instance = instance;
+    }
+
+    public ArrayTest.Builder arrayOfString(List<String> arrayOfString) {
+      this.instance.arrayOfString = arrayOfString;
+      return this;
+    }
+    public ArrayTest.Builder arrayArrayOfInteger(List<List<Long>> arrayArrayOfInteger) {
+      this.instance.arrayArrayOfInteger = arrayArrayOfInteger;
+      return this;
+    }
+    public ArrayTest.Builder arrayArrayOfModel(List<List<ReadOnlyFirst>> arrayArrayOfModel) {
+      this.instance.arrayArrayOfModel = arrayArrayOfModel;
+      return this;
+    }
+
+
+    /**
+    * returns a built ArrayTest instance.
+    *
+    * The builder is not reusable.
+    */
+    public ArrayTest build() {
+      try {
+        return this.instance;
+      } finally {
+        // ensure that this.instance is not reused
+        this.instance = null;
+      }
+    }
+
+    @Override
+    public String toString() {
+      return getClass() + "=(" + instance + ")";
+    }
+  }
+
+  /**
+  * Create a builder with no initialized field.
+  */
+  public static ArrayTest.Builder builder() {
+    return new ArrayTest.Builder();
+  }
+
+  /**
+  * Create a builder with a shallow copy of this instance.
+  */
+  public ArrayTest.Builder toBuilder() {
+    return new ArrayTest.Builder()
+      .arrayOfString(getArrayOfString())
+      .arrayArrayOfInteger(getArrayArrayOfInteger())
+      .arrayArrayOfModel(getArrayArrayOfModel());
+  }
+
 
 }
 

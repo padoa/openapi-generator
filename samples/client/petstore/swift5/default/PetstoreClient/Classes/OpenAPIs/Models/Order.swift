@@ -10,12 +10,12 @@ import Foundation
 import AnyCodable
 #endif
 
-public struct Order: Codable, Hashable {
+public struct Order: Codable, JSONEncodable, Hashable {
 
     public enum Status: String, Codable, CaseIterable {
         case placed = "placed"
         case approved = "approved"
-        case delivered = "delivered"
+        case shipped = "delivered"
     }
     public var id: Int64?
     public var petId: Int64?

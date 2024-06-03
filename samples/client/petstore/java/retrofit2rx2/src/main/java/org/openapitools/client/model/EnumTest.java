@@ -20,15 +20,13 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
 import org.openapitools.client.model.OuterEnum;
 
 /**
  * EnumTest
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
 public class EnumTest {
   /**
    * Gets or Sets enumString
@@ -242,6 +240,8 @@ public class EnumTest {
   @SerializedName(SERIALIZED_NAME_OUTER_ENUM)
   private OuterEnum outerEnum;
 
+  public EnumTest() {
+  }
 
   public EnumTest enumString(EnumStringEnum enumString) {
     
@@ -254,7 +254,6 @@ public class EnumTest {
    * @return enumString
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public EnumStringEnum getEnumString() {
     return enumString;
@@ -264,7 +263,6 @@ public class EnumTest {
   public void setEnumString(EnumStringEnum enumString) {
     this.enumString = enumString;
   }
-
 
   public EnumTest enumStringRequired(EnumStringRequiredEnum enumStringRequired) {
     
@@ -276,7 +274,7 @@ public class EnumTest {
    * Get enumStringRequired
    * @return enumStringRequired
   **/
-  @ApiModelProperty(required = true, value = "")
+  @javax.annotation.Nonnull
 
   public EnumStringRequiredEnum getEnumStringRequired() {
     return enumStringRequired;
@@ -286,7 +284,6 @@ public class EnumTest {
   public void setEnumStringRequired(EnumStringRequiredEnum enumStringRequired) {
     this.enumStringRequired = enumStringRequired;
   }
-
 
   public EnumTest enumInteger(EnumIntegerEnum enumInteger) {
     
@@ -299,7 +296,6 @@ public class EnumTest {
    * @return enumInteger
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public EnumIntegerEnum getEnumInteger() {
     return enumInteger;
@@ -309,7 +305,6 @@ public class EnumTest {
   public void setEnumInteger(EnumIntegerEnum enumInteger) {
     this.enumInteger = enumInteger;
   }
-
 
   public EnumTest enumNumber(EnumNumberEnum enumNumber) {
     
@@ -322,7 +317,6 @@ public class EnumTest {
    * @return enumNumber
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public EnumNumberEnum getEnumNumber() {
     return enumNumber;
@@ -332,7 +326,6 @@ public class EnumTest {
   public void setEnumNumber(EnumNumberEnum enumNumber) {
     this.enumNumber = enumNumber;
   }
-
 
   public EnumTest outerEnum(OuterEnum outerEnum) {
     
@@ -345,7 +338,6 @@ public class EnumTest {
    * @return outerEnum
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public OuterEnum getOuterEnum() {
     return outerEnum;
@@ -355,7 +347,6 @@ public class EnumTest {
   public void setOuterEnum(OuterEnum outerEnum) {
     this.outerEnum = outerEnum;
   }
-
 
   @Override
   public boolean equals(Object o) {

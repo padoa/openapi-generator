@@ -23,6 +23,7 @@ import io.swagger.v3.oas.models.media.Schema;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CliOption;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.GeneratorLanguage;
 import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.utils.ModelUtils;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public class ApexClientCodegen extends AbstractApexCodegen {
     private String namedCredential;
     private String srcPath = "force-app/main/default/";
     private String sfdxConfigPath = "config/";
-    private HashMap<String, Object> primitiveDefaults = new HashMap<String, Object>();
+    private HashMap<String, Object> primitiveDefaults = new HashMap<>();
 
     public ApexClientCodegen() {
         super();
@@ -113,7 +114,7 @@ public class ApexClientCodegen extends AbstractApexCodegen {
                         "virtual", "void", "webservice", "when", "where", "while"
                 ));
 
-        languageSpecificPrimitives = new HashSet<String>(
+        languageSpecificPrimitives = new HashSet<>(
                 Arrays.asList("Blob", "Boolean", "Date", "Datetime", "Decimal", "Double", "ID",
                         "Integer", "Long", "Object", "String", "Time"
                 ));
@@ -222,7 +223,7 @@ public class ApexClientCodegen extends AbstractApexCodegen {
     public String toDefaultValue(Schema p) {
         String out = null;
         if (ModelUtils.isArraySchema(p)) {
-            Schema inner = ((ArraySchema) p).getItems();
+            Schema inner = ModelUtils.getSchemaItems(p);
             out = String.format(
                     Locale.ROOT,
                     "new List<%s>()",
@@ -232,10 +233,12 @@ public class ApexClientCodegen extends AbstractApexCodegen {
             // true => "true", false => "false", null => "null"
             out = String.valueOf(p.getDefault());
         } else if (ModelUtils.isLongSchema(p)) {
-            Long def = (Long) p.getDefault();
-            out = def == null ? out : def.toString() + "L";
+            if (p.getDefault() != null) {
+                Long def = Long.parseLong(String.valueOf(p.getDefault()));
+                out = def == null ? out : def + "L";
+            }
         } else if (ModelUtils.isMapSchema(p)) {
-            Schema inner = getAdditionalProperties(p);
+            Schema inner = ModelUtils.getAdditionalProperties(p);
             String s = inner == null ? "Object" : getTypeDeclaration(inner);
             out = String.format(Locale.ROOT, "new Map<String, %s>()", s);
         } else if (ModelUtils.isStringSchema(p)) {
@@ -312,7 +315,7 @@ public class ApexClientCodegen extends AbstractApexCodegen {
         supportingFiles.add(new SupportingFile("gitignore.mustache", "", ".gitignore"));
 
         supportingFiles.add(new SupportingFile("README_ant.mustache", "README.md")
-            .doNotOverwrite());
+                .doNotOverwrite());
 
     }
 
@@ -322,9 +325,12 @@ public class ApexClientCodegen extends AbstractApexCodegen {
         supportingFiles.add(new SupportingFile("sfdx-project.json.mustache", "sfdx-project.json"));
 
         supportingFiles.add(new SupportingFile("README_sfdx.mustache", "README.md")
-            .doNotOverwrite());
+                .doNotOverwrite());
 
     }
 
-
+    @Override
+    public GeneratorLanguage generatorLanguage() {
+        return GeneratorLanguage.APEX;
+    }
 }

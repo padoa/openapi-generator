@@ -12,7 +12,6 @@
 
 package org.openapitools.client.model;
 
-
 import java.lang.reflect.Type;
 import javax.json.bind.annotation.JsonbTypeDeserializer;
 import javax.json.bind.annotation.JsonbTypeSerializer;
@@ -30,17 +29,19 @@ import javax.json.bind.annotation.JsonbProperty;
 
 public class ModelApiResponse  {
   
+  @JsonbProperty("code")
   private Integer code;
 
+  @JsonbProperty("type")
   private String type;
 
+  @JsonbProperty("message")
   private String message;
-  
+
  /**
    * Get code
    * @return code
   **/
-  @JsonbProperty("code")
   public Integer getCode() {
     return code;
   }
@@ -61,7 +62,6 @@ public class ModelApiResponse  {
    * Get type
    * @return type
   **/
-  @JsonbProperty("type")
   public String getType() {
     return type;
   }
@@ -82,7 +82,6 @@ public class ModelApiResponse  {
    * Get message
    * @return message
   **/
-  @JsonbProperty("message")
   public String getMessage() {
     return message;
   }

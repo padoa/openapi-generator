@@ -20,15 +20,13 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.io.IOException;
-import org.threeten.bp.OffsetDateTime;
+import java.time.OffsetDateTime;
 
 /**
  * Order
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
 public class Order {
   public static final String SERIALIZED_NAME_ID = "id";
   @SerializedName(SERIALIZED_NAME_ID)
@@ -103,6 +101,8 @@ public class Order {
   @SerializedName(SERIALIZED_NAME_COMPLETE)
   private Boolean complete = false;
 
+  public Order() {
+  }
 
   public Order id(Long id) {
     
@@ -115,7 +115,6 @@ public class Order {
    * @return id
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public Long getId() {
     return id;
@@ -125,7 +124,6 @@ public class Order {
   public void setId(Long id) {
     this.id = id;
   }
-
 
   public Order petId(Long petId) {
     
@@ -138,7 +136,6 @@ public class Order {
    * @return petId
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public Long getPetId() {
     return petId;
@@ -148,7 +145,6 @@ public class Order {
   public void setPetId(Long petId) {
     this.petId = petId;
   }
-
 
   public Order quantity(Integer quantity) {
     
@@ -161,7 +157,6 @@ public class Order {
    * @return quantity
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public Integer getQuantity() {
     return quantity;
@@ -171,7 +166,6 @@ public class Order {
   public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
-
 
   public Order shipDate(OffsetDateTime shipDate) {
     
@@ -184,7 +178,6 @@ public class Order {
    * @return shipDate
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public OffsetDateTime getShipDate() {
     return shipDate;
@@ -194,7 +187,6 @@ public class Order {
   public void setShipDate(OffsetDateTime shipDate) {
     this.shipDate = shipDate;
   }
-
 
   public Order status(StatusEnum status) {
     
@@ -207,7 +199,6 @@ public class Order {
    * @return status
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "Order Status")
 
   public StatusEnum getStatus() {
     return status;
@@ -217,7 +208,6 @@ public class Order {
   public void setStatus(StatusEnum status) {
     this.status = status;
   }
-
 
   public Order complete(Boolean complete) {
     
@@ -230,7 +220,6 @@ public class Order {
    * @return complete
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public Boolean getComplete() {
     return complete;
@@ -240,7 +229,6 @@ public class Order {
   public void setComplete(Boolean complete) {
     this.complete = complete;
   }
-
 
   @Override
   public boolean equals(Object o) {

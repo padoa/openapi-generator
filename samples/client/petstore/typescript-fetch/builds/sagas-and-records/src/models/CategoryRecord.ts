@@ -50,7 +50,7 @@ knownRecordFactories.set(CategoryRecordEntityProps.recType, CategoryRecordEntity
 class CategoryRecordUtils extends ApiRecordUtils<Category, CategoryRecord> {
     public normalize(apiObject: Category, asEntity?: boolean): Category {
         (apiObject as any).recType = asEntity ? CategoryRecordEntityProps.recType : CategoryRecordProps.recType;
-        if (apiObject.id) { (apiObject as any).id = apiObject.id.toString(); } 
+        if (apiObject['id']) { (apiObject as any)['id'] = apiObject['id'].toString(); } 
         return apiObject;
     }
 
@@ -61,13 +61,14 @@ class CategoryRecordUtils extends ApiRecordUtils<Category, CategoryRecord> {
 
     public *toInlined(entityId?: string | null) {
         if (!entityId) {return undefined; }
+        // @ts-ignore
         const entity = yield select(apiEntityCategorySelector, {id: entityId});
         if (!entity) {return undefined; }
 
         const {
             recType,
-		    ...unchangedProperties
-		} = entity;
+            ...unchangedProperties
+        } = entity;
 
         const entityProperties = {
         }
@@ -82,6 +83,7 @@ class CategoryRecordUtils extends ApiRecordUtils<Category, CategoryRecord> {
         if (!entityIds) {return null; }
         let entities = List<CategoryRecord>();
         for (let entityIndex = 0; entityIndex < entityIds.count(); entityIndex++) {
+            // @ts-ignore
             const entity = yield call(this.toInlined, entityIds.get(entityIndex));
             if (entity) {
                 entities.push(entity);
@@ -92,7 +94,7 @@ class CategoryRecordUtils extends ApiRecordUtils<Category, CategoryRecord> {
 
     public toApi(record: CategoryRecord): Category {
         const apiObject = super.toApi(record);
-        if (record.id) { apiObject.id = parseFloat(record.id); } 
+        if (record['id']) { apiObject['id'] = parseFloat(record['id']); } 
         return apiObject;
     }
 }

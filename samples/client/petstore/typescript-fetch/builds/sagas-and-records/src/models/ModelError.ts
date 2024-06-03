@@ -12,13 +12,13 @@
  * Do not edit the class manually.
  */
 
-import { exists, mapValues } from '../runtime';
+import { mapValues } from '../runtime';
+import type { ItemId } from './ItemId';
 import {
-    ItemId,
     ItemIdFromJSON,
     ItemIdFromJSONTyped,
     ItemIdToJSON,
-} from './';
+} from './ItemId';
 
 /**
  * This represent an error normally linked to a specific item from a previous request
@@ -52,37 +52,41 @@ export interface ModelError {
     exception?: string;
 }
 
+/**
+ * Check if a given object implements the ModelError interface.
+ */
+export function instanceOfModelError(value: object): value is ModelError {
+    if (!('type' in value) || value['type'] === undefined) return false;
+    return true;
+}
+
 export function ModelErrorFromJSON(json: any): ModelError {
     return ModelErrorFromJSONTyped(json, false);
 }
 
 export function ModelErrorFromJSONTyped(json: any, ignoreDiscriminator: boolean): ModelError {
-    if ((json === undefined) || (json === null)) {
+    if (json == null) {
         return json;
     }
     return {
         
         'type': json['type'],
-        'itemInfo': !exists(json, 'itemInfo') ? undefined : ItemIdFromJSON(json['itemInfo']),
-        'details': !exists(json, 'details') ? undefined : json['details'],
-        'exception': !exists(json, 'exception') ? undefined : json['exception'],
+        'itemInfo': json['itemInfo'] == null ? undefined : ItemIdFromJSON(json['itemInfo']),
+        'details': json['details'] == null ? undefined : json['details'],
+        'exception': json['exception'] == null ? undefined : json['exception'],
     };
 }
 
 export function ModelErrorToJSON(value?: ModelError | null): any {
-    if (value === undefined) {
-        return undefined;
-    }
-    if (value === null) {
-        return null;
+    if (value == null) {
+        return value;
     }
     return {
         
-        'type': value.type,
-        'itemInfo': ItemIdToJSON(value.itemInfo),
-        'details': value.details,
-        'exception': value.exception,
+        'type': value['type'],
+        'itemInfo': ItemIdToJSON(value['itemInfo']),
+        'details': value['details'],
+        'exception': value['exception'],
     };
 }
-
 

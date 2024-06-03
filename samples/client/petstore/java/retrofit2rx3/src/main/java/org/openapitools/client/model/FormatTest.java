@@ -20,19 +20,17 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.UUID;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.OffsetDateTime;
 
 /**
  * FormatTest
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
 public class FormatTest {
   public static final String SERIALIZED_NAME_INTEGER = "integer";
   @SerializedName(SERIALIZED_NAME_INTEGER)
@@ -90,6 +88,8 @@ public class FormatTest {
   @SerializedName(SERIALIZED_NAME_BIG_DECIMAL)
   private BigDecimal bigDecimal;
 
+  public FormatTest() {
+  }
 
   public FormatTest integer(Integer integer) {
     
@@ -104,7 +104,6 @@ public class FormatTest {
    * @return integer
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public Integer getInteger() {
     return integer;
@@ -114,7 +113,6 @@ public class FormatTest {
   public void setInteger(Integer integer) {
     this.integer = integer;
   }
-
 
   public FormatTest int32(Integer int32) {
     
@@ -129,7 +127,6 @@ public class FormatTest {
    * @return int32
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public Integer getInt32() {
     return int32;
@@ -139,7 +136,6 @@ public class FormatTest {
   public void setInt32(Integer int32) {
     this.int32 = int32;
   }
-
 
   public FormatTest int64(Long int64) {
     
@@ -152,7 +148,6 @@ public class FormatTest {
    * @return int64
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public Long getInt64() {
     return int64;
@@ -162,7 +157,6 @@ public class FormatTest {
   public void setInt64(Long int64) {
     this.int64 = int64;
   }
-
 
   public FormatTest number(BigDecimal number) {
     
@@ -176,7 +170,7 @@ public class FormatTest {
    * maximum: 543.2
    * @return number
   **/
-  @ApiModelProperty(required = true, value = "")
+  @javax.annotation.Nonnull
 
   public BigDecimal getNumber() {
     return number;
@@ -186,7 +180,6 @@ public class FormatTest {
   public void setNumber(BigDecimal number) {
     this.number = number;
   }
-
 
   public FormatTest _float(Float _float) {
     
@@ -201,7 +194,6 @@ public class FormatTest {
    * @return _float
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public Float getFloat() {
     return _float;
@@ -211,7 +203,6 @@ public class FormatTest {
   public void setFloat(Float _float) {
     this._float = _float;
   }
-
 
   public FormatTest _double(Double _double) {
     
@@ -226,7 +217,6 @@ public class FormatTest {
    * @return _double
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public Double getDouble() {
     return _double;
@@ -236,7 +226,6 @@ public class FormatTest {
   public void setDouble(Double _double) {
     this._double = _double;
   }
-
 
   public FormatTest string(String string) {
     
@@ -249,7 +238,6 @@ public class FormatTest {
    * @return string
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public String getString() {
     return string;
@@ -259,7 +247,6 @@ public class FormatTest {
   public void setString(String string) {
     this.string = string;
   }
-
 
   public FormatTest _byte(byte[] _byte) {
     
@@ -271,7 +258,7 @@ public class FormatTest {
    * Get _byte
    * @return _byte
   **/
-  @ApiModelProperty(required = true, value = "")
+  @javax.annotation.Nonnull
 
   public byte[] getByte() {
     return _byte;
@@ -281,7 +268,6 @@ public class FormatTest {
   public void setByte(byte[] _byte) {
     this._byte = _byte;
   }
-
 
   public FormatTest binary(File binary) {
     
@@ -294,7 +280,6 @@ public class FormatTest {
    * @return binary
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public File getBinary() {
     return binary;
@@ -304,7 +289,6 @@ public class FormatTest {
   public void setBinary(File binary) {
     this.binary = binary;
   }
-
 
   public FormatTest date(LocalDate date) {
     
@@ -316,7 +300,7 @@ public class FormatTest {
    * Get date
    * @return date
   **/
-  @ApiModelProperty(required = true, value = "")
+  @javax.annotation.Nonnull
 
   public LocalDate getDate() {
     return date;
@@ -326,7 +310,6 @@ public class FormatTest {
   public void setDate(LocalDate date) {
     this.date = date;
   }
-
 
   public FormatTest dateTime(OffsetDateTime dateTime) {
     
@@ -339,7 +322,6 @@ public class FormatTest {
    * @return dateTime
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public OffsetDateTime getDateTime() {
     return dateTime;
@@ -349,7 +331,6 @@ public class FormatTest {
   public void setDateTime(OffsetDateTime dateTime) {
     this.dateTime = dateTime;
   }
-
 
   public FormatTest uuid(UUID uuid) {
     
@@ -362,7 +343,6 @@ public class FormatTest {
    * @return uuid
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(example = "72f98069-206d-4f12-9f12-3d1e525a8e84", value = "")
 
   public UUID getUuid() {
     return uuid;
@@ -372,7 +352,6 @@ public class FormatTest {
   public void setUuid(UUID uuid) {
     this.uuid = uuid;
   }
-
 
   public FormatTest password(String password) {
     
@@ -384,7 +363,7 @@ public class FormatTest {
    * Get password
    * @return password
   **/
-  @ApiModelProperty(required = true, value = "")
+  @javax.annotation.Nonnull
 
   public String getPassword() {
     return password;
@@ -394,7 +373,6 @@ public class FormatTest {
   public void setPassword(String password) {
     this.password = password;
   }
-
 
   public FormatTest bigDecimal(BigDecimal bigDecimal) {
     
@@ -407,7 +385,6 @@ public class FormatTest {
    * @return bigDecimal
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
 
   public BigDecimal getBigDecimal() {
     return bigDecimal;
@@ -417,7 +394,6 @@ public class FormatTest {
   public void setBigDecimal(BigDecimal bigDecimal) {
     this.bigDecimal = bigDecimal;
   }
-
 
   @Override
   public boolean equals(Object o) {
@@ -465,7 +441,7 @@ public class FormatTest {
     sb.append("    date: ").append(toIndentedString(date)).append("\n");
     sb.append("    dateTime: ").append(toIndentedString(dateTime)).append("\n");
     sb.append("    uuid: ").append(toIndentedString(uuid)).append("\n");
-    sb.append("    password: ").append(toIndentedString(password)).append("\n");
+    sb.append("    password: ").append("*").append("\n");
     sb.append("    bigDecimal: ").append(toIndentedString(bigDecimal)).append("\n");
     sb.append("}");
     return sb.toString();

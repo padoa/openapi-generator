@@ -1,9 +1,9 @@
     /**
     {{#description}}
-     * {{description}}
+     * {{.}}
      *
     {{/description}}
-     * @var {{{vendorExtensions.x-comment-type}}}{{^required}}|null{{/required}}
+     * @var {{{vendorExtensions.x-comment-type}}}
      * @SerializedName("{{baseName}}")
 {{#required}}
      * @Assert\NotNull()
@@ -36,35 +36,47 @@
      {{/isMap}}
      {{^isMap}}
      {{#items}}
+     {{#isEnumRef}}
+     * @Accessor(getter="getSerialized{{nameInPascalCase}}")
+     * @Type("array<string>")
+     {{/isEnumRef}}
+     {{^isEnumRef}}
      * @Type("array<{{dataType}}>")
+     {{/isEnumRef}}
      {{/items}}
      {{/isMap}}
 {{/isContainer}}
 {{^isContainer}}
     {{#isDate}}
-     * @Assert\Date()
-     * @Type("DateTime")
+     * @Assert\Type("\Date")
+     * @Type("DateTime<'Y-m-d'>")
     {{/isDate}}
     {{#isDateTime}}
-     * @Assert\DateTime()
+     * @Assert\Type("\DateTime"))
      * @Type("DateTime")
     {{/isDateTime}}
+    {{#isEnumRef}}
+        * @Accessor(getter="getSerialized{{nameInPascalCase}}")
+        * @Type("string")
+    {{/isEnumRef}}
     {{^isDate}}
     {{^isDateTime}}
+    {{^isEnumRef}}
      * @Assert\Type("{{dataType}}")
      * @Type("{{dataType}}")
+    {{/isEnumRef}}
     {{/isDateTime}}
     {{/isDate}}
 {{/isContainer}}
 {{#hasValidation}}
     {{#maxLength}}
      * @Assert\Length(
-     *   max = {{maxLength}}
+     *   max = {{.}}
      * )
     {{/maxLength}}
     {{#minLength}}
      * @Assert\Length(
-     *   min = {{minLength}}
+     *   min = {{.}}
      * )
     {{/minLength}}
     {{#minimum}}
@@ -77,25 +89,25 @@
     {{/minimum}}
     {{#maximum}}
     {{#exclusiveMaximum}}
-     * @Assert\LessThan({{minimum}})
+     * @Assert\LessThan({{maximum}})
     {{/exclusiveMaximum}}
     {{^exclusiveMaximum}}
-     * @Assert\LessThanOrEqual({{minimum}})
+     * @Assert\LessThanOrEqual({{maximum}})
     {{/exclusiveMaximum}}
     {{/maximum}}
     {{#pattern}}
-     * @Assert\Regex("/{{pattern}}/")
+     * @Assert\Regex("/{{.}}/")
     {{/pattern}}
     {{#maxItems}}
      * @Assert\Count(
-     *   max = {{maxItems}}
+     *   max = {{.}}
      * )
     {{/maxItems}}
     {{#minItems}}
      * @Assert\Count(
-     *   min = {{minItems}}
+     *   min = {{.}}
      * )
     {{/minItems}}
 {{/hasValidation}}
      */
-    protected ${{name}};
+    protected {{{vendorExtensions.x-parameter-type}}} ${{name}} = {{#defaultValue}}{{{defaultValue}}}{{/defaultValue}}{{^defaultValue}}null{{/defaultValue}};

@@ -1,6 +1,6 @@
 package org.openapitools.api;
 
-import java.util.List;
+import java.util.Date;
 import org.openapitools.model.User;
 
 import java.io.InputStream;
@@ -52,7 +52,7 @@ public interface UserApi  {
     @ApiOperation(value = "Creates list of users with given input array", tags={ "user" })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    public void createUsersWithArrayInput(@Valid @NotNull List<User> body);
+    public void createUsersWithArrayInput(@Valid @NotNull List<@Valid User> body);
 
     /**
      * Creates list of users with given input array
@@ -63,7 +63,7 @@ public interface UserApi  {
     @ApiOperation(value = "Creates list of users with given input array", tags={ "user" })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation") })
-    public void createUsersWithListInput(@Valid @NotNull List<User> body);
+    public void createUsersWithListInput(@Valid @NotNull List<@Valid User> body);
 
     /**
      * Delete user
@@ -104,7 +104,7 @@ public interface UserApi  {
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "successful operation", response = String.class),
         @ApiResponse(code = 400, message = "Invalid username/password supplied") })
-    public String loginUser(@QueryParam("username") @NotNull  String username, @QueryParam("password") @NotNull  String password);
+    public String loginUser(@QueryParam("username") @NotNull String username, @QueryParam("password") @NotNull String password);
 
     /**
      * Logs out current logged in user session
@@ -131,4 +131,3 @@ public interface UserApi  {
         @ApiResponse(code = 404, message = "User not found") })
     public void updateUser(@PathParam("username") String username, @Valid @NotNull User body);
 }
-

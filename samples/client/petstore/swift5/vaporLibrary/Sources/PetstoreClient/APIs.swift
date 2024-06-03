@@ -5,12 +5,12 @@
 //
 
 import Foundation
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
 import Vapor
 
-@available(*, deprecated, renamed: "PetstoreClient")
-public typealias PetstoreClientAPI = PetstoreClient
-
-open class PetstoreClient {
+open class PetstoreClientAPI {
     public static var basePath = "http://petstore.swagger.io:80/v2"
     public static var customHeaders: HTTPHeaders = [:]
 }

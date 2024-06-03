@@ -24,6 +24,9 @@ import io.swagger.v3.oas.models.media.Schema;
 import org.apache.commons.io.FileUtils;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.languages.RubyClientCodegen;
+import org.openapitools.codegen.model.ModelMap;
+import org.openapitools.codegen.model.OperationMap;
+import org.openapitools.codegen.model.OperationsMap;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -159,14 +162,17 @@ public class RubyClientCodegenTest {
         final Operation p = openAPI.getPaths().get(path).getPost();
         Schema schema = openAPI.getComponents().getSchemas().get("Pet");
         CodegenModel model = codegen.fromModel("Pet", schema);
-        Map<String, Object> modelMap = new HashMap<>();
-        modelMap.put("model", model);
+        ModelMap modelMap = new ModelMap();
+        modelMap.setModel(model);
         final CodegenOperation op = codegen.fromOperation(path, "post", p, null);
 
-        Map<String, Object> operations = ImmutableMap.<String, Object>of("operation", Collections.singletonList(op));
-        Map<String, Object> objs = ImmutableMap.of("operations", operations, "imports", new ArrayList<Map<String, String>>());
+        OperationMap operations = new OperationMap();
+        operations.setOperation(op);
+        OperationsMap objs = new OperationsMap();
+        objs.setOperation(operations);
+        objs.setImports(new ArrayList<>());
         objs = codegen.postProcessOperationsWithModels(objs, Collections.singletonList(modelMap));
-        CodegenOperation postProcessedOp = ((List<CodegenOperation>) ((Map<String, Object>) objs.get("operations")).get("operation")).get(0);
+        CodegenOperation postProcessedOp = objs.getOperations().getOperation().get(0);
         Assert.assertEquals(postProcessedOp.bodyParams.size(), 1);
         CodegenParameter bp = postProcessedOp.bodyParams.get(0);
         Assert.assertEquals(bp.vendorExtensions.get("x-ruby-example"), "OnlinePetstore::Pet.new({name: 'doggie', photo_urls: ['photo_urls_example']})");
@@ -380,10 +386,8 @@ public class RubyClientCodegenTest {
 
         CodegenDiscriminator codegenDiscriminator = person.getDiscriminator();
         Set<CodegenDiscriminator.MappedModel> mappedModels = new LinkedHashSet<CodegenDiscriminator.MappedModel>();
-        mappedModels.add(new CodegenDiscriminator.MappedModel("a", "Adult"));
-        mappedModels.add(new CodegenDiscriminator.MappedModel("c", "Child"));
-        mappedModels.add(new CodegenDiscriminator.MappedModel("Adult", "Adult"));
-        mappedModels.add(new CodegenDiscriminator.MappedModel("Child", "Child"));
+        mappedModels.add(new CodegenDiscriminator.MappedModel("a", "Adult", true));
+        mappedModels.add(new CodegenDiscriminator.MappedModel("c", "Child", true));
         Assert.assertEquals(codegenDiscriminator.getMappedModels(), mappedModels);
     }
 
@@ -401,8 +405,8 @@ public class RubyClientCodegenTest {
 
         CodegenDiscriminator codegenDiscriminator = person.getDiscriminator();
         Set<CodegenDiscriminator.MappedModel> mappedModels = new LinkedHashSet<CodegenDiscriminator.MappedModel>();
-        mappedModels.add(new CodegenDiscriminator.MappedModel("a", "Adult"));
-        mappedModels.add(new CodegenDiscriminator.MappedModel("c", "Child"));
+        mappedModels.add(new CodegenDiscriminator.MappedModel("a", "Adult", true));
+        mappedModels.add(new CodegenDiscriminator.MappedModel("c", "Child", true));
         Assert.assertEquals(codegenDiscriminator.getMappedModels(), mappedModels);
     }
 
@@ -616,7 +620,7 @@ public class RubyClientCodegenTest {
     }
 
 
-    @Test(description = "test example string imported from x-example parameterr (OAS2)")
+    @Test(description = "test example string imported from x-example parameter (OAS2)")
     public void exampleStringFromExampleParameterOAS2Test() {
         final OpenAPI openAPI = TestUtils.parseFlattenSpec("src/test/resources/2_0/petstore-nullable.yaml");
         final RubyClientCodegen codegen = new RubyClientCodegen();
@@ -627,10 +631,13 @@ public class RubyClientCodegenTest {
         final Operation p = openAPI.getPaths().get(path).getDelete();
         final CodegenOperation op = codegen.fromOperation(path, "delete", p, null);
 
-        Map<String, Object> operations = ImmutableMap.<String, Object>of("operation", Collections.singletonList(op));
-        Map<String, Object> objs = ImmutableMap.of("operations", operations, "imports", new ArrayList<Map<String, String>>());
+        OperationMap operations = new OperationMap();
+        operations.setOperation(op);
+        OperationsMap objs = new OperationsMap();
+        objs.setOperation(operations);
+        objs.setImports(new ArrayList<>());
         objs = codegen.postProcessOperationsWithModels(objs, Collections.emptyList());
-        CodegenOperation postProcessedOp = ((List<CodegenOperation>) ((Map<String, Object>) objs.get("operations")).get("operation")).get(0);
+        CodegenOperation postProcessedOp = objs.getOperations().getOperation().get(0);
 
         CodegenParameter pp = postProcessedOp.pathParams.get(0);
         Assert.assertEquals(pp.vendorExtensions.get("x-ruby-example"), "'orderid123'");
@@ -647,10 +654,13 @@ public class RubyClientCodegenTest {
         final Operation p = openAPI.getPaths().get(path).getDelete();
         final CodegenOperation op = codegen.fromOperation(path, "delete", p, null);
 
-        Map<String, Object> operations = ImmutableMap.<String, Object>of("operation", Collections.singletonList(op));
-        Map<String, Object> objs = ImmutableMap.of("operations", operations, "imports", new ArrayList<Map<String, String>>());
+        OperationMap operations = new OperationMap();
+        operations.setOperation(op);
+        OperationsMap objs = new OperationsMap();
+        objs.setOperation(operations);
+        objs.setImports(new ArrayList<>());
         objs = codegen.postProcessOperationsWithModels(objs, Collections.emptyList());
-        CodegenOperation postProcessedOp = ((List<CodegenOperation>) ((Map<String, Object>) objs.get("operations")).get("operation")).get(0);
+        CodegenOperation postProcessedOp = objs.getOperations().getOperation().get(0);
 
         CodegenParameter pp = postProcessedOp.pathParams.get(0);
         Assert.assertEquals(pp.vendorExtensions.get("x-ruby-example"), "'orderid123'");
@@ -701,5 +711,34 @@ public class RubyClientCodegenTest {
         Assert.assertEquals(cp2.name, "mapping_test");
         Assert.assertFalse(cp2.required);
         Assert.assertEquals(cp2.dataType, "VerySpecialStringInRuby");
+    }
+
+    @Test(description = "test regex patterns")
+    public void testRegularExpressionOpenAPISchemaVersion3() {
+        final OpenAPI openAPI = TestUtils.parseFlattenSpec("src/test/resources/3_0/issue_1517.yaml");
+        final RubyClientCodegen codegen = new RubyClientCodegen();
+        codegen.setOpenAPI(openAPI);
+        final String path = "/ping";
+        final Operation p = openAPI.getPaths().get(path).getGet();
+        final CodegenOperation op = codegen.fromOperation(path, "get", p, null);
+        // pattern_no_forward_slashes '^pattern$'
+        Assert.assertEquals(op.allParams.get(0).pattern, "/^pattern$/");
+        // pattern_two_slashes '/^pattern$/'
+        Assert.assertEquals(op.allParams.get(1).pattern, "/^pattern$/");
+        // pattern_dont_escape_backslash '/^pattern\d{3}$/'
+        Assert.assertEquals(op.allParams.get(2).pattern, "/^pattern\\d{3}$/");
+        // pattern_dont_escape_escaped_forward_slash '/^pattern\/\d{3}$/'
+        Assert.assertEquals(op.allParams.get(3).pattern, "/^pattern\\/\\d{3}$/");
+        // pattern_escape_unescaped_forward_slash '^pattern/\d{3}$'
+        Assert.assertEquals(op.allParams.get(4).pattern, "/^pattern\\/\\d{3}$/");
+        // pattern_with_modifiers '/^pattern\d{3}$/i
+        Assert.assertEquals(op.allParams.get(5).pattern, "/^pattern\\d{3}$/i");
+        // not testing pattern_with_backslash_after_bracket '/^[\pattern\d{3}$/i'
+        // as "/^[\\pattern\\d{3}$/i" is invalid regex because [ is not escaped and there is no closing ]
+        // Assert.assertEquals(op.allParams.get(6).pattern, "/^[\\pattern\\d{3}$/i");
+        // alternation_with_forward_slash '/ax$|/bx$'
+        Assert.assertEquals(op.allParams.get(7).pattern, "/ax$|/bx$");
+        // patten_starts_ends_with_slash '/root/'
+        Assert.assertEquals(op.allParams.get(8).pattern, "/root/");
     }
 }

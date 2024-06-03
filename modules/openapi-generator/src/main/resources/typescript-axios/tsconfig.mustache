@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "target": "ES2019",
+    "target": "{{#supportsES6}}ES6{{/supportsES6}}{{^supportsES6}}ES5{{/supportsES6}}",
     "module": "commonjs",
-    "moduleResolution": "node",
     "noImplicitAny": true,
     "outDir": "dist",
     "rootDir": ".",
+    {{#supportsES6}}
+    "moduleResolution": "node",
+    {{/supportsES6}}
     {{^supportsES6}}
     "lib": [
       "es6",

@@ -58,7 +58,7 @@ knownRecordFactories.set(UserRecordEntityProps.recType, UserRecordEntity);
 class UserRecordUtils extends ApiRecordUtils<User, UserRecord> {
     public normalize(apiObject: User, asEntity?: boolean): User {
         (apiObject as any).recType = asEntity ? UserRecordEntityProps.recType : UserRecordProps.recType;
-        (apiObject as any).id = apiObject.id.toString();
+        (apiObject as any)['id'] = apiObject['id'].toString();
         return apiObject;
     }
 
@@ -69,13 +69,14 @@ class UserRecordUtils extends ApiRecordUtils<User, UserRecord> {
 
     public *toInlined(entityId?: string | null) {
         if (!entityId) {return undefined; }
+        // @ts-ignore
         const entity = yield select(apiEntityUserSelector, {id: entityId});
         if (!entity) {return undefined; }
 
         const {
             recType,
-		    ...unchangedProperties
-		} = entity;
+            ...unchangedProperties
+        } = entity;
 
         const entityProperties = {
         }
@@ -90,6 +91,7 @@ class UserRecordUtils extends ApiRecordUtils<User, UserRecord> {
         if (!entityIds) {return null; }
         let entities = List<UserRecord>();
         for (let entityIndex = 0; entityIndex < entityIds.count(); entityIndex++) {
+            // @ts-ignore
             const entity = yield call(this.toInlined, entityIds.get(entityIndex));
             if (entity) {
                 entities.push(entity);
@@ -100,7 +102,7 @@ class UserRecordUtils extends ApiRecordUtils<User, UserRecord> {
 
     public toApi(record: UserRecord): User {
         const apiObject = super.toApi(record);
-        apiObject.id = parseFloat(record.id);
+        apiObject['id'] = parseFloat(record['id']);
         return apiObject;
     }
 }

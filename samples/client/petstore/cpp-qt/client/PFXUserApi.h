@@ -15,9 +15,9 @@
 #include "PFXHelpers.h"
 #include "PFXHttpRequest.h"
 #include "PFXServerConfiguration.h"
+#include "PFXOauth.h"
 
 #include "PFXUser.h"
-#include <QList>
 #include <QString>
 
 #include <QObject>
@@ -52,24 +52,24 @@ public:
     void enableRequestCompression();
     void enableResponseCompression();
     void abortRequests();
-    QString getParamStylePrefix(QString style);
-    QString getParamStyleSuffix(QString style);
-    QString getParamStyleDelimiter(QString style, QString name, bool isExplode);
+    QString getParamStylePrefix(const QString &style);
+    QString getParamStyleSuffix(const QString &style);
+    QString getParamStyleDelimiter(const QString &style, const QString &name, bool isExplode);
 
     /**
-    * @param[in]  body PFXUser [required]
+    * @param[in]  pfx_user PFXUser [required]
     */
-    void createUser(const PFXUser &body);
+    void createUser(const PFXUser &pfx_user);
 
     /**
-    * @param[in]  body QList<PFXUser> [required]
+    * @param[in]  pfx_user QList<PFXUser> [required]
     */
-    void createUsersWithArrayInput(const QList<PFXUser> &body);
+    void createUsersWithArrayInput(const QList<PFXUser> &pfx_user);
 
     /**
-    * @param[in]  body QList<PFXUser> [required]
+    * @param[in]  pfx_user QList<PFXUser> [required]
     */
-    void createUsersWithListInput(const QList<PFXUser> &body);
+    void createUsersWithListInput(const QList<PFXUser> &pfx_user);
 
     /**
     * @param[in]  username QString [required]
@@ -92,9 +92,9 @@ public:
 
     /**
     * @param[in]  username QString [required]
-    * @param[in]  body PFXUser [required]
+    * @param[in]  pfx_user PFXUser [required]
     */
-    void updateUser(const QString &username, const PFXUser &body);
+    void updateUser(const QString &username, const PFXUser &pfx_user);
 
 
 private:
@@ -107,9 +107,17 @@ private:
     int _timeOut;
     QString _workingDirectory;
     QNetworkAccessManager* _manager;
-    QMap<QString, QString> defaultHeaders;
-    bool isResponseCompressionEnabled;
-    bool isRequestCompressionEnabled;
+    QMap<QString, QString> _defaultHeaders;
+    bool _isResponseCompressionEnabled;
+    bool _isRequestCompressionEnabled;
+    PFXHttpRequestInput _latestInput;
+    PFXHttpRequestWorker *_latestWorker;
+    QStringList _latestScope;
+    OauthCode _authFlow;
+    OauthImplicit _implicitFlow;
+    OauthCredentials _credentialFlow;
+    OauthPassword _passwordFlow;
+    int _OauthMethod = 0;
 
     void createUserCallback(PFXHttpRequestWorker *worker);
     void createUsersWithArrayInputCallback(PFXHttpRequestWorker *worker);
@@ -120,7 +128,7 @@ private:
     void logoutUserCallback(PFXHttpRequestWorker *worker);
     void updateUserCallback(PFXHttpRequestWorker *worker);
 
-signals:
+Q_SIGNALS:
 
     void createUserSignal();
     void createUsersWithArrayInputSignal();
@@ -140,26 +148,61 @@ signals:
     void logoutUserSignalFull(PFXHttpRequestWorker *worker);
     void updateUserSignalFull(PFXHttpRequestWorker *worker);
 
+    Q_DECL_DEPRECATED_X("Use createUserSignalError() instead")
     void createUserSignalE(QNetworkReply::NetworkError error_type, QString error_str);
+    void createUserSignalError(QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use createUsersWithArrayInputSignalError() instead")
     void createUsersWithArrayInputSignalE(QNetworkReply::NetworkError error_type, QString error_str);
+    void createUsersWithArrayInputSignalError(QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use createUsersWithListInputSignalError() instead")
     void createUsersWithListInputSignalE(QNetworkReply::NetworkError error_type, QString error_str);
+    void createUsersWithListInputSignalError(QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use deleteUserSignalError() instead")
     void deleteUserSignalE(QNetworkReply::NetworkError error_type, QString error_str);
+    void deleteUserSignalError(QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use getUserByNameSignalError() instead")
     void getUserByNameSignalE(PFXUser summary, QNetworkReply::NetworkError error_type, QString error_str);
+    void getUserByNameSignalError(PFXUser summary, QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use loginUserSignalError() instead")
     void loginUserSignalE(QString summary, QNetworkReply::NetworkError error_type, QString error_str);
+    void loginUserSignalError(QString summary, QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use logoutUserSignalError() instead")
     void logoutUserSignalE(QNetworkReply::NetworkError error_type, QString error_str);
+    void logoutUserSignalError(QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use updateUserSignalError() instead")
     void updateUserSignalE(QNetworkReply::NetworkError error_type, QString error_str);
+    void updateUserSignalError(QNetworkReply::NetworkError error_type, const QString &error_str);
 
+    Q_DECL_DEPRECATED_X("Use createUserSignalErrorFull() instead")
     void createUserSignalEFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, QString error_str);
+    void createUserSignalErrorFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use createUsersWithArrayInputSignalErrorFull() instead")
     void createUsersWithArrayInputSignalEFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, QString error_str);
+    void createUsersWithArrayInputSignalErrorFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use createUsersWithListInputSignalErrorFull() instead")
     void createUsersWithListInputSignalEFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, QString error_str);
+    void createUsersWithListInputSignalErrorFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use deleteUserSignalErrorFull() instead")
     void deleteUserSignalEFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, QString error_str);
+    void deleteUserSignalErrorFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use getUserByNameSignalErrorFull() instead")
     void getUserByNameSignalEFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, QString error_str);
+    void getUserByNameSignalErrorFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use loginUserSignalErrorFull() instead")
     void loginUserSignalEFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, QString error_str);
+    void loginUserSignalErrorFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use logoutUserSignalErrorFull() instead")
     void logoutUserSignalEFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, QString error_str);
+    void logoutUserSignalErrorFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, const QString &error_str);
+    Q_DECL_DEPRECATED_X("Use updateUserSignalErrorFull() instead")
     void updateUserSignalEFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, QString error_str);
+    void updateUserSignalErrorFull(PFXHttpRequestWorker *worker, QNetworkReply::NetworkError error_type, const QString &error_str);
 
     void abortRequestsSignal();
     void allPendingRequestsCompleted();
+
+public Q_SLOTS:
+    void tokenAvailable();
 };
 
 } // namespace test_namespace

@@ -20,9 +20,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 /**
  * Tag
@@ -31,8 +30,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
   Tag.JSON_PROPERTY_ID,
   Tag.JSON_PROPERTY_NAME
 })
-@JsonTypeName("Tag")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
 public class Tag {
   public static final String JSON_PROPERTY_ID = "id";
   private Long id;
@@ -40,6 +38,16 @@ public class Tag {
   public static final String JSON_PROPERTY_NAME = "name";
   private String name;
 
+  public Tag() {
+  }
+
+  /**
+  * Constructor with all args parameters
+  */
+  public Tag(@JsonProperty(JSON_PROPERTY_ID) Long id, @JsonProperty(JSON_PROPERTY_NAME) String name) {
+    this.id = id;
+    this.name = name;
+  }
 
   public Tag id(Long id) {
     
@@ -52,7 +60,6 @@ public class Tag {
    * @return id
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
   @JsonProperty(JSON_PROPERTY_ID)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -67,7 +74,6 @@ public class Tag {
     this.id = id;
   }
 
-
   public Tag name(String name) {
     
     this.name = name;
@@ -79,7 +85,6 @@ public class Tag {
    * @return name
   **/
   @javax.annotation.Nullable
-  @ApiModelProperty(value = "")
   @JsonProperty(JSON_PROPERTY_NAME)
   @JsonInclude(value = JsonInclude.Include.USE_DEFAULTS)
 
@@ -93,7 +98,6 @@ public class Tag {
   public void setName(String name) {
     this.name = name;
   }
-
 
   @Override
   public boolean equals(Object o) {
@@ -133,6 +137,65 @@ public class Tag {
     }
     return o.toString().replace("\n", "\n    ");
   }
+
+  public static class Builder {
+
+    private Tag instance;
+
+    public Builder() {
+      this(new Tag());
+    }
+
+    protected Builder(Tag instance) {
+      this.instance = instance;
+    }
+
+    public Tag.Builder id(Long id) {
+      this.instance.id = id;
+      return this;
+    }
+    public Tag.Builder name(String name) {
+      this.instance.name = name;
+      return this;
+    }
+
+
+    /**
+    * returns a built Tag instance.
+    *
+    * The builder is not reusable.
+    */
+    public Tag build() {
+      try {
+        return this.instance;
+      } finally {
+        // ensure that this.instance is not reused
+        this.instance = null;
+      }
+    }
+
+    @Override
+    public String toString() {
+      return getClass() + "=(" + instance + ")";
+    }
+  }
+
+  /**
+  * Create a builder with no initialized field.
+  */
+  public static Tag.Builder builder() {
+    return new Tag.Builder();
+  }
+
+  /**
+  * Create a builder with a shallow copy of this instance.
+  */
+  public Tag.Builder toBuilder() {
+    return new Tag.Builder()
+      .id(getId())
+      .name(getName());
+  }
+
 
 }
 

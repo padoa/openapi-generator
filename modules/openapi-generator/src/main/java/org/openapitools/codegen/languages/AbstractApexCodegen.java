@@ -26,12 +26,14 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.servers.Server;
 import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.*;
+import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.utils.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+import static org.openapitools.codegen.utils.CamelizeOption.LOWERCASE_FIRST_LETTER;
 import static org.openapitools.codegen.utils.StringUtils.camelize;
 
 public abstract class AbstractApexCodegen extends DefaultCodegen implements CodegenConfig {
@@ -96,7 +98,7 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
             name = "_u";
         }
 
-        // if it's all uppper case, do nothing
+        // if it's all upper case, do nothing
         if (name.matches("^[A-Z_]*$")) {
             if (isReservedWord(name)) {
                 name = escapeReservedWord(name);
@@ -110,7 +112,7 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
 
         // camelize (lower first character) the variable name
         // pet_id => petId
-        name = camelize(name, true);
+        name = camelize(name, LOWERCASE_FIRST_LETTER);
 
         // for reserved word or word starting with number, append _
         if (isReservedWord(name) || name.matches("^\\d.*")) {
@@ -186,16 +188,15 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
     @Override
     public String getTypeDeclaration(Schema p) {
         if (ModelUtils.isArraySchema(p)) {
-            ArraySchema ap = (ArraySchema) p;
-            Schema inner = ap.getItems();
+            Schema inner = ModelUtils.getSchemaItems(p);
             if (inner == null) {
-                LOGGER.warn("{}(array property) does not have a proper inner type defined", ap.getName());
+                LOGGER.warn("{}(array property) does not have a proper inner type defined", p.getName());
                 // TODO maybe better defaulting to StringProperty than returning null
                 return null;
             }
             return getSchemaType(p) + "<" + getTypeDeclaration(inner) + ">";
         } else if (ModelUtils.isMapSchema(p)) {
-            Schema inner = getAdditionalProperties(p);
+            Schema inner = ModelUtils.getAdditionalProperties(p);
 
             if (inner == null) {
                 LOGGER.warn("{}(map property) does not have a proper inner type defined", p.getName());
@@ -218,21 +219,20 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
     @Override
     public String toDefaultValue(Schema p) {
         if (ModelUtils.isArraySchema(p)) {
-            final ArraySchema ap = (ArraySchema) p;
             final String pattern = "new ArrayList<%s>()";
-            if (ap.getItems() == null) {
+            if (ModelUtils.getSchemaItems(p) == null) {
                 return null;
             }
 
-            return String.format(Locale.ROOT, pattern, getTypeDeclaration(ap.getItems()));
+            return String.format(Locale.ROOT, pattern, getTypeDeclaration(ModelUtils.getSchemaItems(p)));
         } else if (ModelUtils.isMapSchema(p)) {
             final MapSchema ap = (MapSchema) p;
             final String pattern = "new HashMap<%s>()";
-            if (getAdditionalProperties(ap) == null) {
+            if (ModelUtils.getAdditionalProperties(ap) == null) {
                 return null;
             }
 
-            return String.format(Locale.ROOT, pattern, String.format(Locale.ROOT, "String, %s", getTypeDeclaration(getAdditionalProperties(ap))));
+            return String.format(Locale.ROOT, pattern, String.format(Locale.ROOT, "String, %s", getTypeDeclaration(ModelUtils.getAdditionalProperties(ap))));
         } else if (ModelUtils.isLongSchema(p)) {
             if (p.getDefault() != null) {
                 return p.getDefault().toString() + "l";
@@ -260,7 +260,7 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
             return "null";
         } else if (ModelUtils.isStringSchema(p)) {
             if (p.getDefault() != null) {
-                String _default = (String) p.getDefault();
+                String _default = String.valueOf(p.getDefault());
                 if (p.getEnum() == null) {
                     return "\"" + escapeText(_default) + "\"";
                 } else {
@@ -316,7 +316,7 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
 
         if (ModelUtils.isArraySchema(p)) {
             example = "new " + getTypeDeclaration(p) + "{" + toExampleValue(
-                    ((ArraySchema) p).getItems()) + "}";
+                    ModelUtils.getSchemaItems(p)) + "}";
         } else if (ModelUtils.isBooleanSchema(p)) {
             example = String.valueOf(!"false".equals(example));
         } else if (ModelUtils.isByteArraySchema(p)) {
@@ -365,7 +365,7 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
         } else if (ModelUtils.isLongSchema(p)) {
             example = example.isEmpty() ? "123456789L" : example + "L";
         } else if (ModelUtils.isMapSchema(p)) {
-            example = "new " + getTypeDeclaration(p) + "{'key'=>" + toExampleValue(getAdditionalProperties(p)) + "}";
+            example = "new " + getTypeDeclaration(p) + "{'key'=>" + toExampleValue(ModelUtils.getAdditionalProperties(p)) + "}";
 
         } else if (ModelUtils.isPasswordSchema(p)) {
             example = example.isEmpty() ? "password123" : escapeText(example);
@@ -421,11 +421,11 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
             throw new RuntimeException("Empty method/operation name (operationId) not allowed");
         }
 
-        operationId = camelize(sanitizeName(operationId), true);
+        operationId = camelize(sanitizeName(operationId), LOWERCASE_FIRST_LETTER);
 
         // method name cannot use reserved keyword, e.g. return
         if (isReservedWord(operationId)) {
-            String newOperationId = camelize("call_" + operationId, true);
+            String newOperationId = camelize("call_" + operationId, LOWERCASE_FIRST_LETTER);
             LOGGER.warn("{} (reserved word) cannot be used as method name. Renamed to {}", operationId, newOperationId);
             return newOperationId;
         }
@@ -476,7 +476,7 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
     }
 
     @Override
-    public Map<String, Object> postProcessModels(Map<String, Object> objs) {
+    public ModelsMap postProcessModels(ModelsMap objs) {
         return postProcessModelsEnum(objs);
     }
 
@@ -571,7 +571,7 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
         if (op.getHasExamples()) {
             // prepare examples for Apex test classes
             ApiResponse apiResponse = findMethodResponse(operation.getResponses());
-            final Schema responseSchema = ModelUtils.getSchemaFromResponse(apiResponse);
+            final Schema responseSchema = ModelUtils.getSchemaFromResponse(openAPI, apiResponse);
             String deserializedExample = toExampleValue(responseSchema);
             for (Map<String, String> example : op.examples) {
                 example.put("example", escapeText(example.get("example")));
@@ -600,15 +600,15 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
 
         // Iterate over all of the parent model properties
         boolean removedChildEnum = false;
-        for (CodegenProperty parentModelCodegenPropery : parentModelCodegenProperties) {
+        for (CodegenProperty parentModelCodegenProperty : parentModelCodegenProperties) {
             // Look for enums
-            if (parentModelCodegenPropery.isEnum) {
+            if (parentModelCodegenProperty.isEnum) {
                 // Now that we have found an enum in the parent class,
                 // and search the child class for the same enum.
                 Iterator<CodegenProperty> iterator = codegenProperties.iterator();
                 while (iterator.hasNext()) {
                     CodegenProperty codegenProperty = iterator.next();
-                    if (codegenProperty.isEnum && codegenProperty.equals(parentModelCodegenPropery)) {
+                    if (codegenProperty.isEnum && codegenProperty.equals(parentModelCodegenProperty)) {
                         // We found an enum in the child class that is
                         // a duplicate of the one in the parent, so remove it.
                         iterator.remove();
@@ -643,6 +643,7 @@ public abstract class AbstractApexCodegen extends DefaultCodegen implements Code
         return p.replaceAll("\"", "%22");
     }
 
+    @Override
     public String toRegularExpression(String pattern) {
         return escapeText(pattern);
     }
