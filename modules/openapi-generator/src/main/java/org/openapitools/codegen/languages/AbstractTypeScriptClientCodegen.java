@@ -312,6 +312,7 @@ public abstract class AbstractTypeScriptClientCodegen extends DefaultCodegen imp
                 "number",
                 "any",
                 "File",
+                "Stream",
                 "Error",
                 "Map",
                 "object",
@@ -634,7 +635,7 @@ public abstract class AbstractTypeScriptClientCodegen extends DefaultCodegen imp
             }
             return "{ [key: string]: " + getTypeDeclaration(unaliasSchema(inner)) + nullSafeSuffix + "; }";
         } else if (ModelUtils.isFileSchema(p)) {
-            return "File";
+            return "RequestFile";
         } else if (ModelUtils.isBinarySchema(p)) {
             return "ArrayBuffer";
         }
