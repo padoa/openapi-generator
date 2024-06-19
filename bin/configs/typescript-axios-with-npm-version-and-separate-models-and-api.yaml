@@ -9,3 +9,4 @@ additionalProperties:
   npmName: '@openapitools/typescript-axios-petstore'
   npmRepository: https://skimdb.npmjs.com/registry
   snapshot: false
+
