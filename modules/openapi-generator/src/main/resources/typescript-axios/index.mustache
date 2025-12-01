@@ -3,6 +3,6 @@
 {{>licenseInfo}}
 
 
-export * from "./api{{importFileExtension}}";
-export * from "./configuration{{importFileExtension}}";
-{{#withSeparateModelsAndApi}}export * from "./{{tsModelPackage}}{{#importFileExtension}}/index{{importFileExtension}}{{/importFileExtension}}";{{/withSeparateModelsAndApi}}
+export * from "./api{{#supportsES6}}.js{{/supportsES6}}";
+export * from "./configuration{{#supportsES6}}.js{{/supportsES6}}";
+{{#withSeparateModelsAndApi}}export * from "./{{tsModelPackage}}{{#supportsES6}}/index.js{{/supportsES6}}";{{/withSeparateModelsAndApi}}

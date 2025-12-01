@@ -2,13 +2,13 @@
 /* eslint-disable */
 {{>licenseInfo}}
 
-import type { Configuration } from "./configuration{{importFileExtension}}";
-import type { RequestArgs } from "./base{{importFileExtension}}";
+import type { Configuration } from "./configuration{{#supportsES6}}.js{{/supportsES6}}";
+import type { RequestArgs } from "./base{{#supportsES6}}.js{{/supportsES6}}";
 import type { AxiosInstance, AxiosResponse } from 'axios';
 {{#withAWSV4Signature}}
 import { aws4Interceptor } from "aws4-axios";
 {{/withAWSV4Signature}}
-import { RequiredError } from "./base{{importFileExtension}}";
+import { RequiredError } from "./base{{#supportsES6}}.js{{/supportsES6}}";
 {{#withNodeImports}}
 import { URL, URLSearchParams } from 'url';
 {{/withNodeImports}}

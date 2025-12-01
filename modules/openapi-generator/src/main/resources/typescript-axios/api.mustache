@@ -4,7 +4,7 @@
 
 
 {{^withSeparateModelsAndApi}}
-import type { Configuration } from './configuration{{importFileExtension}}';
+import type { Configuration } from './configuration{{#supportsES6}}.js{{/supportsES6}}';
 import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 import type { Readable } from 'stream';
@@ -20,10 +20,10 @@ import FormData from 'form-data'
 {{/withNodeImports}}
 // Some imports not used depending on template conditions
 // @ts-ignore
-import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction{{#withAWSV4Signature}}, setAWS4SignatureInterceptor{{/withAWSV4Signature}} } from './common{{importFileExtension}}';
-import type { RequestArgs } from './base{{importFileExtension}}';
+import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction{{#withAWSV4Signature}}, setAWS4SignatureInterceptor{{/withAWSV4Signature}} } from './common{{#supportsES6}}.js{{/supportsES6}}';
+import type { RequestArgs } from './base{{#supportsES6}}.js{{/supportsES6}}';
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base{{importFileExtension}}';
+import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerMap } from './base{{#supportsES6}}.js{{/supportsES6}}';
 
 {{#models}}
 {{#model}}{{#isEnum}}{{>modelEnum}}{{/isEnum}}{{#oneOf}}{{#-first}}{{>modelOneOf}}{{/-first}}{{/oneOf}}{{^isEnum}}{{^oneOf}}{{>modelGeneric}}{{/oneOf}}{{/isEnum}}{{/model}}
@@ -33,6 +33,6 @@ import { BASE_PATH, COLLECTION_FORMATS, BaseAPI, RequiredError, operationServerM
 
 {{/apis}}{{/apiInfo}}
 {{/withSeparateModelsAndApi}}{{#withSeparateModelsAndApi}}
-{{#apiInfo}}{{#apis}}{{#operations}}export * from './{{tsApiPackage}}/{{classFilename}}{{importFileExtension}}';
+{{#apiInfo}}{{#apis}}{{#operations}}export * from './{{tsApiPackage}}/{{classFilename}}{{#supportsES6}}.js{{/supportsES6}}';
 {{/operations}}{{/apis}}{{/apiInfo}}
 {{/withSeparateModelsAndApi}}
