@@ -4,7 +4,7 @@ jobs:
   Build Generator:
     resource_class: large.gen2
     machine:
-      image: ubuntu-2204:2024.01.1
+      image: ubuntu-2404:2026.05.1
     steps:
       - checkout
       - run:
