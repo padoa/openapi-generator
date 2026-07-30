@@ -19,10 +19,7 @@ COPY ./modules/openapi-generator-core ${GEN_DIR}/modules/openapi-generator-core
 COPY ./modules/openapi-generator ${GEN_DIR}/modules/openapi-generator
 COPY ./pom.xml ${GEN_DIR}
 
-# Tests are skipped here: this step only needs to build the CLI, and the core
-# test suite includes the Helidon generator tests which require network access
-# (fetching supported versions from helidon.io) and NPE in an offline build.
-RUN mvn -am -pl "modules/openapi-generator-cli" package -DskipTests
+RUN mvn -am -pl "modules/openapi-generator-cli" package
 
 # This exists at the end of the file to benefit from cached layers when modifying docker-entrypoint.sh.
 COPY docker-entrypoint.sh /usr/local/bin/
