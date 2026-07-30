@@ -2,6 +2,7 @@ version: 2.1
 
 jobs:
   Build Generator:
+    resource_class: large.gen2
     machine:
       image: ubuntu-2204:2024.01.1
     steps:
