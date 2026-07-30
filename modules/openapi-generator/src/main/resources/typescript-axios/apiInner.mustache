@@ -6,6 +6,7 @@
 import type { Configuration } from '{{apiRelativeToRoot}}configuration{{#supportsES6}}.js{{/supportsES6}}';
 import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
+import { randomUUID } from 'crypto';
 {{#withNodeImports}}
 // URLSearchParams not necessarily used
 // @ts-ignore
