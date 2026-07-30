@@ -2,9 +2,9 @@ version: 2.1
 
 jobs:
   Build Generator:
-    resource_class: large.gen2
+    resource_class: large
     machine:
-      image: ubuntu-2404:2026.05.1
+      image: ubuntu-2204:2024.01.1
     steps:
       - checkout
       - run:
