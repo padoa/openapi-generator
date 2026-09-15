@@ -46,13 +46,13 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of DateOnlyProperty
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<DateTime?> DateOnlyPropertyOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets DateOnlyProperty
         /// </summary>
-        /// <example>Fri Jul 21 00:00:00 UTC 2017</example>
+        /* <example>Fri Jul 21 00:00:00 UTC 2017</example> */
         [JsonPropertyName("dateOnlyProperty")]
         public DateTime? DateOnlyProperty { get { return this.DateOnlyPropertyOption; } set { this.DateOnlyPropertyOption = new Option<DateTime?>(value); } }
 

@@ -630,7 +630,11 @@ public abstract class AbstractTypeScriptClientCodegen extends DefaultCodegen imp
     public String getTypeDeclaration(Schema p) {
         if (ModelUtils.isArraySchema(p)) {
             Schema<?> items = ModelUtils.getSchemaItems(p);
-            return getSchemaType(p) + "<" + getTypeDeclaration(unaliasSchema(items)) + ">";
+            String postfix = "";
+            if (Boolean.TRUE.equals(items.getNullable())) {
+                postfix = " | null";
+            }
+            return getSchemaType(p) + "<" + getTypeDeclaration(unaliasSchema(items)) + postfix + ">";
         } else if (ModelUtils.isMapSchema(p)) {
             Schema<?> inner = getSchemaAdditionalProperties(p);
             String nullSafeSuffix = getNullSafeAdditionalProps() ? " | undefined" : "";
@@ -853,6 +857,7 @@ public abstract class AbstractTypeScriptClientCodegen extends DefaultCodegen imp
     private String getNameUsingModelPropertyNaming(String name) {
         switch (getModelPropertyNaming()) {
             case original:
+                additionalProperties.put("modelPropertyNamingOriginal", true);
                 return name;
             case camelCase:
                 return camelize(name, LOWERCASE_FIRST_LETTER);
@@ -1088,20 +1093,7 @@ public abstract class AbstractTypeScriptClientCodegen extends DefaultCodegen imp
         }
         // only process files with ts extension
         if ("ts".equals(FilenameUtils.getExtension(file.toString()))) {
-            String command = tsPostProcessFile + " " + file;
-            try {
-                Process p = Runtime.getRuntime().exec(command);
-                int exitValue = p.waitFor();
-                if (exitValue != 0) {
-                    LOGGER.error("Error running the command ({}). Exit value: {}", command, exitValue);
-                } else {
-                    LOGGER.info("Successfully executed: {}", command);
-                }
-            } catch (InterruptedException | IOException e) {
-                LOGGER.error("Error running the command ({}). Exception: {}", command, e.getMessage());
-                // Restore interrupted state
-                Thread.currentThread().interrupt();
-            }
+            this.executePostProcessor(new String[] {tsPostProcessFile, file.toString()});
         }
     }
 

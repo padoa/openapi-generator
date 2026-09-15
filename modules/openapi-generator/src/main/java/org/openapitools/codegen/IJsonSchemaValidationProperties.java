@@ -13,6 +13,7 @@ import org.openapitools.codegen.meta.FeatureSet;
 import org.openapitools.codegen.meta.features.SchemaSupportFeature;
 import org.openapitools.codegen.utils.ModelUtils;
 
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.media.Schema;
 
 public interface IJsonSchemaValidationProperties {
@@ -111,8 +112,8 @@ public interface IJsonSchemaValidationProperties {
      *     - <code>categoryOneOf</code> is a parameter of class <code>GetAccountVideos_categoryOneOf_parameter</code>, a model parameter that correctly prefixed by its namespace: <code>org::openapitools::server::model::GetAccountVideos_categoryOneOf_parameter</code><br>
      *     - but that <code>GetAccountVideos_categoryOneOf_parameter</code> class is inside an <code>std::optional</code><br>
      *     <br>
-     *   Then a correct generation of that parameter can be (for C++) <code>const std::optional<org::openapitools::server::model::GetAccountVideos_categoryOneOf_parameter> &categoryOneOf</code><br>
-         *   but using #isModel alone without #isOptional in mustache might produce <code>const org::openapitools::server::model::std::optional<org::openapitools::server::model::GetAccountVideos_categoryOneOf_parameter> &categoryOneOf</code> instead, that do not compile.
+     *   Then a correct generation of that parameter can be (for C++) <code>const std::optional&lt;org::openapitools::server::model::GetAccountVideos_categoryOneOf_parameter&gt; &amp;categoryOneOf</code><br>
+         *   but using #isModel alone without #isOptional in mustache might produce <code>const org::openapitools::server::model::std::optional&lt;org::openapitools::server::model::GetAccountVideos_categoryOneOf_parameter&gt; &amp;categoryOneOf</code> instead, that do not compile.
      */
     boolean getIsOptional();
     void setIsOptional(boolean isOptional);
@@ -283,7 +284,7 @@ public interface IJsonSchemaValidationProperties {
      *
      * @param p the schema which contains the type info
      */
-    default void setTypeProperties(Schema p) {
+    default void setTypeProperties(Schema p, OpenAPI openAPI) {
         if (ModelUtils.isModelWithPropertiesOnly(p)) {
             setIsModel(true);
         } else if (ModelUtils.isArraySchema(p)) {
@@ -336,7 +337,7 @@ public interface IJsonSchemaValidationProperties {
             setIsNull(true);
         } else if (ModelUtils.isAnyType(p)) {
             setIsAnyType(true);
-        } else if (ModelUtils.isFreeFormObject(p)) {
+        } else if (ModelUtils.isFreeFormObject(p, openAPI)) {
             setIsFreeFormObject(true);
             // TODO: remove below later after updating generators to properly use isFreeFormObject
             setIsMap(true);
