@@ -56,7 +56,7 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of ATT_NAME
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> ATT_NAMEOption { get; private set; }
 
         /// <summary>
@@ -64,72 +64,72 @@ namespace Org.OpenAPITools.Model
         /// </summary>
         /// <value>Name of the pet </value>
         [JsonPropertyName("ATT_NAME")]
-        public string ATT_NAME { get { return this.ATT_NAMEOption; } set { this.ATT_NAMEOption = new(value); } }
+        public string ATT_NAME { get { return this.ATT_NAMEOption.Value; } set { this.ATT_NAMEOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of CapitalCamel
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> CapitalCamelOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets CapitalCamel
         /// </summary>
         [JsonPropertyName("CapitalCamel")]
-        public string CapitalCamel { get { return this.CapitalCamelOption; } set { this.CapitalCamelOption = new(value); } }
+        public string CapitalCamel { get { return this.CapitalCamelOption.Value; } set { this.CapitalCamelOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of CapitalSnake
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> CapitalSnakeOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets CapitalSnake
         /// </summary>
         [JsonPropertyName("Capital_Snake")]
-        public string CapitalSnake { get { return this.CapitalSnakeOption; } set { this.CapitalSnakeOption = new(value); } }
+        public string CapitalSnake { get { return this.CapitalSnakeOption.Value; } set { this.CapitalSnakeOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of SCAETHFlowPoints
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> SCAETHFlowPointsOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets SCAETHFlowPoints
         /// </summary>
         [JsonPropertyName("SCA_ETH_Flow_Points")]
-        public string SCAETHFlowPoints { get { return this.SCAETHFlowPointsOption; } set { this.SCAETHFlowPointsOption = new(value); } }
+        public string SCAETHFlowPoints { get { return this.SCAETHFlowPointsOption.Value; } set { this.SCAETHFlowPointsOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of SmallCamel
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> SmallCamelOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets SmallCamel
         /// </summary>
         [JsonPropertyName("smallCamel")]
-        public string SmallCamel { get { return this.SmallCamelOption; } set { this.SmallCamelOption = new(value); } }
+        public string SmallCamel { get { return this.SmallCamelOption.Value; } set { this.SmallCamelOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of SmallSnake
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> SmallSnakeOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets SmallSnake
         /// </summary>
         [JsonPropertyName("small_Snake")]
-        public string SmallSnake { get { return this.SmallSnakeOption; } set { this.SmallSnakeOption = new(value); } }
+        public string SmallSnake { get { return this.SmallSnakeOption.Value; } set { this.SmallSnakeOption = new(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties

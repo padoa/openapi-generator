@@ -48,33 +48,33 @@ class Order
         /**
      * @var int|null
      * @SerializedName("id")
-     * @Assert\Type("int")
      * @Type("int")
      */
+    #[Assert\Type("int")]
     protected ?int $id = null;
 
     /**
      * @var int|null
      * @SerializedName("petId")
-     * @Assert\Type("int")
      * @Type("int")
      */
+    #[Assert\Type("int")]
     protected ?int $petId = null;
 
     /**
      * @var int|null
      * @SerializedName("quantity")
-     * @Assert\Type("int")
      * @Type("int")
      */
+    #[Assert\Type("int")]
     protected ?int $quantity = null;
 
     /**
      * @var \DateTime|null
      * @SerializedName("shipDate")
-     * @Assert\Type("\DateTime"))
      * @Type("DateTime")
      */
+    #[Assert\Type("\DateTime")]
     protected ?\DateTime $shipDate = null;
 
     /**
@@ -82,25 +82,25 @@ class Order
      *
      * @var string|null
      * @SerializedName("status")
-     * @Assert\Choice({ "placed", "approved", "delivered" })
-     * @Assert\Type("string")
      * @Type("string")
      */
+    #[Assert\Choice(['placed', 'approved', 'delivered'])]
+    #[Assert\Type("string")]
     protected ?string $status = null;
 
     /**
      * @var bool|null
      * @SerializedName("complete")
-     * @Assert\Type("bool")
      * @Type("bool")
      */
+    #[Assert\Type("bool")]
     protected ?bool $complete = false;
 
     /**
      * Constructor
      * @param array|null $data Associated array of property values initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         if (is_array($data)) {
             $this->id = array_key_exists('id', $data) ? $data['id'] : $this->id;
@@ -122,8 +122,6 @@ class Order
         return $this->id;
     }
 
-
-
     /**
      * Sets id.
      *
@@ -138,6 +136,9 @@ class Order
         return $this;
     }
 
+
+
+
     /**
      * Gets petId.
      *
@@ -147,8 +148,6 @@ class Order
     {
         return $this->petId;
     }
-
-
 
     /**
      * Sets petId.
@@ -164,6 +163,9 @@ class Order
         return $this;
     }
 
+
+
+
     /**
      * Gets quantity.
      *
@@ -173,8 +175,6 @@ class Order
     {
         return $this->quantity;
     }
-
-
 
     /**
      * Sets quantity.
@@ -190,6 +190,9 @@ class Order
         return $this;
     }
 
+
+
+
     /**
      * Gets shipDate.
      *
@@ -199,8 +202,6 @@ class Order
     {
         return $this->shipDate;
     }
-
-
 
     /**
      * Sets shipDate.
@@ -216,6 +217,9 @@ class Order
         return $this;
     }
 
+
+
+
     /**
      * Gets status.
      *
@@ -225,8 +229,6 @@ class Order
     {
         return $this->status;
     }
-
-
 
     /**
      * Sets status.
@@ -242,6 +244,9 @@ class Order
         return $this;
     }
 
+
+
+
     /**
      * Gets complete.
      *
@@ -251,8 +256,6 @@ class Order
     {
         return $this->complete;
     }
-
-
 
     /**
      * Sets complete.
@@ -267,6 +270,9 @@ class Order
 
         return $this;
     }
+
+
+
 }
 
 

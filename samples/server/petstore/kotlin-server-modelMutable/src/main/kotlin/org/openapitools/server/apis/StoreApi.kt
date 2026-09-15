@@ -11,7 +11,6 @@
 */
 package org.openapitools.server.apis
 
-import com.google.gson.Gson
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
@@ -29,9 +28,6 @@ import org.openapitools.server.infrastructure.ApiPrincipal
 import org.openapitools.server.models.Order
 
 fun Route.StoreApi() {
-    val gson = Gson()
-    val empty = mutableMapOf<String, Any?>()
-
     delete<Paths.deleteOrder> {
         call.respond(HttpStatusCode.NotImplemented)
         
@@ -40,7 +36,7 @@ fun Route.StoreApi() {
     authenticate("api_key") {
     get<Paths.getInventory> {
         
-        val principal = call.authentication.principal<ApiPrincipal>()!!
+        val principal = call.authentication.principal<ApiPrincipal>()
         
         
         call.respond(HttpStatusCode.NotImplemented)
@@ -60,7 +56,7 @@ fun Route.StoreApi() {
         }"""
         
         when (exampleContentType) {
-            "application/json" -> call.respond(gson.fromJson(exampleContentString, empty::class.java))
+            "application/json" -> call.respondText(exampleContentType, ContentType.Application.Json)
             "application/xml" -> call.respondText(exampleContentString, ContentType.Text.Xml)
             else -> call.respondText(exampleContentString)
         }
@@ -79,7 +75,7 @@ fun Route.StoreApi() {
         }"""
         
         when (exampleContentType) {
-            "application/json" -> call.respond(gson.fromJson(exampleContentString, empty::class.java))
+            "application/json" -> call.respondText(exampleContentType, ContentType.Application.Json)
             "application/xml" -> call.respondText(exampleContentString, ContentType.Text.Xml)
             else -> call.respondText(exampleContentString)
         }

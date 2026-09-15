@@ -46,14 +46,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of ArrayNumber
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<decimal>> ArrayNumberOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets ArrayNumber
         /// </summary>
         [JsonPropertyName("ArrayNumber")]
-        public List<decimal> ArrayNumber { get { return this.ArrayNumberOption; } set { this.ArrayNumberOption = new Option<List<decimal>>(value); } }
+        public List<decimal> ArrayNumber { get { return this.ArrayNumberOption.Value; } set { this.ArrayNumberOption = new Option<List<decimal>>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -126,8 +126,7 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "ArrayNumber":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                arrayNumber = new Option<List<decimal>>(JsonSerializer.Deserialize<List<decimal>>(ref utf8JsonReader, jsonSerializerOptions));
+                            arrayNumber = new Option<List<decimal>>(JsonSerializer.Deserialize<List<decimal>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;

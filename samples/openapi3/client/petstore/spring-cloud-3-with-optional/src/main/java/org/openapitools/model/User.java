@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import org.springframework.lang.Nullable;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
@@ -17,7 +18,7 @@ import jakarta.annotation.Generated;
  * A User who is purchasing from the pet store
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0-SNAPSHOT")
 public class User {
 
   private Optional<Long> id = Optional.empty();
@@ -37,7 +38,7 @@ public class User {
   private Optional<Integer> userStatus = Optional.empty();
 
   public User id(Long id) {
-    this.id = Optional.of(id);
+    this.id = Optional.ofNullable(id);
     return this;
   }
 
@@ -51,12 +52,13 @@ public class User {
     return id;
   }
 
+  @JsonProperty("id")
   public void setId(Optional<Long> id) {
     this.id = id;
   }
 
   public User username(String username) {
-    this.username = Optional.of(username);
+    this.username = Optional.ofNullable(username);
     return this;
   }
 
@@ -70,12 +72,13 @@ public class User {
     return username;
   }
 
+  @JsonProperty("username")
   public void setUsername(Optional<String> username) {
     this.username = username;
   }
 
   public User firstName(String firstName) {
-    this.firstName = Optional.of(firstName);
+    this.firstName = Optional.ofNullable(firstName);
     return this;
   }
 
@@ -89,12 +92,13 @@ public class User {
     return firstName;
   }
 
+  @JsonProperty("firstName")
   public void setFirstName(Optional<String> firstName) {
     this.firstName = firstName;
   }
 
   public User lastName(String lastName) {
-    this.lastName = Optional.of(lastName);
+    this.lastName = Optional.ofNullable(lastName);
     return this;
   }
 
@@ -108,12 +112,13 @@ public class User {
     return lastName;
   }
 
+  @JsonProperty("lastName")
   public void setLastName(Optional<String> lastName) {
     this.lastName = lastName;
   }
 
   public User email(String email) {
-    this.email = Optional.of(email);
+    this.email = Optional.ofNullable(email);
     return this;
   }
 
@@ -127,12 +132,13 @@ public class User {
     return email;
   }
 
+  @JsonProperty("email")
   public void setEmail(Optional<String> email) {
     this.email = email;
   }
 
   public User password(String password) {
-    this.password = Optional.of(password);
+    this.password = Optional.ofNullable(password);
     return this;
   }
 
@@ -146,12 +152,13 @@ public class User {
     return password;
   }
 
+  @JsonProperty("password")
   public void setPassword(Optional<String> password) {
     this.password = password;
   }
 
   public User phone(String phone) {
-    this.phone = Optional.of(phone);
+    this.phone = Optional.ofNullable(phone);
     return this;
   }
 
@@ -165,12 +172,13 @@ public class User {
     return phone;
   }
 
+  @JsonProperty("phone")
   public void setPhone(Optional<String> phone) {
     this.phone = phone;
   }
 
   public User userStatus(Integer userStatus) {
-    this.userStatus = Optional.of(userStatus);
+    this.userStatus = Optional.ofNullable(userStatus);
     return this;
   }
 
@@ -184,6 +192,7 @@ public class User {
     return userStatus;
   }
 
+  @JsonProperty("userStatus")
   public void setUserStatus(Optional<Integer> userStatus) {
     this.userStatus = userStatus;
   }
@@ -233,10 +242,7 @@ public class User {
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
+    return o == null ? "null" : o.toString().replace("\n", "\n    ");
   }
 }
 

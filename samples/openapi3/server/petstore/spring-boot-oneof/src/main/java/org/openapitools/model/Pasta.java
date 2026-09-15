@@ -8,25 +8,26 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.openapitools.model.Entity;
+import org.springframework.lang.Nullable;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
 import java.util.*;
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * Pasta
  */
 
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0-SNAPSHOT")
 public class Pasta extends Entity {
 
-  private String vendor;
+  private @Nullable String vendor;
 
   public Pasta() {
     super();
@@ -39,7 +40,7 @@ public class Pasta extends Entity {
     super(atType);
   }
 
-  public Pasta vendor(String vendor) {
+  public Pasta vendor(@Nullable String vendor) {
     this.vendor = vendor;
     return this;
   }
@@ -51,11 +52,12 @@ public class Pasta extends Entity {
   
   @Schema(name = "vendor", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("vendor")
-  public String getVendor() {
+  public @Nullable String getVendor() {
     return vendor;
   }
 
-  public void setVendor(String vendor) {
+  @JsonProperty("vendor")
+  public void setVendor(@Nullable String vendor) {
     this.vendor = vendor;
   }
 
@@ -116,11 +118,8 @@ public class Pasta extends Entity {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
+  private String toIndentedString(@Nullable Object o) {
+    return o == null ? "null" : o.toString().replace("\n", "\n    ");
   }
   
   public static class Builder extends Entity.Builder {
@@ -137,7 +136,7 @@ public class Pasta extends Entity {
     }
 
     protected Builder copyOf(Pasta value) { 
-      super.copyOf(instance);
+      super.copyOf(value);
       this.instance.setVendor(value.vendor);
       return this;
     }

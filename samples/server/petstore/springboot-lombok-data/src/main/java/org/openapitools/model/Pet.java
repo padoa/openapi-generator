@@ -10,15 +10,16 @@ import java.util.Arrays;
 import java.util.List;
 import org.openapitools.model.Category;
 import org.openapitools.model.Tag;
+import org.springframework.lang.Nullable;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
 import java.util.*;
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * A pet for sale in the pet store
@@ -29,18 +30,40 @@ import javax.annotation.Generated;
 @lombok.AllArgsConstructor
 
 @Schema(name = "Pet", description = "A pet for sale in the pet store")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0-SNAPSHOT")
 public class Pet {
 
-  private Long id;
+  
+  @Schema(name = "id", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("id")
 
-  private Category category;
+  private @Nullable Long id;
+
+  @Valid 
+  @Schema(name = "category", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("category")
+
+  private @Nullable Category category;
+
+  @NotNull 
+  @Schema(name = "name", example = "doggie", requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty("name")
 
   private String name;
 
+  
+  @Schema(name = "photoUrls", requiredMode = Schema.RequiredMode.REQUIRED)
+  @JsonProperty("photoUrls")
+
+  @lombok.Builder.Default
   @Valid
   private List<String> photoUrls = new ArrayList<>();
 
+  
+  @Schema(name = "tags", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("tags")
+
+  @lombok.Builder.Default
   @Valid
   private List<@Valid Tag> tags = new ArrayList<>();
 
@@ -54,7 +77,7 @@ public class Pet {
     
     SOLD("sold");
 
-    private String value;
+    private final String value;
 
     StatusEnum(String value) {
       this.value = value;
@@ -81,8 +104,12 @@ public class Pet {
     }
   }
 
+  
+  @Schema(name = "status", description = "pet status in the store", deprecated = true, requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("status")
+
   @Deprecated
-  private StatusEnum status;
+  private @Nullable StatusEnum status;
 
 }
 

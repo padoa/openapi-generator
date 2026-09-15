@@ -21,13 +21,13 @@ import { mapValues } from '../runtime';
 export interface EnumArrays {
     /**
      * 
-     * @type {string}
+     * @type {EnumArraysJustSymbolEnum}
      * @memberof EnumArrays
      */
     justSymbol?: EnumArraysJustSymbolEnum;
     /**
      * 
-     * @type {Array<string>}
+     * @type {Array<EnumArraysArrayEnumEnum>}
      * @memberof EnumArrays
      */
     arrayEnum?: Array<EnumArraysArrayEnumEnum>;
@@ -75,10 +75,15 @@ export function EnumArraysFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     };
 }
 
-export function EnumArraysToJSON(value?: EnumArrays | null): any {
+export function EnumArraysToJSON(json: any): EnumArrays {
+    return EnumArraysToJSONTyped(json, false);
+}
+
+export function EnumArraysToJSONTyped(value?: EnumArrays | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'just_symbol': value['justSymbol'],

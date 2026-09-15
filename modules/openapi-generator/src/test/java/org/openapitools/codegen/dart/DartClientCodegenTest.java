@@ -17,18 +17,21 @@
 
 package org.openapitools.codegen.dart;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import org.openapitools.codegen.CodegenConstants;
+import org.openapitools.codegen.*;
+import org.openapitools.codegen.config.CodegenConfigurator;
 import org.openapitools.codegen.languages.DartClientCodegen;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class DartClientCodegenTest {
 
@@ -68,7 +71,7 @@ public class DartClientCodegenTest {
         List<String> reservedWordsList = new ArrayList<String>();
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream("src/main/resources/dart/dart-keywords.txt"), StandardCharsets.UTF_8));
-            while(reader.ready()) {
+            while (reader.ready()) {
                 reservedWordsList.add(reader.readLine());
             }
             reader.close();
@@ -79,10 +82,91 @@ public class DartClientCodegenTest {
 
         Assert.assertTrue(reservedWordsList.size() > 20);
         Assert.assertEquals(codegen.reservedWords().size(), reservedWordsList.size());
-        for(String keyword : reservedWordsList) {
+        for (String keyword : reservedWordsList) {
             // reserved words are stored in lowercase
             Assert.assertTrue(codegen.reservedWords().contains(keyword.toLowerCase(Locale.ROOT)), String.format(Locale.ROOT, "%s, part of %s, was not found in %s", keyword, reservedWordsList, codegen.reservedWords().toString()));
         }
     }
 
+
+    @Test(description = "Enum value with quotes (#17582)")
+    public void testEnumPropertyWithQuotes() {
+        final DartClientCodegen codegen = new DartClientCodegen();
+
+        Assert.assertEquals(codegen.toEnumValue("enum-value", "string"), "'enum-value'");
+        Assert.assertEquals(codegen.toEnumValue("won't fix", "string"), "'won\\'t fix'");
+        Assert.assertEquals(codegen.toEnumValue("\"", "string"), "'\\\"'");
+        Assert.assertEquals(codegen.toEnumValue("1.0", "number"), "1.0");
+        Assert.assertEquals(codegen.toEnumValue("1", "int"), "1");
+    }
+
+    private List<File> generateDartNativeFromSpec(String specPath) throws Exception {
+        File output = Files.createTempDirectory("dart-native-test").toFile();
+        output.deleteOnExit();
+
+        final CodegenConfigurator configurator = new CodegenConfigurator()
+                .setGeneratorName("dart")
+                .setInputSpec(specPath)
+                .setOutputDir(output.getAbsolutePath().replace("\\", "/"));
+
+        ClientOptInput opts = configurator.toClientOptInput();
+        DefaultGenerator generator = new DefaultGenerator();
+        List<File> files = generator.opts(opts).generate();
+        files.forEach(File::deleteOnExit);
+        return files;
+    }
+
+    @Test(description = "Object-typed arrays should not produce Object.listFromJson()")
+    public void testObjectArrayDoesNotUseListFromJson() throws Exception {
+        List<File> files = generateDartNativeFromSpec(
+                "src/test/resources/3_0/dart/dart-native-deserialization-bugs.yaml");
+
+        File modelFile = files.stream()
+                .filter(f -> f.getName().equals("object_array_model.dart"))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("object_array_model.dart not found in generated files"));
+
+        // Object is a primitive type and has no listFromJson — should use cast<Object>() instead
+        TestUtils.assertFileNotContains(modelFile.toPath(), "Object.listFromJson");
+        TestUtils.assertFileContains(modelFile.toPath(), "cast<Object>");
+    }
+
+    @Test(description = "Enum properties with defaults should emit enum constructor, not string literal")
+    public void testEnumDefaultUsesEnumConstructor() throws Exception {
+        List<File> files = generateDartNativeFromSpec(
+                "src/test/resources/3_0/dart/dart-native-deserialization-bugs.yaml");
+
+        File modelFile = files.stream()
+                .filter(f -> f.getName().equals("enum_default_model.dart"))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("enum_default_model.dart not found in generated files"));
+
+        // Default should use const EnumType._('value'), not a bare string literal
+        TestUtils.assertFileNotContains(modelFile.toPath(), "?? 'active'");
+        TestUtils.assertFileContains(modelFile.toPath(),
+                "?? const EnumDefaultModelStatusEnum._('active')");
+    }
+
+    @Test(description = "Required+nullable fields should not assert non-null")
+    public void testRequiredNullableFieldsDoNotAssertNonNull() throws Exception {
+        List<File> files = generateDartNativeFromSpec(
+                "src/test/resources/3_0/dart/dart-native-deserialization-bugs.yaml");
+
+        File modelFile = files.stream()
+                .filter(f -> f.getName().equals("nullable_required_model.dart"))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("nullable_required_model.dart not found in generated files"));
+
+        // Required key 'name' (non-nullable) should assert both presence and non-null
+        TestUtils.assertFileContains(modelFile.toPath(),
+                "json.containsKey(r'name')");
+        TestUtils.assertFileContains(modelFile.toPath(),
+                "json[r'name'] != null");
+
+        // Required key 'nickname' (nullable) should assert presence but NOT non-null
+        TestUtils.assertFileContains(modelFile.toPath(),
+                "json.containsKey(r'nickname')");
+        TestUtils.assertFileNotContains(modelFile.toPath(),
+                "json[r'nickname'] != null");
+    }
 }

@@ -60,20 +60,20 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Anytype1
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Object> Anytype1Option { get; private set; }
 
         /// <summary>
         /// Gets or Sets Anytype1
         /// </summary>
         [JsonPropertyName("anytype_1")]
-        public Object Anytype1 { get { return this.Anytype1Option; } set { this.Anytype1Option = new(value); } }
+        public Object Anytype1 { get { return this.Anytype1Option.Value; } set { this.Anytype1Option = new(value); } }
 
         /// <summary>
         /// Used to track the state of EmptyMap
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Object> EmptyMapOption { get; private set; }
 
         /// <summary>
@@ -81,85 +81,85 @@ namespace Org.OpenAPITools.Model
         /// </summary>
         /// <value>an object with no declared properties and no undeclared properties, hence it&#39;s an empty map.</value>
         [JsonPropertyName("empty_map")]
-        public Object EmptyMap { get { return this.EmptyMapOption; } set { this.EmptyMapOption = new(value); } }
+        public Object EmptyMap { get { return this.EmptyMapOption.Value; } set { this.EmptyMapOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of MapOfMapProperty
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Dictionary<string, Dictionary<string, string>>> MapOfMapPropertyOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets MapOfMapProperty
         /// </summary>
         [JsonPropertyName("map_of_map_property")]
-        public Dictionary<string, Dictionary<string, string>> MapOfMapProperty { get { return this.MapOfMapPropertyOption; } set { this.MapOfMapPropertyOption = new(value); } }
+        public Dictionary<string, Dictionary<string, string>> MapOfMapProperty { get { return this.MapOfMapPropertyOption.Value; } set { this.MapOfMapPropertyOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of MapProperty
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Dictionary<string, string>> MapPropertyOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets MapProperty
         /// </summary>
         [JsonPropertyName("map_property")]
-        public Dictionary<string, string> MapProperty { get { return this.MapPropertyOption; } set { this.MapPropertyOption = new(value); } }
+        public Dictionary<string, string> MapProperty { get { return this.MapPropertyOption.Value; } set { this.MapPropertyOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of MapWithUndeclaredPropertiesAnytype1
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Object> MapWithUndeclaredPropertiesAnytype1Option { get; private set; }
 
         /// <summary>
         /// Gets or Sets MapWithUndeclaredPropertiesAnytype1
         /// </summary>
         [JsonPropertyName("map_with_undeclared_properties_anytype_1")]
-        public Object MapWithUndeclaredPropertiesAnytype1 { get { return this.MapWithUndeclaredPropertiesAnytype1Option; } set { this.MapWithUndeclaredPropertiesAnytype1Option = new(value); } }
+        public Object MapWithUndeclaredPropertiesAnytype1 { get { return this.MapWithUndeclaredPropertiesAnytype1Option.Value; } set { this.MapWithUndeclaredPropertiesAnytype1Option = new(value); } }
 
         /// <summary>
         /// Used to track the state of MapWithUndeclaredPropertiesAnytype2
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Object> MapWithUndeclaredPropertiesAnytype2Option { get; private set; }
 
         /// <summary>
         /// Gets or Sets MapWithUndeclaredPropertiesAnytype2
         /// </summary>
         [JsonPropertyName("map_with_undeclared_properties_anytype_2")]
-        public Object MapWithUndeclaredPropertiesAnytype2 { get { return this.MapWithUndeclaredPropertiesAnytype2Option; } set { this.MapWithUndeclaredPropertiesAnytype2Option = new(value); } }
+        public Object MapWithUndeclaredPropertiesAnytype2 { get { return this.MapWithUndeclaredPropertiesAnytype2Option.Value; } set { this.MapWithUndeclaredPropertiesAnytype2Option = new(value); } }
 
         /// <summary>
         /// Used to track the state of MapWithUndeclaredPropertiesAnytype3
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Dictionary<string, Object>> MapWithUndeclaredPropertiesAnytype3Option { get; private set; }
 
         /// <summary>
         /// Gets or Sets MapWithUndeclaredPropertiesAnytype3
         /// </summary>
         [JsonPropertyName("map_with_undeclared_properties_anytype_3")]
-        public Dictionary<string, Object> MapWithUndeclaredPropertiesAnytype3 { get { return this.MapWithUndeclaredPropertiesAnytype3Option; } set { this.MapWithUndeclaredPropertiesAnytype3Option = new(value); } }
+        public Dictionary<string, Object> MapWithUndeclaredPropertiesAnytype3 { get { return this.MapWithUndeclaredPropertiesAnytype3Option.Value; } set { this.MapWithUndeclaredPropertiesAnytype3Option = new(value); } }
 
         /// <summary>
         /// Used to track the state of MapWithUndeclaredPropertiesString
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Dictionary<string, string>> MapWithUndeclaredPropertiesStringOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets MapWithUndeclaredPropertiesString
         /// </summary>
         [JsonPropertyName("map_with_undeclared_properties_string")]
-        public Dictionary<string, string> MapWithUndeclaredPropertiesString { get { return this.MapWithUndeclaredPropertiesStringOption; } set { this.MapWithUndeclaredPropertiesStringOption = new(value); } }
+        public Dictionary<string, string> MapWithUndeclaredPropertiesString { get { return this.MapWithUndeclaredPropertiesStringOption.Value; } set { this.MapWithUndeclaredPropertiesStringOption = new(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -246,36 +246,28 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "anytype_1":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                anytype1 = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
+                            anytype1 = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "empty_map":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                emptyMap = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
+                            emptyMap = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "map_of_map_property":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                mapOfMapProperty = new Option<Dictionary<string, Dictionary<string, string>>>(JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(ref utf8JsonReader, jsonSerializerOptions));
+                            mapOfMapProperty = new Option<Dictionary<string, Dictionary<string, string>>>(JsonSerializer.Deserialize<Dictionary<string, Dictionary<string, string>>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "map_property":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                mapProperty = new Option<Dictionary<string, string>>(JsonSerializer.Deserialize<Dictionary<string, string>>(ref utf8JsonReader, jsonSerializerOptions));
+                            mapProperty = new Option<Dictionary<string, string>>(JsonSerializer.Deserialize<Dictionary<string, string>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "map_with_undeclared_properties_anytype_1":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                mapWithUndeclaredPropertiesAnytype1 = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
+                            mapWithUndeclaredPropertiesAnytype1 = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "map_with_undeclared_properties_anytype_2":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                mapWithUndeclaredPropertiesAnytype2 = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
+                            mapWithUndeclaredPropertiesAnytype2 = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "map_with_undeclared_properties_anytype_3":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                mapWithUndeclaredPropertiesAnytype3 = new Option<Dictionary<string, Object>>(JsonSerializer.Deserialize<Dictionary<string, Object>>(ref utf8JsonReader, jsonSerializerOptions));
+                            mapWithUndeclaredPropertiesAnytype3 = new Option<Dictionary<string, Object>>(JsonSerializer.Deserialize<Dictionary<string, Object>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "map_with_undeclared_properties_string":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                mapWithUndeclaredPropertiesString = new Option<Dictionary<string, string>>(JsonSerializer.Deserialize<Dictionary<string, string>>(ref utf8JsonReader, jsonSerializerOptions));
+                            mapWithUndeclaredPropertiesString = new Option<Dictionary<string, string>>(JsonSerializer.Deserialize<Dictionary<string, string>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;

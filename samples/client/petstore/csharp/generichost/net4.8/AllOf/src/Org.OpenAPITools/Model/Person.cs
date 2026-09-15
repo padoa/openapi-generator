@@ -39,6 +39,7 @@ namespace Org.OpenAPITools.Model
         {
             FirstNameOption = firstName;
             LastNameOption = lastName;
+            Type = this.GetType().Name;
             OnCreated();
         }
 
@@ -48,34 +49,34 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of FirstName
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> FirstNameOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets FirstName
         /// </summary>
         [JsonPropertyName("firstName")]
-        public string FirstName { get { return this.FirstNameOption; } set { this.FirstNameOption = new Option<string>(value); } }
+        public string FirstName { get { return this.FirstNameOption.Value; } set { this.FirstNameOption = new Option<string>(value); } }
 
         /// <summary>
         /// Used to track the state of LastName
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> LastNameOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets LastName
         /// </summary>
         [JsonPropertyName("lastName")]
-        public string LastName { get { return this.LastNameOption; } set { this.LastNameOption = new Option<string>(value); } }
+        public string LastName { get { return this.LastNameOption.Value; } set { this.LastNameOption = new Option<string>(value); } }
 
         /// <summary>
         /// The discriminator
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-        public string Type { get; } = "Person";
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public string Type { get; }
 
         /// <summary>
         /// Gets or Sets additional properties

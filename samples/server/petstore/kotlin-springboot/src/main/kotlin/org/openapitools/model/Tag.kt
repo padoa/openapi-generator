@@ -22,7 +22,10 @@ data class Tag(
     @get:JsonProperty("id") val id: kotlin.Long? = null,
 
     @get:JsonProperty("name") val name: kotlin.String? = null
-) {
+) : java.io.Serializable {
 
+    companion object {
+        private const val serialVersionUID: kotlin.Long = 1
+    }
 }
 

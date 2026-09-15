@@ -7,15 +7,16 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.time.OffsetDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 
 import java.util.*;
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * An order for a pets from the pet store
@@ -26,17 +27,33 @@ import javax.annotation.Generated;
 @lombok.AllArgsConstructor
 
 @Schema(name = "Order", description = "An order for a pets from the pet store")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0-SNAPSHOT")
 public class Order {
 
-  private Long id;
+  
+  @Schema(name = "id", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("id")
 
-  private Long petId;
+  private @Nullable Long id;
 
-  private Integer quantity;
+  
+  @Schema(name = "petId", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("petId")
+
+  private @Nullable Long petId;
+
+  
+  @Schema(name = "quantity", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("quantity")
+
+  private @Nullable Integer quantity;
+
+  @Valid 
+  @Schema(name = "shipDate", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("shipDate")
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-  private OffsetDateTime shipDate;
+  private @Nullable OffsetDateTime shipDate;
 
   /**
    * Order Status
@@ -48,7 +65,7 @@ public class Order {
     
     DELIVERED("delivered");
 
-    private String value;
+    private final String value;
 
     StatusEnum(String value) {
       this.value = value;
@@ -75,8 +92,17 @@ public class Order {
     }
   }
 
-  private StatusEnum status;
+  
+  @Schema(name = "status", description = "Order Status", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("status")
 
+  private @Nullable StatusEnum status;
+
+  
+  @Schema(name = "complete", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("complete")
+
+  @lombok.Builder.Default
   private Boolean complete = false;
 
 }

@@ -56,27 +56,27 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of HasBaleen
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<bool?> HasBaleenOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets HasBaleen
         /// </summary>
         [JsonPropertyName("hasBaleen")]
-        public bool? HasBaleen { get { return this.HasBaleenOption; } set { this.HasBaleenOption = new Option<bool?>(value); } }
+        public bool? HasBaleen { get { return this.HasBaleenOption.Value; } set { this.HasBaleenOption = new Option<bool?>(value); } }
 
         /// <summary>
         /// Used to track the state of HasTeeth
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<bool?> HasTeethOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets HasTeeth
         /// </summary>
         [JsonPropertyName("hasTeeth")]
-        public bool? HasTeeth { get { return this.HasTeethOption; } set { this.HasTeethOption = new Option<bool?>(value); } }
+        public bool? HasTeeth { get { return this.HasTeethOption.Value; } set { this.HasTeethOption = new Option<bool?>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -156,12 +156,10 @@ namespace Org.OpenAPITools.Model
                             className = new Option<string>(utf8JsonReader.GetString());
                             break;
                         case "hasBaleen":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                hasBaleen = new Option<bool?>(utf8JsonReader.GetBoolean());
+                            hasBaleen = new Option<bool?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (bool?)null : utf8JsonReader.GetBoolean());
                             break;
                         case "hasTeeth":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                hasTeeth = new Option<bool?>(utf8JsonReader.GetBoolean());
+                            hasTeeth = new Option<bool?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (bool?)null : utf8JsonReader.GetBoolean());
                             break;
                         default:
                             break;

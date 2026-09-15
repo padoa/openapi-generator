@@ -16,7 +16,9 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 /**
  * 
+ * @param className 
  * @param declawed 
+ * @param color 
  */
 data class Cat(
 
@@ -28,7 +30,7 @@ data class Cat(
 
     @Schema(example = "null", description = "")
     @get:JsonProperty("color") override val color: kotlin.String? = "red"
-) : Animal{
+) : Animal {
 
 }
 

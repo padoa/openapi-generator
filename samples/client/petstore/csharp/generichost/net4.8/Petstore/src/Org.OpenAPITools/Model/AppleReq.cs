@@ -54,14 +54,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Mealy
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<bool?> MealyOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Mealy
         /// </summary>
         [JsonPropertyName("mealy")]
-        public bool? Mealy { get { return this.MealyOption; } set { this.MealyOption = new Option<bool?>(value); } }
+        public bool? Mealy { get { return this.MealyOption.Value; } set { this.MealyOption = new Option<bool?>(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -132,8 +132,7 @@ namespace Org.OpenAPITools.Model
                             cultivar = new Option<string>(utf8JsonReader.GetString());
                             break;
                         case "mealy":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                mealy = new Option<bool?>(utf8JsonReader.GetBoolean());
+                            mealy = new Option<bool?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (bool?)null : utf8JsonReader.GetBoolean());
                             break;
                         default:
                             break;

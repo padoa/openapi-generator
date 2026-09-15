@@ -18,14 +18,13 @@ package org.openapitools.codegen.languages;
 
 import com.samskivert.mustache.Mustache;
 import io.swagger.v3.oas.models.OpenAPI;
-
 import lombok.Setter;
 import org.openapitools.codegen.CodegenConstants;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenType;
+import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.meta.GeneratorMetadata;
 import org.openapitools.codegen.meta.Stability;
-import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.meta.features.DocumentationFeature;
 import org.openapitools.codegen.utils.URLPathUtils;
 import org.slf4j.Logger;
@@ -38,6 +37,9 @@ import java.util.Map;
 
 import static java.util.UUID.randomUUID;
 
+/**
+ * <p>Mustache templates are located in {@code src/main/resources/fsharp-giraffe-server/}.
+ */
 public class FsharpGiraffeServerCodegen extends AbstractFSharpCodegen {
 
     public static final String USE_SWASHBUCKLE = "useSwashbuckle";

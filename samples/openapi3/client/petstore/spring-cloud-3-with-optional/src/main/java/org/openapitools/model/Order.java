@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import java.time.OffsetDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.lang.Nullable;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import jakarta.validation.Valid;
@@ -20,7 +21,7 @@ import jakarta.annotation.Generated;
  * An order for a pets from the pet store
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0-SNAPSHOT")
 public class Order {
 
   private Optional<Long> id = Optional.empty();
@@ -42,7 +43,7 @@ public class Order {
     
     DELIVERED("delivered");
 
-    private String value;
+    private final String value;
 
     StatusEnum(String value) {
       this.value = value;
@@ -74,7 +75,7 @@ public class Order {
   private Optional<Boolean> complete = Optional.of(false);
 
   public Order id(Long id) {
-    this.id = Optional.of(id);
+    this.id = Optional.ofNullable(id);
     return this;
   }
 
@@ -88,12 +89,13 @@ public class Order {
     return id;
   }
 
+  @JsonProperty("id")
   public void setId(Optional<Long> id) {
     this.id = id;
   }
 
   public Order petId(Long petId) {
-    this.petId = Optional.of(petId);
+    this.petId = Optional.ofNullable(petId);
     return this;
   }
 
@@ -107,12 +109,13 @@ public class Order {
     return petId;
   }
 
+  @JsonProperty("petId")
   public void setPetId(Optional<Long> petId) {
     this.petId = petId;
   }
 
   public Order quantity(Integer quantity) {
-    this.quantity = Optional.of(quantity);
+    this.quantity = Optional.ofNullable(quantity);
     return this;
   }
 
@@ -126,12 +129,13 @@ public class Order {
     return quantity;
   }
 
+  @JsonProperty("quantity")
   public void setQuantity(Optional<Integer> quantity) {
     this.quantity = quantity;
   }
 
   public Order shipDate(OffsetDateTime shipDate) {
-    this.shipDate = Optional.of(shipDate);
+    this.shipDate = Optional.ofNullable(shipDate);
     return this;
   }
 
@@ -145,12 +149,13 @@ public class Order {
     return shipDate;
   }
 
+  @JsonProperty("shipDate")
   public void setShipDate(Optional<OffsetDateTime> shipDate) {
     this.shipDate = shipDate;
   }
 
   public Order status(StatusEnum status) {
-    this.status = Optional.of(status);
+    this.status = Optional.ofNullable(status);
     return this;
   }
 
@@ -164,12 +169,13 @@ public class Order {
     return status;
   }
 
+  @JsonProperty("status")
   public void setStatus(Optional<StatusEnum> status) {
     this.status = status;
   }
 
   public Order complete(Boolean complete) {
-    this.complete = Optional.of(complete);
+    this.complete = Optional.ofNullable(complete);
     return this;
   }
 
@@ -183,6 +189,7 @@ public class Order {
     return complete;
   }
 
+  @JsonProperty("complete")
   public void setComplete(Optional<Boolean> complete) {
     this.complete = complete;
   }
@@ -228,10 +235,7 @@ public class Order {
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
+    return o == null ? "null" : o.toString().replace("\n", "\n    ");
   }
 }
 

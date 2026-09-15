@@ -50,40 +50,40 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of ArrayArrayOfInteger
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<List<long>>> ArrayArrayOfIntegerOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets ArrayArrayOfInteger
         /// </summary>
         [JsonPropertyName("array_array_of_integer")]
-        public List<List<long>> ArrayArrayOfInteger { get { return this.ArrayArrayOfIntegerOption; } set { this.ArrayArrayOfIntegerOption = new Option<List<List<long>>>(value); } }
+        public List<List<long>> ArrayArrayOfInteger { get { return this.ArrayArrayOfIntegerOption.Value; } set { this.ArrayArrayOfIntegerOption = new Option<List<List<long>>>(value); } }
 
         /// <summary>
         /// Used to track the state of ArrayArrayOfModel
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<List<ReadOnlyFirst>>> ArrayArrayOfModelOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets ArrayArrayOfModel
         /// </summary>
         [JsonPropertyName("array_array_of_model")]
-        public List<List<ReadOnlyFirst>> ArrayArrayOfModel { get { return this.ArrayArrayOfModelOption; } set { this.ArrayArrayOfModelOption = new Option<List<List<ReadOnlyFirst>>>(value); } }
+        public List<List<ReadOnlyFirst>> ArrayArrayOfModel { get { return this.ArrayArrayOfModelOption.Value; } set { this.ArrayArrayOfModelOption = new Option<List<List<ReadOnlyFirst>>>(value); } }
 
         /// <summary>
         /// Used to track the state of ArrayOfString
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<string>> ArrayOfStringOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets ArrayOfString
         /// </summary>
         [JsonPropertyName("array_of_string")]
-        public List<string> ArrayOfString { get { return this.ArrayOfStringOption; } set { this.ArrayOfStringOption = new Option<List<string>>(value); } }
+        public List<string> ArrayOfString { get { return this.ArrayOfStringOption.Value; } set { this.ArrayOfStringOption = new Option<List<string>>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -160,16 +160,13 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "array_array_of_integer":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                arrayArrayOfInteger = new Option<List<List<long>>>(JsonSerializer.Deserialize<List<List<long>>>(ref utf8JsonReader, jsonSerializerOptions));
+                            arrayArrayOfInteger = new Option<List<List<long>>>(JsonSerializer.Deserialize<List<List<long>>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "array_array_of_model":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                arrayArrayOfModel = new Option<List<List<ReadOnlyFirst>>>(JsonSerializer.Deserialize<List<List<ReadOnlyFirst>>>(ref utf8JsonReader, jsonSerializerOptions));
+                            arrayArrayOfModel = new Option<List<List<ReadOnlyFirst>>>(JsonSerializer.Deserialize<List<List<ReadOnlyFirst>>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "array_of_string":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                arrayOfString = new Option<List<string>>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions));
+                            arrayOfString = new Option<List<string>>(JsonSerializer.Deserialize<List<string>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;

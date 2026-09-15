@@ -48,27 +48,27 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of EscapedLiteralString
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> EscapedLiteralStringOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets EscapedLiteralString
         /// </summary>
         [JsonPropertyName("escapedLiteralString")]
-        public string EscapedLiteralString { get { return this.EscapedLiteralStringOption; } set { this.EscapedLiteralStringOption = new Option<string>(value); } }
+        public string EscapedLiteralString { get { return this.EscapedLiteralStringOption.Value; } set { this.EscapedLiteralStringOption = new Option<string>(value); } }
 
         /// <summary>
         /// Used to track the state of UnescapedLiteralString
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> UnescapedLiteralStringOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets UnescapedLiteralString
         /// </summary>
         [JsonPropertyName("unescapedLiteralString")]
-        public string UnescapedLiteralString { get { return this.UnescapedLiteralStringOption; } set { this.UnescapedLiteralStringOption = new Option<string>(value); } }
+        public string UnescapedLiteralString { get { return this.UnescapedLiteralStringOption.Value; } set { this.UnescapedLiteralStringOption = new Option<string>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties

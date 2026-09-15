@@ -18,6 +18,7 @@ import {
     ErrorCodeFromJSON,
     ErrorCodeFromJSONTyped,
     ErrorCodeToJSON,
+    ErrorCodeToJSONTyped,
 } from './ErrorCode';
 
 /**
@@ -28,7 +29,7 @@ import {
 export interface ResponseMeta {
     /**
      * Code returned by the function
-     * @type {string}
+     * @type {ResponseMetaCodeEnum}
      * @memberof ResponseMeta
      */
     code: ResponseMetaCodeEnum;
@@ -123,10 +124,15 @@ export function ResponseMetaFromJSONTyped(json: any, ignoreDiscriminator: boolea
     };
 }
 
-export function ResponseMetaToJSON(value?: ResponseMeta | null): any {
+export function ResponseMetaToJSON(json: any): ResponseMeta {
+    return ResponseMetaToJSONTyped(json, false);
+}
+
+export function ResponseMetaToJSONTyped(value?: ResponseMeta | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'code': value['code'],

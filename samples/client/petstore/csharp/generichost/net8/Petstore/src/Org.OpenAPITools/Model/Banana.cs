@@ -46,14 +46,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of LengthCm
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<decimal?> LengthCmOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets LengthCm
         /// </summary>
         [JsonPropertyName("lengthCm")]
-        public decimal? LengthCm { get { return this.LengthCmOption; } set { this.LengthCmOption = new(value); } }
+        public decimal? LengthCm { get { return this.LengthCmOption.Value; } set { this.LengthCmOption = new(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -126,8 +126,7 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "lengthCm":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                lengthCm = new Option<decimal?>(utf8JsonReader.GetDecimal());
+                            lengthCm = new Option<decimal?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (decimal?)null : utf8JsonReader.GetDecimal());
                             break;
                         default:
                             break;

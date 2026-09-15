@@ -48,27 +48,27 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Bar
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> BarOption { get; }
 
         /// <summary>
         /// Gets or Sets Bar
         /// </summary>
         [JsonPropertyName("bar")]
-        public string Bar { get { return this.BarOption; } }
+        public string Bar { get { return this.BarOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Baz
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> BazOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Baz
         /// </summary>
         [JsonPropertyName("baz")]
-        public string Baz { get { return this.BazOption; } set { this.BazOption = new Option<string>(value); } }
+        public string Baz { get { return this.BazOption.Value; } set { this.BazOption = new Option<string>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties

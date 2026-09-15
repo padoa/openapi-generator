@@ -8,9 +8,17 @@
 
 @file:Suppress(
     "ArrayInDataClass",
+    "DuplicatedCode",
     "EnumEntryName",
     "RemoveRedundantQualifierName",
-    "UnusedImport"
+    "RemoveRedundantCallsOfConversionMethods",
+    "REDUNDANT_CALL_OF_CONVERSION_METHOD",
+    "RedundantUnitReturnType",
+    "RemoveEmptyClassBody",
+    "UnnecessaryVariable",
+    "UnusedImport",
+    "UnnecessaryVariable",
+    "unused"
 )
 
 package org.openapitools.client.models
@@ -33,23 +41,23 @@ import java.io.Serializable
 
 data class Order (
 
-    @field:JsonProperty("id")
+    @get:JsonProperty("id")
     val id: kotlin.Long? = null,
 
-    @field:JsonProperty("petId")
+    @get:JsonProperty("petId")
     val petId: kotlin.Long? = null,
 
-    @field:JsonProperty("quantity")
+    @get:JsonProperty("quantity")
     val quantity: kotlin.Int? = null,
 
-    @field:JsonProperty("shipDate")
+    @get:JsonProperty("shipDate")
     val shipDate: java.time.OffsetDateTime? = null,
 
     /* Order Status */
-    @field:JsonProperty("status")
+    @get:JsonProperty("status")
     val status: Order.Status? = null,
 
-    @field:JsonProperty("complete")
+    @get:JsonProperty("complete")
     val complete: kotlin.Boolean? = false
 
 ) : Serializable {

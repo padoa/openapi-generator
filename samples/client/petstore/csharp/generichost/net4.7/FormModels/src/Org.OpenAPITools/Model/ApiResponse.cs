@@ -50,40 +50,40 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Code
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> CodeOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Code
         /// </summary>
         [JsonPropertyName("code")]
-        public int? Code { get { return this.CodeOption; } set { this.CodeOption = new Option<int?>(value); } }
+        public int? Code { get { return this.CodeOption.Value; } set { this.CodeOption = new Option<int?>(value); } }
 
         /// <summary>
         /// Used to track the state of Message
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> MessageOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Message
         /// </summary>
         [JsonPropertyName("message")]
-        public string Message { get { return this.MessageOption; } set { this.MessageOption = new Option<string>(value); } }
+        public string Message { get { return this.MessageOption.Value; } set { this.MessageOption = new Option<string>(value); } }
 
         /// <summary>
         /// Used to track the state of Type
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> TypeOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [JsonPropertyName("type")]
-        public string Type { get { return this.TypeOption; } set { this.TypeOption = new Option<string>(value); } }
+        public string Type { get { return this.TypeOption.Value; } set { this.TypeOption = new Option<string>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -160,8 +160,7 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "code":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                code = new Option<int?>(utf8JsonReader.GetInt32());
+                            code = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "message":
                             message = new Option<string>(utf8JsonReader.GetString());

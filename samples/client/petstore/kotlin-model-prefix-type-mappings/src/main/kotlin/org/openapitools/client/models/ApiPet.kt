@@ -8,9 +8,17 @@
 
 @file:Suppress(
     "ArrayInDataClass",
+    "DuplicatedCode",
     "EnumEntryName",
     "RemoveRedundantQualifierName",
-    "UnusedImport"
+    "RemoveRedundantCallsOfConversionMethods",
+    "REDUNDANT_CALL_OF_CONVERSION_METHOD",
+    "RedundantUnitReturnType",
+    "RemoveEmptyClassBody",
+    "UnnecessaryVariable",
+    "UnusedImport",
+    "UnnecessaryVariable",
+    "unused"
 )
 
 package org.openapitools.client.models
@@ -105,7 +113,7 @@ data class ApiPet (
     companion object {
         var openapiFields = HashSet<String>()
         var openapiRequiredFields = HashSet<String>()
-      
+
         init {
             // a set of all properties/fields (JSON key names)
             openapiFields.add("name")
@@ -119,7 +127,7 @@ data class ApiPet (
             openapiRequiredFields.add("name")
             openapiRequiredFields.add("photoUrls")
         }
-      
+
        /**
         * Validates the JSON Element and throws an exception if issues found
         *
@@ -133,7 +141,7 @@ data class ApiPet (
                 String.format("The required field(s) %s in ApiPet is not found in the empty JSON string", ApiPet.openapiRequiredFields.toString())
               }
             }
-      
+
             // check to make sure all required properties/fields are present in the JSON string
             for (requiredField in openapiRequiredFields) {
               requireNotNull(jsonElement!!.getAsJsonObject()[requiredField]) {
@@ -151,21 +159,28 @@ data class ApiPet (
             require(jsonObj["photoUrls"].isJsonArray()) {
               String.format("Expected the field `photoUrls` to be an array in the JSON string but got `%s`", jsonObj["photoUrls"].toString())
             }
+            // ensure the items in json array are primitive
+            if (jsonObj["photoUrls"] != null) {
+              for (i in 0 until jsonObj.getAsJsonArray("photoUrls").size()) {
+                require(jsonObj.getAsJsonArray("photoUrls").get(i).isJsonPrimitive) {
+                  String.format("Expected the property in array `photoUrls` to be primitive")
+                }
+              }
+            }
             // validate the optional field `category`
             if (jsonObj["category"] != null && !jsonObj["category"].isJsonNull) {
               ApiCategory.validateJsonElement(jsonObj["category"])
             }
             if (jsonObj["tags"] != null && !jsonObj["tags"].isJsonNull) {
-              val jsonArraytags = jsonObj.getAsJsonArray("tags")
-              if (jsonArraytags != null) {
+              if (jsonObj.getAsJsonArray("tags") != null) {
                 // ensure the json data is an array
                 require(jsonObj["tags"].isJsonArray) {
                   String.format("Expected the field `tags` to be an array in the JSON string but got `%s`", jsonObj["tags"].toString())
                 }
-      
+
                 // validate the optional field `tags` (array)
-                for (i in 0 until jsonArraytags.size()) {
-                  ApiTag.validateJsonElement(jsonArraytags[i])
+                for (i in 0 until jsonObj.getAsJsonArray("tags").size()) {
+                  ApiTag.validateJsonElement(jsonObj.getAsJsonArray("tags").get(i))
                 }
               }
             }
@@ -176,7 +191,7 @@ data class ApiPet (
             }
             // validate the optional field `status`
             if (jsonObj["status"] != null && !jsonObj["status"].isJsonNull) {
-                require(Status.values().any { it.value == jsonObj["status"].asString }) {
+                require(Status.entries.any { it.value == jsonObj["status"].asString }) {
                     String.format("Expected the field `status` to be valid `Status` enum value in the JSON string but got `%s`", jsonObj["status"].toString())
                 }
             }

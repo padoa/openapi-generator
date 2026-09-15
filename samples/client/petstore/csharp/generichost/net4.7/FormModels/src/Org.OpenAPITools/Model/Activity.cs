@@ -46,14 +46,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of ActivityOutputs
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Dictionary<string, List<ActivityOutputElementRepresentation>>> ActivityOutputsOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets ActivityOutputs
         /// </summary>
         [JsonPropertyName("activity_outputs")]
-        public Dictionary<string, List<ActivityOutputElementRepresentation>> ActivityOutputs { get { return this.ActivityOutputsOption; } set { this.ActivityOutputsOption = new Option<Dictionary<string, List<ActivityOutputElementRepresentation>>>(value); } }
+        public Dictionary<string, List<ActivityOutputElementRepresentation>> ActivityOutputs { get { return this.ActivityOutputsOption.Value; } set { this.ActivityOutputsOption = new Option<Dictionary<string, List<ActivityOutputElementRepresentation>>>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -126,8 +126,7 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "activity_outputs":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                activityOutputs = new Option<Dictionary<string, List<ActivityOutputElementRepresentation>>>(JsonSerializer.Deserialize<Dictionary<string, List<ActivityOutputElementRepresentation>>>(ref utf8JsonReader, jsonSerializerOptions));
+                            activityOutputs = new Option<Dictionary<string, List<ActivityOutputElementRepresentation>>>(JsonSerializer.Deserialize<Dictionary<string, List<ActivityOutputElementRepresentation>>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;

@@ -46,14 +46,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Var123List
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> Var123ListOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Var123List
         /// </summary>
         [JsonPropertyName("123-list")]
-        public string Var123List { get { return this.Var123ListOption; } set { this.Var123ListOption = new(value); } }
+        public string Var123List { get { return this.Var123ListOption.Value; } set { this.Var123ListOption = new(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties

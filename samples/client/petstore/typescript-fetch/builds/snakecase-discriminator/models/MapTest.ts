@@ -27,10 +27,10 @@ export interface MapTest {
     mapMapOfString?: { [key: string]: { [key: string]: string; }; };
     /**
      * 
-     * @type {{ [key: string]: string; }}
+     * @type {{ [key: string]: MapTestMapOfEnumStringEnum; }}
      * @memberof MapTest
      */
-    mapOfEnumString?: { [key: string]: string; };
+    mapOfEnumString?: { [key: string]: MapTestMapOfEnumStringEnum; };
     /**
      * 
      * @type {{ [key: string]: boolean; }}
@@ -80,10 +80,15 @@ export function MapTestFromJSONTyped(json: any, ignoreDiscriminator: boolean): M
     };
 }
 
-export function MapTestToJSON(value?: MapTest | null): any {
+export function MapTestToJSON(json: any): MapTest {
+    return MapTestToJSONTyped(json, false);
+}
+
+export function MapTestToJSONTyped(value?: MapTest | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
+
     return {
         
         'map_map_of_string': value['mapMapOfString'],

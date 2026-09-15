@@ -31,11 +31,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
+/**
+ * <p>Mustache templates are located in {@code src/main/resources/typescript-jquery/}.
+ */
 public class TypeScriptJqueryClientCodegen extends AbstractTypeScriptClientCodegen {
     private final Logger LOGGER = LoggerFactory.getLogger(TypeScriptJqueryClientCodegen.class);
 
     public static final String NPM_REPOSITORY = "npmRepository";
     public static final String JQUERY_ALREADY_IMPORTED = "jqueryAlreadyImported";
+    public static final String LICENSE_NAME_DEFAULT_VALUE = "MIT";
 
     @Getter @Setter
     protected String npmRepository = null;
@@ -158,5 +162,10 @@ public class TypeScriptJqueryClientCodegen extends AbstractTypeScriptClientCodeg
     private String getIndexDirectory() {
         String indexPackage = modelPackage.substring(0, Math.max(0, modelPackage.lastIndexOf('.')));
         return indexPackage.replace('.', File.separatorChar);
+    }
+
+    @Override
+    protected String getLicenseNameDefaultValue() {
+        return LICENSE_NAME_DEFAULT_VALUE;
     }
 }

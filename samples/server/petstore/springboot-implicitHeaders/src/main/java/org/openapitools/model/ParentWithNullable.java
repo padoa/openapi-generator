@@ -8,15 +8,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import java.util.Arrays;
 import org.openapitools.jackson.nullable.JsonNullable;
+import org.springframework.lang.Nullable;
 import java.util.NoSuchElementException;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 
 import java.util.*;
@@ -35,7 +35,7 @@ import javax.annotation.Generated;
   @JsonSubTypes.Type(value = ChildWithNullable.class, name = "ChildWithNullable")
 })
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0-SNAPSHOT")
 public class ParentWithNullable {
 
   /**
@@ -44,7 +44,7 @@ public class ParentWithNullable {
   public enum TypeEnum {
     CHILD_WITH_NULLABLE("ChildWithNullable");
 
-    private String value;
+    private final String value;
 
     TypeEnum(String value) {
       this.value = value;
@@ -71,11 +71,11 @@ public class ParentWithNullable {
     }
   }
 
-  private TypeEnum type;
+  private @Nullable TypeEnum type;
 
   private JsonNullable<String> nullableProperty = JsonNullable.<String>undefined();
 
-  public ParentWithNullable type(TypeEnum type) {
+  public ParentWithNullable type(@Nullable TypeEnum type) {
     this.type = type;
     return this;
   }
@@ -85,13 +85,14 @@ public class ParentWithNullable {
    * @return type
    */
   
-  @ApiModelProperty(value = "")
+  @Schema(name = "type", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("type")
-  public TypeEnum getType() {
+  public @Nullable TypeEnum getType() {
     return type;
   }
 
-  public void setType(TypeEnum type) {
+  @JsonProperty("type")
+  public void setType(@Nullable TypeEnum type) {
     this.type = type;
   }
 
@@ -105,7 +106,7 @@ public class ParentWithNullable {
    * @return nullableProperty
    */
   
-  @ApiModelProperty(value = "")
+  @Schema(name = "nullableProperty", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("nullableProperty")
   public JsonNullable<String> getNullableProperty() {
     return nullableProperty;
@@ -158,11 +159,8 @@ public class ParentWithNullable {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
+  private String toIndentedString(@Nullable Object o) {
+    return o == null ? "null" : o.toString().replace("\n", "\n    ");
   }
 }
 

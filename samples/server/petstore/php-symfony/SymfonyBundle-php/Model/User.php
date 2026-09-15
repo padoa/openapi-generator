@@ -48,57 +48,57 @@ class User
         /**
      * @var int|null
      * @SerializedName("id")
-     * @Assert\Type("int")
      * @Type("int")
      */
+    #[Assert\Type("int")]
     protected ?int $id = null;
 
     /**
      * @var string|null
      * @SerializedName("username")
-     * @Assert\Type("string")
      * @Type("string")
      */
+    #[Assert\Type("string")]
     protected ?string $username = null;
 
     /**
      * @var string|null
      * @SerializedName("firstName")
-     * @Assert\Type("string")
      * @Type("string")
      */
+    #[Assert\Type("string")]
     protected ?string $firstName = null;
 
     /**
      * @var string|null
      * @SerializedName("lastName")
-     * @Assert\Type("string")
      * @Type("string")
      */
+    #[Assert\Type("string")]
     protected ?string $lastName = null;
 
     /**
      * @var string|null
      * @SerializedName("email")
-     * @Assert\Type("string")
      * @Type("string")
      */
+    #[Assert\Type("string")]
     protected ?string $email = null;
 
     /**
      * @var string|null
      * @SerializedName("password")
-     * @Assert\Type("string")
      * @Type("string")
      */
+    #[Assert\Type("string")]
     protected ?string $password = null;
 
     /**
      * @var string|null
      * @SerializedName("phone")
-     * @Assert\Type("string")
      * @Type("string")
      */
+    #[Assert\Type("string")]
     protected ?string $phone = null;
 
     /**
@@ -106,16 +106,16 @@ class User
      *
      * @var int|null
      * @SerializedName("userStatus")
-     * @Assert\Type("int")
      * @Type("int")
      */
+    #[Assert\Type("int")]
     protected ?int $userStatus = null;
 
     /**
      * Constructor
      * @param array|null $data Associated array of property values initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         if (is_array($data)) {
             $this->id = array_key_exists('id', $data) ? $data['id'] : $this->id;
@@ -139,8 +139,6 @@ class User
         return $this->id;
     }
 
-
-
     /**
      * Sets id.
      *
@@ -155,6 +153,9 @@ class User
         return $this;
     }
 
+
+
+
     /**
      * Gets username.
      *
@@ -164,8 +165,6 @@ class User
     {
         return $this->username;
     }
-
-
 
     /**
      * Sets username.
@@ -181,6 +180,9 @@ class User
         return $this;
     }
 
+
+
+
     /**
      * Gets firstName.
      *
@@ -190,8 +192,6 @@ class User
     {
         return $this->firstName;
     }
-
-
 
     /**
      * Sets firstName.
@@ -207,6 +207,9 @@ class User
         return $this;
     }
 
+
+
+
     /**
      * Gets lastName.
      *
@@ -216,8 +219,6 @@ class User
     {
         return $this->lastName;
     }
-
-
 
     /**
      * Sets lastName.
@@ -233,6 +234,9 @@ class User
         return $this;
     }
 
+
+
+
     /**
      * Gets email.
      *
@@ -242,8 +246,6 @@ class User
     {
         return $this->email;
     }
-
-
 
     /**
      * Sets email.
@@ -259,6 +261,9 @@ class User
         return $this;
     }
 
+
+
+
     /**
      * Gets password.
      *
@@ -268,8 +273,6 @@ class User
     {
         return $this->password;
     }
-
-
 
     /**
      * Sets password.
@@ -285,6 +288,9 @@ class User
         return $this;
     }
 
+
+
+
     /**
      * Gets phone.
      *
@@ -294,8 +300,6 @@ class User
     {
         return $this->phone;
     }
-
-
 
     /**
      * Sets phone.
@@ -311,6 +315,9 @@ class User
         return $this;
     }
 
+
+
+
     /**
      * Gets userStatus.
      *
@@ -320,8 +327,6 @@ class User
     {
         return $this->userStatus;
     }
-
-
 
     /**
      * Sets userStatus.
@@ -336,6 +341,9 @@ class User
 
         return $this;
     }
+
+
+
 }
 
 

@@ -10,7 +10,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Net;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
@@ -209,11 +211,11 @@ namespace Org.OpenAPITools.Api
         /// </remarks>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="petId">ID of pet to update</param>
-        /// <param name="file">file to upload (optional)</param>
         /// <param name="additionalMetadata">Additional data to pass to server (optional)</param>
+        /// <param name="file">file to upload (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="IUploadFileApiResponse"/>&gt;</returns>
-        Task<IUploadFileApiResponse> UploadFileAsync(long petId, Option<System.IO.Stream> file = default, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default);
+        Task<IUploadFileApiResponse> UploadFileAsync(long petId, Option<string> additionalMetadata = default, Option<Org.OpenAPITools.Client.FileParameter> file = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// uploads an image
@@ -222,11 +224,11 @@ namespace Org.OpenAPITools.Api
         /// 
         /// </remarks>
         /// <param name="petId">ID of pet to update</param>
-        /// <param name="file">file to upload (optional)</param>
         /// <param name="additionalMetadata">Additional data to pass to server (optional)</param>
+        /// <param name="file">file to upload (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="IUploadFileApiResponse"/>&gt;</returns>
-        Task<IUploadFileApiResponse> UploadFileOrDefaultAsync(long petId, Option<System.IO.Stream> file = default, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default);
+        Task<IUploadFileApiResponse> UploadFileOrDefaultAsync(long petId, Option<string> additionalMetadata = default, Option<Org.OpenAPITools.Client.FileParameter> file = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// uploads an image (required)
@@ -235,12 +237,12 @@ namespace Org.OpenAPITools.Api
         /// 
         /// </remarks>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="requiredFile">file to upload</param>
         /// <param name="petId">ID of pet to update</param>
+        /// <param name="requiredFile">file to upload</param>
         /// <param name="additionalMetadata">Additional data to pass to server (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="IUploadFileWithRequiredFileApiResponse"/>&gt;</returns>
-        Task<IUploadFileWithRequiredFileApiResponse> UploadFileWithRequiredFileAsync(System.IO.Stream requiredFile, long petId, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default);
+        Task<IUploadFileWithRequiredFileApiResponse> UploadFileWithRequiredFileAsync(long petId, Org.OpenAPITools.Client.FileParameter requiredFile, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default);
 
         /// <summary>
         /// uploads an image (required)
@@ -248,12 +250,37 @@ namespace Org.OpenAPITools.Api
         /// <remarks>
         /// 
         /// </remarks>
-        /// <param name="requiredFile">file to upload</param>
         /// <param name="petId">ID of pet to update</param>
+        /// <param name="requiredFile">file to upload</param>
         /// <param name="additionalMetadata">Additional data to pass to server (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="IUploadFileWithRequiredFileApiResponse"/>&gt;</returns>
-        Task<IUploadFileWithRequiredFileApiResponse> UploadFileWithRequiredFileOrDefaultAsync(System.IO.Stream requiredFile, long petId, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default);
+        Task<IUploadFileWithRequiredFileApiResponse> UploadFileWithRequiredFileOrDefaultAsync(long petId, Org.OpenAPITools.Client.FileParameter requiredFile, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// uploads an images
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="files"></param>
+        /// <param name="petId">ID of pet to update</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="IUploadFilesApiResponse"/>&gt;</returns>
+        Task<IUploadFilesApiResponse> UploadFilesAsync(List<Org.OpenAPITools.Client.FileParameter> files, long petId, System.Threading.CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// uploads an images
+        /// </summary>
+        /// <remarks>
+        /// 
+        /// </remarks>
+        /// <param name="files"></param>
+        /// <param name="petId">ID of pet to update</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="IUploadFilesApiResponse"/>&gt;</returns>
+        Task<IUploadFilesApiResponse> UploadFilesOrDefaultAsync(List<Org.OpenAPITools.Client.FileParameter> files, long petId, System.Threading.CancellationToken cancellationToken = default);
     }
 
     /// <summary>
@@ -296,6 +323,18 @@ namespace Org.OpenAPITools.Api
         /// </summary>
         /// <returns></returns>
         bool IsBadRequest { get; }
+
+        /// <summary>
+        /// Returns true if the response is 2XX HttpStatusCode2XX
+        /// </summary>
+        /// <returns></returns>
+        bool IsHttpStatusCode2XX { get; }
+
+        /// <summary>
+        /// Returns true if the response is 4XX HttpStatusCode4XX
+        /// </summary>
+        /// <returns></returns>
+        bool IsHttpStatusCode4XX { get; }
     }
 
     /// <summary>
@@ -392,6 +431,18 @@ namespace Org.OpenAPITools.Api
     /// The <see cref="IUploadFileWithRequiredFileApiResponse"/>
     /// </summary>
     public interface IUploadFileWithRequiredFileApiResponse : Org.OpenAPITools.Client.IApiResponse, IOk<Org.OpenAPITools.Model.ApiResponse>
+    {
+        /// <summary>
+        /// Returns true if the response is 200 Ok
+        /// </summary>
+        /// <returns></returns>
+        bool IsOk { get; }
+    }
+
+    /// <summary>
+    /// The <see cref="IUploadFilesApiResponse"/>
+    /// </summary>
+    public interface IUploadFilesApiResponse : Org.OpenAPITools.Client.IApiResponse, IOk<Org.OpenAPITools.Model.ApiResponse>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -584,6 +635,26 @@ namespace Org.OpenAPITools.Api
         {
             OnErrorUploadFileWithRequiredFile?.Invoke(this, new ExceptionEventArgs(exception));
         }
+
+        /// <summary>
+        /// The event raised after the server response
+        /// </summary>
+        public event EventHandler<ApiResponseEventArgs> OnUploadFiles;
+
+        /// <summary>
+        /// The event raised after an error querying the server
+        /// </summary>
+        public event EventHandler<ExceptionEventArgs> OnErrorUploadFiles;
+
+        internal void ExecuteOnUploadFiles(PetApi.UploadFilesApiResponse apiResponse)
+        {
+            OnUploadFiles?.Invoke(this, new ApiResponseEventArgs(apiResponse));
+        }
+
+        internal void ExecuteOnErrorUploadFiles(Exception exception)
+        {
+            OnErrorUploadFiles?.Invoke(this, new ExceptionEventArgs(exception));
+        }
     }
 
     /// <summary>
@@ -684,7 +755,7 @@ namespace Org.OpenAPITools.Api
             bool suppressDefaultLog = false;
             AfterAddPet(ref suppressDefaultLog, apiResponseLocalVar, pet);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -698,27 +769,27 @@ namespace Org.OpenAPITools.Api
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="pet"></param>
-        private void OnErrorAddPetDefaultImplementation(Exception exception, string pathFormat, string path, Pet pet)
+        private void OnErrorAddPetDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Pet pet)
         {
-            bool suppressDefaultLog = false;
-            OnErrorAddPet(ref suppressDefaultLog, exception, pathFormat, path, pet);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorAddPet(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, pet);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="pet"></param>
-        partial void OnErrorAddPet(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Pet pet);
+        partial void OnErrorAddPet(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Pet pet);
 
         /// <summary>
         /// Add a new pet to the store 
@@ -775,14 +846,20 @@ namespace Org.OpenAPITools.Api
 
                     oauthTokenLocalVar1.UseInHeader(httpRequestMessageLocalVar, "");
 
-                    HttpSignatureToken httpSignatureTokenLocalVar2 = (HttpSignatureToken) await HttpSignatureTokenProvider.GetAsync(cancellation: cancellationToken).ConfigureAwait(false);
+                    OAuthToken oauthTokenLocalVar2 = (OAuthToken) await OauthTokenProvider.GetAsync(cancellation: cancellationToken).ConfigureAwait(false);
 
-                    tokenBaseLocalVars.Add(httpSignatureTokenLocalVar2);
+                    tokenBaseLocalVars.Add(oauthTokenLocalVar2);
+
+                    oauthTokenLocalVar2.UseInHeader(httpRequestMessageLocalVar, "");
+
+                    HttpSignatureToken httpSignatureTokenLocalVar3 = (HttpSignatureToken) await HttpSignatureTokenProvider.GetAsync(cancellation: cancellationToken).ConfigureAwait(false);
+
+                    tokenBaseLocalVars.Add(httpSignatureTokenLocalVar3);
 
                     if (httpRequestMessageLocalVar.Content != null) {
                         string requestBodyLocalVar = await httpRequestMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-                        httpSignatureTokenLocalVar2.UseInHeader(httpRequestMessageLocalVar, requestBodyLocalVar, cancellationToken);
+                        httpSignatureTokenLocalVar3.UseInHeader(httpRequestMessageLocalVar, requestBodyLocalVar, cancellationToken);
                     }
 
                     string[] contentTypes = new string[] {
@@ -801,11 +878,17 @@ namespace Org.OpenAPITools.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
-
                         ILogger<AddPetApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<AddPetApiResponse>();
+                        AddPetApiResponse apiResponseLocalVar;
 
-                        AddPetApiResponse apiResponseLocalVar = new AddPetApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet", requestedAtLocalVar, _jsonSerializerOptions);
+                        switch ((int)httpResponseMessageLocalVar.StatusCode) {
+                            default: {
+                                string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                apiResponseLocalVar = new AddPetApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet", requestedAtLocalVar, _jsonSerializerOptions);
+
+                                break;
+                            }
+                        }
 
                         AfterAddPetDefaultImplementation(apiResponseLocalVar, pet);
 
@@ -853,7 +936,23 @@ namespace Org.OpenAPITools.Api
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            /// <summary>
+            /// The <see cref="AddPetApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="contentStream"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public AddPetApiResponse(ILogger<AddPetApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 405 MethodNotAllowed
@@ -896,7 +995,7 @@ namespace Org.OpenAPITools.Api
             bool suppressDefaultLog = false;
             AfterDeletePet(ref suppressDefaultLog, apiResponseLocalVar, petId, apiKey);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -911,29 +1010,29 @@ namespace Org.OpenAPITools.Api
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="petId"></param>
         /// <param name="apiKey"></param>
-        private void OnErrorDeletePetDefaultImplementation(Exception exception, string pathFormat, string path, long petId, Option<string> apiKey)
+        private void OnErrorDeletePetDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, long petId, Option<string> apiKey)
         {
-            bool suppressDefaultLog = false;
-            OnErrorDeletePet(ref suppressDefaultLog, exception, pathFormat, path, petId, apiKey);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorDeletePet(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, petId, apiKey);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="petId"></param>
         /// <param name="apiKey"></param>
-        partial void OnErrorDeletePet(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, long petId, Option<string> apiKey);
+        partial void OnErrorDeletePet(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, long petId, Option<string> apiKey);
 
         /// <summary>
         /// Deletes a pet 
@@ -977,7 +1076,9 @@ namespace Org.OpenAPITools.Api
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/pet/{petId}";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/pet/{petId}"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath.TrimEnd('/'), "/pet/{petId}");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BpetId%7D", Uri.EscapeDataString(petId.ToString()));
 
                     if (apiKey.IsSet)
@@ -997,11 +1098,17 @@ namespace Org.OpenAPITools.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
-
                         ILogger<DeletePetApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<DeletePetApiResponse>();
+                        DeletePetApiResponse apiResponseLocalVar;
 
-                        DeletePetApiResponse apiResponseLocalVar = new DeletePetApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/{petId}", requestedAtLocalVar, _jsonSerializerOptions);
+                        switch ((int)httpResponseMessageLocalVar.StatusCode) {
+                            default: {
+                                string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                apiResponseLocalVar = new DeletePetApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/{petId}", requestedAtLocalVar, _jsonSerializerOptions);
+
+                                break;
+                            }
+                        }
 
                         AfterDeletePetDefaultImplementation(apiResponseLocalVar, petId, apiKey);
 
@@ -1049,7 +1156,23 @@ namespace Org.OpenAPITools.Api
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            /// <summary>
+            /// The <see cref="DeletePetApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="contentStream"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public DeletePetApiResponse(ILogger<DeletePetApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 400 BadRequest
@@ -1091,7 +1214,7 @@ namespace Org.OpenAPITools.Api
             bool suppressDefaultLog = false;
             AfterFindPetsByStatus(ref suppressDefaultLog, apiResponseLocalVar, status);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -1105,27 +1228,27 @@ namespace Org.OpenAPITools.Api
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="status"></param>
-        private void OnErrorFindPetsByStatusDefaultImplementation(Exception exception, string pathFormat, string path, List<string> status)
+        private void OnErrorFindPetsByStatusDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, List<string> status)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFindPetsByStatus(ref suppressDefaultLog, exception, pathFormat, path, status);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFindPetsByStatus(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, status);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="status"></param>
-        partial void OnErrorFindPetsByStatus(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, List<string> status);
+        partial void OnErrorFindPetsByStatus(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, List<string> status);
 
         /// <summary>
         /// Finds Pets by status Multiple status values can be provided with comma separated strings
@@ -1167,7 +1290,9 @@ namespace Org.OpenAPITools.Api
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/pet/findByStatus";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/pet/findByStatus"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath.TrimEnd('/'), "/pet/findByStatus");
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
@@ -1199,21 +1324,27 @@ namespace Org.OpenAPITools.Api
                         "application/json"
                     };
 
-                    string acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
+                    IEnumerable<MediaTypeWithQualityHeaderValue> acceptHeaderValuesLocalVar = ClientUtils.SelectHeaderAcceptArray(acceptLocalVars);
 
-                    if (acceptLocalVar != null)
-                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
+                    foreach (var acceptLocalVar in acceptHeaderValuesLocalVar)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(acceptLocalVar);
                     httpRequestMessageLocalVar.Method = new HttpMethod("GET");
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
-
                         ILogger<FindPetsByStatusApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<FindPetsByStatusApiResponse>();
+                        FindPetsByStatusApiResponse apiResponseLocalVar;
 
-                        FindPetsByStatusApiResponse apiResponseLocalVar = new FindPetsByStatusApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/findByStatus", requestedAtLocalVar, _jsonSerializerOptions);
+                        switch ((int)httpResponseMessageLocalVar.StatusCode) {
+                            default: {
+                                string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                apiResponseLocalVar = new FindPetsByStatusApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/findByStatus", requestedAtLocalVar, _jsonSerializerOptions);
+
+                                break;
+                            }
+                        }
 
                         AfterFindPetsByStatusDefaultImplementation(apiResponseLocalVar, status);
 
@@ -1261,7 +1392,23 @@ namespace Org.OpenAPITools.Api
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            /// <summary>
+            /// The <see cref="FindPetsByStatusApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="contentStream"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public FindPetsByStatusApiResponse(ILogger<FindPetsByStatusApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -1307,6 +1454,32 @@ namespace Org.OpenAPITools.Api
             /// <returns></returns>
             public bool IsBadRequest => 400 == (int)StatusCode;
 
+            /// <summary>
+            /// Returns true if the response is 2XX HttpStatusCode2XX
+            /// </summary>
+            /// <returns></returns>
+            public bool IsHttpStatusCode2XX
+            {
+                get
+                {
+                    int statusCode = (int)StatusCode;
+                    return 200 >= statusCode && 299 <= statusCode;
+                }
+            }
+
+            /// <summary>
+            /// Returns true if the response is 4XX HttpStatusCode4XX
+            /// </summary>
+            /// <returns></returns>
+            public bool IsHttpStatusCode4XX
+            {
+                get
+                {
+                    int statusCode = (int)StatusCode;
+                    return 400 >= statusCode && 499 <= statusCode;
+                }
+            }
+
             private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
             {
                 bool suppressDefaultLog = false;
@@ -1341,7 +1514,7 @@ namespace Org.OpenAPITools.Api
             bool suppressDefaultLog = false;
             AfterFindPetsByTags(ref suppressDefaultLog, apiResponseLocalVar, tags);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -1355,27 +1528,27 @@ namespace Org.OpenAPITools.Api
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="tags"></param>
-        private void OnErrorFindPetsByTagsDefaultImplementation(Exception exception, string pathFormat, string path, List<string> tags)
+        private void OnErrorFindPetsByTagsDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, List<string> tags)
         {
-            bool suppressDefaultLog = false;
-            OnErrorFindPetsByTags(ref suppressDefaultLog, exception, pathFormat, path, tags);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorFindPetsByTags(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, tags);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="tags"></param>
-        partial void OnErrorFindPetsByTags(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, List<string> tags);
+        partial void OnErrorFindPetsByTags(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, List<string> tags);
 
         /// <summary>
         /// Finds Pets by tags Multiple tags can be provided with comma separated strings. Use tag1, tag2, tag3 for testing.
@@ -1417,7 +1590,9 @@ namespace Org.OpenAPITools.Api
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/pet/findByTags";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/pet/findByTags"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath.TrimEnd('/'), "/pet/findByTags");
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
@@ -1449,21 +1624,27 @@ namespace Org.OpenAPITools.Api
                         "application/json"
                     };
 
-                    string acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
+                    IEnumerable<MediaTypeWithQualityHeaderValue> acceptHeaderValuesLocalVar = ClientUtils.SelectHeaderAcceptArray(acceptLocalVars);
 
-                    if (acceptLocalVar != null)
-                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
+                    foreach (var acceptLocalVar in acceptHeaderValuesLocalVar)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(acceptLocalVar);
                     httpRequestMessageLocalVar.Method = new HttpMethod("GET");
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
-
                         ILogger<FindPetsByTagsApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<FindPetsByTagsApiResponse>();
+                        FindPetsByTagsApiResponse apiResponseLocalVar;
 
-                        FindPetsByTagsApiResponse apiResponseLocalVar = new FindPetsByTagsApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/findByTags", requestedAtLocalVar, _jsonSerializerOptions);
+                        switch ((int)httpResponseMessageLocalVar.StatusCode) {
+                            default: {
+                                string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                apiResponseLocalVar = new FindPetsByTagsApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/findByTags", requestedAtLocalVar, _jsonSerializerOptions);
+
+                                break;
+                            }
+                        }
 
                         AfterFindPetsByTagsDefaultImplementation(apiResponseLocalVar, tags);
 
@@ -1511,7 +1692,23 @@ namespace Org.OpenAPITools.Api
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            /// <summary>
+            /// The <see cref="FindPetsByTagsApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="contentStream"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public FindPetsByTagsApiResponse(ILogger<FindPetsByTagsApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -1580,7 +1777,7 @@ namespace Org.OpenAPITools.Api
             bool suppressDefaultLog = false;
             AfterGetPetById(ref suppressDefaultLog, apiResponseLocalVar, petId);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -1594,27 +1791,27 @@ namespace Org.OpenAPITools.Api
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="petId"></param>
-        private void OnErrorGetPetByIdDefaultImplementation(Exception exception, string pathFormat, string path, long petId)
+        private void OnErrorGetPetByIdDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, long petId)
         {
-            bool suppressDefaultLog = false;
-            OnErrorGetPetById(ref suppressDefaultLog, exception, pathFormat, path, petId);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorGetPetById(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, petId);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="petId"></param>
-        partial void OnErrorGetPetById(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, long petId);
+        partial void OnErrorGetPetById(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, long petId);
 
         /// <summary>
         /// Find pet by ID Returns a single pet
@@ -1654,13 +1851,15 @@ namespace Org.OpenAPITools.Api
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/pet/{petId}";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/pet/{petId}"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath.TrimEnd('/'), "/pet/{petId}");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BpetId%7D", Uri.EscapeDataString(petId.ToString()));
 
                     System.Collections.Specialized.NameValueCollection parseQueryStringLocalVar = System.Web.HttpUtility.ParseQueryString(string.Empty);
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
-                    ApiKeyToken apiKeyTokenLocalVar1 = (ApiKeyToken) await ApiKeyProvider.GetAsync("api_key", cancellationToken).ConfigureAwait(false);
+                    ApiKeyToken apiKeyTokenLocalVar1 = (ApiKeyToken) await ApiKeyProvider.GetAsync("api-key", cancellationToken).ConfigureAwait(false);
                     tokenBaseLocalVars.Add(apiKeyTokenLocalVar1);
                     apiKeyTokenLocalVar1.UseInHeader(httpRequestMessageLocalVar);
 
@@ -1677,21 +1876,27 @@ namespace Org.OpenAPITools.Api
                         "application/json"
                     };
 
-                    string acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
+                    IEnumerable<MediaTypeWithQualityHeaderValue> acceptHeaderValuesLocalVar = ClientUtils.SelectHeaderAcceptArray(acceptLocalVars);
 
-                    if (acceptLocalVar != null)
-                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
+                    foreach (var acceptLocalVar in acceptHeaderValuesLocalVar)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(acceptLocalVar);
                     httpRequestMessageLocalVar.Method = new HttpMethod("GET");
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
-
                         ILogger<GetPetByIdApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetPetByIdApiResponse>();
+                        GetPetByIdApiResponse apiResponseLocalVar;
 
-                        GetPetByIdApiResponse apiResponseLocalVar = new GetPetByIdApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/{petId}", requestedAtLocalVar, _jsonSerializerOptions);
+                        switch ((int)httpResponseMessageLocalVar.StatusCode) {
+                            default: {
+                                string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                apiResponseLocalVar = new GetPetByIdApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/{petId}", requestedAtLocalVar, _jsonSerializerOptions);
+
+                                break;
+                            }
+                        }
 
                         AfterGetPetByIdDefaultImplementation(apiResponseLocalVar, petId);
 
@@ -1739,7 +1944,23 @@ namespace Org.OpenAPITools.Api
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            /// <summary>
+            /// The <see cref="GetPetByIdApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="contentStream"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public GetPetByIdApiResponse(ILogger<GetPetByIdApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -1825,7 +2046,7 @@ namespace Org.OpenAPITools.Api
             bool suppressDefaultLog = false;
             AfterUpdatePet(ref suppressDefaultLog, apiResponseLocalVar, pet);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -1839,27 +2060,27 @@ namespace Org.OpenAPITools.Api
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="pet"></param>
-        private void OnErrorUpdatePetDefaultImplementation(Exception exception, string pathFormat, string path, Pet pet)
+        private void OnErrorUpdatePetDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Pet pet)
         {
-            bool suppressDefaultLog = false;
-            OnErrorUpdatePet(ref suppressDefaultLog, exception, pathFormat, path, pet);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorUpdatePet(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, pet);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="pet"></param>
-        partial void OnErrorUpdatePet(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, Pet pet);
+        partial void OnErrorUpdatePet(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, Pet pet);
 
         /// <summary>
         /// Update an existing pet 
@@ -1942,11 +2163,17 @@ namespace Org.OpenAPITools.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
-
                         ILogger<UpdatePetApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<UpdatePetApiResponse>();
+                        UpdatePetApiResponse apiResponseLocalVar;
 
-                        UpdatePetApiResponse apiResponseLocalVar = new UpdatePetApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet", requestedAtLocalVar, _jsonSerializerOptions);
+                        switch ((int)httpResponseMessageLocalVar.StatusCode) {
+                            default: {
+                                string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                apiResponseLocalVar = new UpdatePetApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet", requestedAtLocalVar, _jsonSerializerOptions);
+
+                                break;
+                            }
+                        }
 
                         AfterUpdatePetDefaultImplementation(apiResponseLocalVar, pet);
 
@@ -1994,7 +2221,23 @@ namespace Org.OpenAPITools.Api
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            /// <summary>
+            /// The <see cref="UpdatePetApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="contentStream"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public UpdatePetApiResponse(ILogger<UpdatePetApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 400 BadRequest
@@ -2054,7 +2297,7 @@ namespace Org.OpenAPITools.Api
             bool suppressDefaultLog = false;
             AfterUpdatePetWithForm(ref suppressDefaultLog, apiResponseLocalVar, petId, name, status);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -2070,31 +2313,31 @@ namespace Org.OpenAPITools.Api
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="petId"></param>
         /// <param name="name"></param>
         /// <param name="status"></param>
-        private void OnErrorUpdatePetWithFormDefaultImplementation(Exception exception, string pathFormat, string path, long petId, Option<string> name, Option<string> status)
+        private void OnErrorUpdatePetWithFormDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, long petId, Option<string> name, Option<string> status)
         {
-            bool suppressDefaultLog = false;
-            OnErrorUpdatePetWithForm(ref suppressDefaultLog, exception, pathFormat, path, petId, name, status);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorUpdatePetWithForm(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, petId, name, status);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="petId"></param>
         /// <param name="name"></param>
         /// <param name="status"></param>
-        partial void OnErrorUpdatePetWithForm(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, long petId, Option<string> name, Option<string> status);
+        partial void OnErrorUpdatePetWithForm(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, long petId, Option<string> name, Option<string> status);
 
         /// <summary>
         /// Updates a pet in the store with form data 
@@ -2140,20 +2383,21 @@ namespace Org.OpenAPITools.Api
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/pet/{petId}";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/pet/{petId}"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath.TrimEnd('/'), "/pet/{petId}");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BpetId%7D", Uri.EscapeDataString(petId.ToString()));
-
-                    MultipartContent multipartContentLocalVar = new MultipartContent();
-
-                    httpRequestMessageLocalVar.Content = multipartContentLocalVar;
 
                     List<KeyValuePair<string, string>> formParameterLocalVars = new List<KeyValuePair<string, string>>();
 
-                    multipartContentLocalVar.Add(new FormUrlEncodedContent(formParameterLocalVars));                    if (name.IsSet)
+                    if (name.IsSet)
                         formParameterLocalVars.Add(new KeyValuePair<string, string>("name", ClientUtils.ParameterToString(name.Value)));
 
                     if (status.IsSet)
                         formParameterLocalVars.Add(new KeyValuePair<string, string>("status", ClientUtils.ParameterToString(status.Value)));
+
+                    if (formParameterLocalVars.Count > 0)
+                        httpRequestMessageLocalVar.Content = new FormUrlEncodedContent(formParameterLocalVars);
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
@@ -2168,22 +2412,23 @@ namespace Org.OpenAPITools.Api
                         "application/x-www-form-urlencoded"
                     };
 
-                    string contentTypeLocalVar = ClientUtils.SelectHeaderContentType(contentTypes);
-
-                    if (contentTypeLocalVar != null && httpRequestMessageLocalVar.Content != null)
-                        httpRequestMessageLocalVar.Content.Headers.ContentType = new MediaTypeHeaderValue(contentTypeLocalVar);
-
                     httpRequestMessageLocalVar.Method = new HttpMethod("POST");
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
-
                         ILogger<UpdatePetWithFormApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<UpdatePetWithFormApiResponse>();
+                        UpdatePetWithFormApiResponse apiResponseLocalVar;
 
-                        UpdatePetWithFormApiResponse apiResponseLocalVar = new UpdatePetWithFormApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/{petId}", requestedAtLocalVar, _jsonSerializerOptions);
+                        switch ((int)httpResponseMessageLocalVar.StatusCode) {
+                            default: {
+                                string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                apiResponseLocalVar = new UpdatePetWithFormApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/{petId}", requestedAtLocalVar, _jsonSerializerOptions);
+
+                                break;
+                            }
+                        }
 
                         AfterUpdatePetWithFormDefaultImplementation(apiResponseLocalVar, petId, name, status);
 
@@ -2231,7 +2476,23 @@ namespace Org.OpenAPITools.Api
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            /// <summary>
+            /// The <see cref="UpdatePetWithFormApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="contentStream"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public UpdatePetWithFormApiResponse(ILogger<UpdatePetWithFormApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 405 MethodNotAllowed
@@ -2250,21 +2511,21 @@ namespace Org.OpenAPITools.Api
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
         }
 
-        partial void FormatUploadFile(ref long petId, ref Option<System.IO.Stream> file, ref Option<string> additionalMetadata);
+        partial void FormatUploadFile(ref long petId, ref Option<string> additionalMetadata, ref Option<Org.OpenAPITools.Client.FileParameter> file);
 
         /// <summary>
         /// Validates the request parameters
         /// </summary>
-        /// <param name="file"></param>
         /// <param name="additionalMetadata"></param>
+        /// <param name="file"></param>
         /// <returns></returns>
-        private void ValidateUploadFile(Option<System.IO.Stream> file, Option<string> additionalMetadata)
+        private void ValidateUploadFile(Option<string> additionalMetadata, Option<Org.OpenAPITools.Client.FileParameter> file)
         {
-            if (file.IsSet && file.Value == null)
-                throw new ArgumentNullException(nameof(file));
-
             if (additionalMetadata.IsSet && additionalMetadata.Value == null)
                 throw new ArgumentNullException(nameof(additionalMetadata));
+
+            if (file.IsSet && file.Value == null)
+                throw new ArgumentNullException(nameof(file));
         }
 
         /// <summary>
@@ -2272,14 +2533,14 @@ namespace Org.OpenAPITools.Api
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="petId"></param>
-        /// <param name="file"></param>
         /// <param name="additionalMetadata"></param>
-        private void AfterUploadFileDefaultImplementation(IUploadFileApiResponse apiResponseLocalVar, long petId, Option<System.IO.Stream> file, Option<string> additionalMetadata)
+        /// <param name="file"></param>
+        private void AfterUploadFileDefaultImplementation(IUploadFileApiResponse apiResponseLocalVar, long petId, Option<string> additionalMetadata, Option<Org.OpenAPITools.Client.FileParameter> file)
         {
             bool suppressDefaultLog = false;
-            AfterUploadFile(ref suppressDefaultLog, apiResponseLocalVar, petId, file, additionalMetadata);
+            AfterUploadFile(ref suppressDefaultLog, apiResponseLocalVar, petId, additionalMetadata, file);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -2288,52 +2549,52 @@ namespace Org.OpenAPITools.Api
         /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
         /// <param name="petId"></param>
-        /// <param name="file"></param>
         /// <param name="additionalMetadata"></param>
-        partial void AfterUploadFile(ref bool suppressDefaultLog, IUploadFileApiResponse apiResponseLocalVar, long petId, Option<System.IO.Stream> file, Option<string> additionalMetadata);
+        /// <param name="file"></param>
+        partial void AfterUploadFile(ref bool suppressDefaultLog, IUploadFileApiResponse apiResponseLocalVar, long petId, Option<string> additionalMetadata, Option<Org.OpenAPITools.Client.FileParameter> file);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="petId"></param>
-        /// <param name="file"></param>
         /// <param name="additionalMetadata"></param>
-        private void OnErrorUploadFileDefaultImplementation(Exception exception, string pathFormat, string path, long petId, Option<System.IO.Stream> file, Option<string> additionalMetadata)
+        /// <param name="file"></param>
+        private void OnErrorUploadFileDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, long petId, Option<string> additionalMetadata, Option<Org.OpenAPITools.Client.FileParameter> file)
         {
-            bool suppressDefaultLog = false;
-            OnErrorUploadFile(ref suppressDefaultLog, exception, pathFormat, path, petId, file, additionalMetadata);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorUploadFile(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, petId, additionalMetadata, file);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="petId"></param>
-        /// <param name="file"></param>
         /// <param name="additionalMetadata"></param>
-        partial void OnErrorUploadFile(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, long petId, Option<System.IO.Stream> file, Option<string> additionalMetadata);
+        /// <param name="file"></param>
+        partial void OnErrorUploadFile(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, long petId, Option<string> additionalMetadata, Option<Org.OpenAPITools.Client.FileParameter> file);
 
         /// <summary>
         /// uploads an image 
         /// </summary>
         /// <param name="petId">ID of pet to update</param>
-        /// <param name="file">file to upload (optional)</param>
         /// <param name="additionalMetadata">Additional data to pass to server (optional)</param>
+        /// <param name="file">file to upload (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="IUploadFileApiResponse"/>&gt;</returns>
-        public async Task<IUploadFileApiResponse> UploadFileOrDefaultAsync(long petId, Option<System.IO.Stream> file = default, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<IUploadFileApiResponse> UploadFileOrDefaultAsync(long petId, Option<string> additionalMetadata = default, Option<Org.OpenAPITools.Client.FileParameter> file = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
-                return await UploadFileAsync(petId, file, additionalMetadata, cancellationToken).ConfigureAwait(false);
+                return await UploadFileAsync(petId, additionalMetadata, file, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -2346,39 +2607,48 @@ namespace Org.OpenAPITools.Api
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
         /// <param name="petId">ID of pet to update</param>
-        /// <param name="file">file to upload (optional)</param>
         /// <param name="additionalMetadata">Additional data to pass to server (optional)</param>
+        /// <param name="file">file to upload (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="IUploadFileApiResponse"/>&gt;</returns>
-        public async Task<IUploadFileApiResponse> UploadFileAsync(long petId, Option<System.IO.Stream> file = default, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<IUploadFileApiResponse> UploadFileAsync(long petId, Option<string> additionalMetadata = default, Option<Org.OpenAPITools.Client.FileParameter> file = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
             try
             {
-                ValidateUploadFile(file, additionalMetadata);
+                ValidateUploadFile(additionalMetadata, file);
 
-                FormatUploadFile(ref petId, ref file, ref additionalMetadata);
+                FormatUploadFile(ref petId, ref additionalMetadata, ref file);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/pet/{petId}/uploadImage";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/pet/{petId}/uploadImage"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath.TrimEnd('/'), "/pet/{petId}/uploadImage");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BpetId%7D", Uri.EscapeDataString(petId.ToString()));
 
-                    MultipartContent multipartContentLocalVar = new MultipartContent();
+                    MultipartFormDataContent multipartContentLocalVar = new MultipartFormDataContent();
 
                     httpRequestMessageLocalVar.Content = multipartContentLocalVar;
 
                     List<KeyValuePair<string, string>> formParameterLocalVars = new List<KeyValuePair<string, string>>();
 
-                    multipartContentLocalVar.Add(new FormUrlEncodedContent(formParameterLocalVars));                    if (file.IsSet)
-                        multipartContentLocalVar.Add(new StreamContent(file.Value));
-
                     if (additionalMetadata.IsSet)
                         formParameterLocalVars.Add(new KeyValuePair<string, string>("additionalMetadata", ClientUtils.ParameterToString(additionalMetadata.Value)));
+
+                    if (file.IsSet)
+                    {
+                        var streamContentLocalVar = new StreamContent(file.Value.Content);
+                        streamContentLocalVar.Headers.ContentType = new MediaTypeHeaderValue(file.Value.ContentType);
+                        multipartContentLocalVar.Add(streamContentLocalVar, "file", file.Value.FileName ?? "file");
+                    }
+
+                    foreach (var formParamLocalVar in formParameterLocalVars)
+                        multipartContentLocalVar.Add(new StringContent(formParamLocalVar.Value ?? string.Empty), formParamLocalVar.Key);
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
@@ -2393,32 +2663,33 @@ namespace Org.OpenAPITools.Api
                         "multipart/form-data"
                     };
 
-                    string contentTypeLocalVar = ClientUtils.SelectHeaderContentType(contentTypes);
-
-                    if (contentTypeLocalVar != null && httpRequestMessageLocalVar.Content != null)
-                        httpRequestMessageLocalVar.Content.Headers.ContentType = new MediaTypeHeaderValue(contentTypeLocalVar);
-
                     string[] acceptLocalVars = new string[] {
                         "application/json"
                     };
 
-                    string acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
+                    IEnumerable<MediaTypeWithQualityHeaderValue> acceptHeaderValuesLocalVar = ClientUtils.SelectHeaderAcceptArray(acceptLocalVars);
 
-                    if (acceptLocalVar != null)
-                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
+                    foreach (var acceptLocalVar in acceptHeaderValuesLocalVar)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(acceptLocalVar);
                     httpRequestMessageLocalVar.Method = new HttpMethod("POST");
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
-
                         ILogger<UploadFileApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<UploadFileApiResponse>();
+                        UploadFileApiResponse apiResponseLocalVar;
 
-                        UploadFileApiResponse apiResponseLocalVar = new UploadFileApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/{petId}/uploadImage", requestedAtLocalVar, _jsonSerializerOptions);
+                        switch ((int)httpResponseMessageLocalVar.StatusCode) {
+                            default: {
+                                string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                apiResponseLocalVar = new UploadFileApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/{petId}/uploadImage", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterUploadFileDefaultImplementation(apiResponseLocalVar, petId, file, additionalMetadata);
+                                break;
+                            }
+                        }
+
+                        AfterUploadFileDefaultImplementation(apiResponseLocalVar, petId, additionalMetadata, file);
 
                         Events.ExecuteOnUploadFile(apiResponseLocalVar);
 
@@ -2432,7 +2703,7 @@ namespace Org.OpenAPITools.Api
             }
             catch(Exception e)
             {
-                OnErrorUploadFileDefaultImplementation(e, "/pet/{petId}/uploadImage", uriBuilderLocalVar.Path, petId, file, additionalMetadata);
+                OnErrorUploadFileDefaultImplementation(e, "/pet/{petId}/uploadImage", uriBuilderLocalVar.Path, petId, additionalMetadata, file);
                 Events.ExecuteOnErrorUploadFile(e);
                 throw;
             }
@@ -2464,7 +2735,23 @@ namespace Org.OpenAPITools.Api
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            /// <summary>
+            /// The <see cref="UploadFileApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="contentStream"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public UploadFileApiResponse(ILogger<UploadFileApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok
@@ -2515,7 +2802,7 @@ namespace Org.OpenAPITools.Api
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
         }
 
-        partial void FormatUploadFileWithRequiredFile(ref System.IO.Stream requiredFile, ref long petId, ref Option<string> additionalMetadata);
+        partial void FormatUploadFileWithRequiredFile(ref long petId, ref Org.OpenAPITools.Client.FileParameter requiredFile, ref Option<string> additionalMetadata);
 
         /// <summary>
         /// Validates the request parameters
@@ -2523,7 +2810,7 @@ namespace Org.OpenAPITools.Api
         /// <param name="requiredFile"></param>
         /// <param name="additionalMetadata"></param>
         /// <returns></returns>
-        private void ValidateUploadFileWithRequiredFile(System.IO.Stream requiredFile, Option<string> additionalMetadata)
+        private void ValidateUploadFileWithRequiredFile(Org.OpenAPITools.Client.FileParameter requiredFile, Option<string> additionalMetadata)
         {
             if (requiredFile == null)
                 throw new ArgumentNullException(nameof(requiredFile));
@@ -2536,15 +2823,15 @@ namespace Org.OpenAPITools.Api
         /// Processes the server response
         /// </summary>
         /// <param name="apiResponseLocalVar"></param>
-        /// <param name="requiredFile"></param>
         /// <param name="petId"></param>
+        /// <param name="requiredFile"></param>
         /// <param name="additionalMetadata"></param>
-        private void AfterUploadFileWithRequiredFileDefaultImplementation(IUploadFileWithRequiredFileApiResponse apiResponseLocalVar, System.IO.Stream requiredFile, long petId, Option<string> additionalMetadata)
+        private void AfterUploadFileWithRequiredFileDefaultImplementation(IUploadFileWithRequiredFileApiResponse apiResponseLocalVar, long petId, Org.OpenAPITools.Client.FileParameter requiredFile, Option<string> additionalMetadata)
         {
             bool suppressDefaultLog = false;
-            AfterUploadFileWithRequiredFile(ref suppressDefaultLog, apiResponseLocalVar, requiredFile, petId, additionalMetadata);
+            AfterUploadFileWithRequiredFile(ref suppressDefaultLog, apiResponseLocalVar, petId, requiredFile, additionalMetadata);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {3}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -2552,53 +2839,53 @@ namespace Org.OpenAPITools.Api
         /// </summary>
         /// <param name="suppressDefaultLog"></param>
         /// <param name="apiResponseLocalVar"></param>
-        /// <param name="requiredFile"></param>
         /// <param name="petId"></param>
+        /// <param name="requiredFile"></param>
         /// <param name="additionalMetadata"></param>
-        partial void AfterUploadFileWithRequiredFile(ref bool suppressDefaultLog, IUploadFileWithRequiredFileApiResponse apiResponseLocalVar, System.IO.Stream requiredFile, long petId, Option<string> additionalMetadata);
+        partial void AfterUploadFileWithRequiredFile(ref bool suppressDefaultLog, IUploadFileWithRequiredFileApiResponse apiResponseLocalVar, long petId, Org.OpenAPITools.Client.FileParameter requiredFile, Option<string> additionalMetadata);
 
         /// <summary>
         /// Logs exceptions that occur while retrieving the server response
         /// </summary>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
-        /// <param name="requiredFile"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="petId"></param>
+        /// <param name="requiredFile"></param>
         /// <param name="additionalMetadata"></param>
-        private void OnErrorUploadFileWithRequiredFileDefaultImplementation(Exception exception, string pathFormat, string path, System.IO.Stream requiredFile, long petId, Option<string> additionalMetadata)
+        private void OnErrorUploadFileWithRequiredFileDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, long petId, Org.OpenAPITools.Client.FileParameter requiredFile, Option<string> additionalMetadata)
         {
-            bool suppressDefaultLog = false;
-            OnErrorUploadFileWithRequiredFile(ref suppressDefaultLog, exception, pathFormat, path, requiredFile, petId, additionalMetadata);
-            if (!suppressDefaultLog)
-                Logger.LogError(exception, "An error occurred while sending the request to the server.");
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorUploadFileWithRequiredFile(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, petId, requiredFile, additionalMetadata);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
         /// A partial method that gives developers a way to provide customized exception handling
         /// </summary>
-        /// <param name="suppressDefaultLog"></param>
-        /// <param name="exception"></param>
-        /// <param name="pathFormat"></param>
-        /// <param name="path"></param>
-        /// <param name="requiredFile"></param>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
         /// <param name="petId"></param>
+        /// <param name="requiredFile"></param>
         /// <param name="additionalMetadata"></param>
-        partial void OnErrorUploadFileWithRequiredFile(ref bool suppressDefaultLog, Exception exception, string pathFormat, string path, System.IO.Stream requiredFile, long petId, Option<string> additionalMetadata);
+        partial void OnErrorUploadFileWithRequiredFile(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, long petId, Org.OpenAPITools.Client.FileParameter requiredFile, Option<string> additionalMetadata);
 
         /// <summary>
         /// uploads an image (required) 
         /// </summary>
-        /// <param name="requiredFile">file to upload</param>
         /// <param name="petId">ID of pet to update</param>
+        /// <param name="requiredFile">file to upload</param>
         /// <param name="additionalMetadata">Additional data to pass to server (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="IUploadFileWithRequiredFileApiResponse"/>&gt;</returns>
-        public async Task<IUploadFileWithRequiredFileApiResponse> UploadFileWithRequiredFileOrDefaultAsync(System.IO.Stream requiredFile, long petId, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<IUploadFileWithRequiredFileApiResponse> UploadFileWithRequiredFileOrDefaultAsync(long petId, Org.OpenAPITools.Client.FileParameter requiredFile, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default)
         {
             try
             {
-                return await UploadFileWithRequiredFileAsync(requiredFile, petId, additionalMetadata, cancellationToken).ConfigureAwait(false);
+                return await UploadFileWithRequiredFileAsync(petId, requiredFile, additionalMetadata, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception)
             {
@@ -2610,12 +2897,12 @@ namespace Org.OpenAPITools.Api
         /// uploads an image (required) 
         /// </summary>
         /// <exception cref="ApiException">Thrown when fails to make API call</exception>
-        /// <param name="requiredFile">file to upload</param>
         /// <param name="petId">ID of pet to update</param>
+        /// <param name="requiredFile">file to upload</param>
         /// <param name="additionalMetadata">Additional data to pass to server (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns><see cref="Task"/>&lt;<see cref="IUploadFileWithRequiredFileApiResponse"/>&gt;</returns>
-        public async Task<IUploadFileWithRequiredFileApiResponse> UploadFileWithRequiredFileAsync(System.IO.Stream requiredFile, long petId, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default)
+        public async Task<IUploadFileWithRequiredFileApiResponse> UploadFileWithRequiredFileAsync(long petId, Org.OpenAPITools.Client.FileParameter requiredFile, Option<string> additionalMetadata = default, System.Threading.CancellationToken cancellationToken = default)
         {
             UriBuilder uriBuilderLocalVar = new UriBuilder();
 
@@ -2623,26 +2910,35 @@ namespace Org.OpenAPITools.Api
             {
                 ValidateUploadFileWithRequiredFile(requiredFile, additionalMetadata);
 
-                FormatUploadFileWithRequiredFile(ref requiredFile, ref petId, ref additionalMetadata);
+                FormatUploadFileWithRequiredFile(ref petId, ref requiredFile, ref additionalMetadata);
 
                 using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
                 {
                     uriBuilderLocalVar.Host = HttpClient.BaseAddress.Host;
                     uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
                     uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
-                    uriBuilderLocalVar.Path = ClientUtils.CONTEXT_PATH + "/fake/{petId}/uploadImageWithRequiredFile";
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/fake/{petId}/uploadImageWithRequiredFile"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath.TrimEnd('/'), "/fake/{petId}/uploadImageWithRequiredFile");
                     uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BpetId%7D", Uri.EscapeDataString(petId.ToString()));
 
-                    MultipartContent multipartContentLocalVar = new MultipartContent();
+                    MultipartFormDataContent multipartContentLocalVar = new MultipartFormDataContent();
 
                     httpRequestMessageLocalVar.Content = multipartContentLocalVar;
 
                     List<KeyValuePair<string, string>> formParameterLocalVars = new List<KeyValuePair<string, string>>();
 
-                    multipartContentLocalVar.Add(new FormUrlEncodedContent(formParameterLocalVars));                    multipartContentLocalVar.Add(new StreamContent(requiredFile));
+                    {
+                        var streamContentLocalVar = new StreamContent(requiredFile.Content);
+                        streamContentLocalVar.Headers.ContentType = new MediaTypeHeaderValue(requiredFile.ContentType);
+                        multipartContentLocalVar.Add(streamContentLocalVar, "requiredFile", requiredFile.FileName ?? "requiredFile");
+                    }
 
                     if (additionalMetadata.IsSet)
                         formParameterLocalVars.Add(new KeyValuePair<string, string>("additionalMetadata", ClientUtils.ParameterToString(additionalMetadata.Value)));
+
+                    foreach (var formParamLocalVar in formParameterLocalVars)
+                        multipartContentLocalVar.Add(new StringContent(formParamLocalVar.Value ?? string.Empty), formParamLocalVar.Key);
 
                     List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
                     httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
@@ -2657,33 +2953,34 @@ namespace Org.OpenAPITools.Api
                         "multipart/form-data"
                     };
 
-                    string contentTypeLocalVar = ClientUtils.SelectHeaderContentType(contentTypes);
-
-                    if (contentTypeLocalVar != null && httpRequestMessageLocalVar.Content != null)
-                        httpRequestMessageLocalVar.Content.Headers.ContentType = new MediaTypeHeaderValue(contentTypeLocalVar);
-
                     string[] acceptLocalVars = new string[] {
                         "application/json",
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     };
 
-                    string acceptLocalVar = ClientUtils.SelectHeaderAccept(acceptLocalVars);
+                    IEnumerable<MediaTypeWithQualityHeaderValue> acceptHeaderValuesLocalVar = ClientUtils.SelectHeaderAcceptArray(acceptLocalVars);
 
-                    if (acceptLocalVar != null)
-                        httpRequestMessageLocalVar.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue(acceptLocalVar));
+                    foreach (var acceptLocalVar in acceptHeaderValuesLocalVar)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(acceptLocalVar);
                     httpRequestMessageLocalVar.Method = new HttpMethod("POST");
 
                     DateTime requestedAtLocalVar = DateTime.UtcNow;
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
-
                         ILogger<UploadFileWithRequiredFileApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<UploadFileWithRequiredFileApiResponse>();
+                        UploadFileWithRequiredFileApiResponse apiResponseLocalVar;
 
-                        UploadFileWithRequiredFileApiResponse apiResponseLocalVar = new UploadFileWithRequiredFileApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/fake/{petId}/uploadImageWithRequiredFile", requestedAtLocalVar, _jsonSerializerOptions);
+                        switch ((int)httpResponseMessageLocalVar.StatusCode) {
+                            default: {
+                                string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                apiResponseLocalVar = new UploadFileWithRequiredFileApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/fake/{petId}/uploadImageWithRequiredFile", requestedAtLocalVar, _jsonSerializerOptions);
 
-                        AfterUploadFileWithRequiredFileDefaultImplementation(apiResponseLocalVar, requiredFile, petId, additionalMetadata);
+                                break;
+                            }
+                        }
+
+                        AfterUploadFileWithRequiredFileDefaultImplementation(apiResponseLocalVar, petId, requiredFile, additionalMetadata);
 
                         Events.ExecuteOnUploadFileWithRequiredFile(apiResponseLocalVar);
 
@@ -2697,7 +2994,7 @@ namespace Org.OpenAPITools.Api
             }
             catch(Exception e)
             {
-                OnErrorUploadFileWithRequiredFileDefaultImplementation(e, "/fake/{petId}/uploadImageWithRequiredFile", uriBuilderLocalVar.Path, requiredFile, petId, additionalMetadata);
+                OnErrorUploadFileWithRequiredFileDefaultImplementation(e, "/fake/{petId}/uploadImageWithRequiredFile", uriBuilderLocalVar.Path, petId, requiredFile, additionalMetadata);
                 Events.ExecuteOnErrorUploadFileWithRequiredFile(e);
                 throw;
             }
@@ -2729,7 +3026,301 @@ namespace Org.OpenAPITools.Api
                 OnCreated(httpRequestMessage, httpResponseMessage);
             }
 
-            partial void OnCreated(System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+            /// <summary>
+            /// The <see cref="UploadFileWithRequiredFileApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="contentStream"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public UploadFileWithRequiredFileApiResponse(ILogger<UploadFileWithRequiredFileApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public bool IsOk => 200 == (int)StatusCode;
+
+            /// <summary>
+            /// Deserializes the response if the response is 200 Ok
+            /// </summary>
+            /// <returns></returns>
+            public Org.OpenAPITools.Model.ApiResponse Ok()
+            {
+                // This logic may be modified with the AsModel.mustache template
+                return IsOk
+                    ? System.Text.Json.JsonSerializer.Deserialize<Org.OpenAPITools.Model.ApiResponse>(RawContent, _jsonSerializerOptions)
+                    : default;
+            }
+
+            /// <summary>
+            /// Returns true if the response is 200 Ok and the deserialized response is not null
+            /// </summary>
+            /// <param name="result"></param>
+            /// <returns></returns>
+            public bool TryOk(out Org.OpenAPITools.Model.ApiResponse result)
+            {
+                result = null;
+
+                try
+                {
+                    result = Ok();
+                } catch (Exception e)
+                {
+                    OnDeserializationErrorDefaultImplementation(e, (HttpStatusCode)200);
+                }
+
+                return result != null;
+            }
+
+            private void OnDeserializationErrorDefaultImplementation(Exception exception, HttpStatusCode httpStatusCode)
+            {
+                bool suppressDefaultLog = false;
+                OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
+                if (!suppressDefaultLog)
+                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+            }
+
+            partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
+        }
+
+        partial void FormatUploadFiles(List<Org.OpenAPITools.Client.FileParameter> files, ref long petId);
+
+        /// <summary>
+        /// Validates the request parameters
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        private void ValidateUploadFiles(List<Org.OpenAPITools.Client.FileParameter> files)
+        {
+            if (files == null)
+                throw new ArgumentNullException(nameof(files));
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="files"></param>
+        /// <param name="petId"></param>
+        private void AfterUploadFilesDefaultImplementation(IUploadFilesApiResponse apiResponseLocalVar, List<Org.OpenAPITools.Client.FileParameter> files, long petId)
+        {
+            bool suppressDefaultLog = false;
+            AfterUploadFiles(ref suppressDefaultLog, apiResponseLocalVar, files, petId);
+            if (!suppressDefaultLog)
+                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+        }
+
+        /// <summary>
+        /// Processes the server response
+        /// </summary>
+        /// <param name="suppressDefaultLog"></param>
+        /// <param name="apiResponseLocalVar"></param>
+        /// <param name="files"></param>
+        /// <param name="petId"></param>
+        partial void AfterUploadFiles(ref bool suppressDefaultLog, IUploadFilesApiResponse apiResponseLocalVar, List<Org.OpenAPITools.Client.FileParameter> files, long petId);
+
+        /// <summary>
+        /// Logs exceptions that occur while retrieving the server response
+        /// </summary>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
+        /// <param name="files"></param>
+        /// <param name="petId"></param>
+        private void OnErrorUploadFilesDefaultImplementation(Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, List<Org.OpenAPITools.Client.FileParameter> files, long petId)
+        {
+            bool suppressDefaultLogLocalVar = false;
+            OnErrorUploadFiles(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, files, petId);
+            if (!suppressDefaultLogLocalVar)
+                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+        }
+
+        /// <summary>
+        /// A partial method that gives developers a way to provide customized exception handling
+        /// </summary>
+        /// <param name="suppressDefaultLogLocalVar"></param>
+        /// <param name="exceptionLocalVar"></param>
+        /// <param name="pathFormatLocalVar"></param>
+        /// <param name="pathLocalVar"></param>
+        /// <param name="files"></param>
+        /// <param name="petId"></param>
+        partial void OnErrorUploadFiles(ref bool suppressDefaultLogLocalVar, Exception exceptionLocalVar, string pathFormatLocalVar, string pathLocalVar, List<Org.OpenAPITools.Client.FileParameter> files, long petId);
+
+        /// <summary>
+        /// uploads an images 
+        /// </summary>
+        /// <param name="files"></param>
+        /// <param name="petId">ID of pet to update</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="IUploadFilesApiResponse"/>&gt;</returns>
+        public async Task<IUploadFilesApiResponse> UploadFilesOrDefaultAsync(List<Org.OpenAPITools.Client.FileParameter> files, long petId, System.Threading.CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                return await UploadFilesAsync(files, petId, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// uploads an images 
+        /// </summary>
+        /// <exception cref="ApiException">Thrown when fails to make API call</exception>
+        /// <param name="files"></param>
+        /// <param name="petId">ID of pet to update</param>
+        /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
+        /// <returns><see cref="Task"/>&lt;<see cref="IUploadFilesApiResponse"/>&gt;</returns>
+        public async Task<IUploadFilesApiResponse> UploadFilesAsync(List<Org.OpenAPITools.Client.FileParameter> files, long petId, System.Threading.CancellationToken cancellationToken = default)
+        {
+            UriBuilder uriBuilderLocalVar = new UriBuilder();
+
+            try
+            {
+                ValidateUploadFiles(files);
+
+                FormatUploadFiles(files, ref petId);
+
+                using (HttpRequestMessage httpRequestMessageLocalVar = new HttpRequestMessage())
+                {
+                    uriBuilderLocalVar.Host = HttpClient.BaseAddress.Host;
+                    uriBuilderLocalVar.Port = HttpClient.BaseAddress.Port;
+                    uriBuilderLocalVar.Scheme = HttpClient.BaseAddress.Scheme;
+                    uriBuilderLocalVar.Path = HttpClient.BaseAddress.AbsolutePath == "/"
+                        ? "/pet/{petId}/uploadImages"
+                        : string.Concat(HttpClient.BaseAddress.AbsolutePath.TrimEnd('/'), "/pet/{petId}/uploadImages");
+                    uriBuilderLocalVar.Path = uriBuilderLocalVar.Path.Replace("%7BpetId%7D", Uri.EscapeDataString(petId.ToString()));
+
+                    MultipartFormDataContent multipartContentLocalVar = new MultipartFormDataContent();
+
+                    httpRequestMessageLocalVar.Content = multipartContentLocalVar;
+
+                    List<KeyValuePair<string, string>> formParameterLocalVars = new List<KeyValuePair<string, string>>();
+
+                    foreach (Org.OpenAPITools.Client.FileParameter fileParameterLocalVar in files)
+                    {
+                        var streamContentLocalVar = new StreamContent(fileParameterLocalVar.Content);
+                        streamContentLocalVar.Headers.ContentType = new MediaTypeHeaderValue(fileParameterLocalVar.ContentType);
+                        multipartContentLocalVar.Add(streamContentLocalVar, "files", fileParameterLocalVar.FileName ?? "files");
+                    }
+
+                    foreach (var formParamLocalVar in formParameterLocalVars)
+                        multipartContentLocalVar.Add(new StringContent(formParamLocalVar.Value ?? string.Empty), formParamLocalVar.Key);
+
+                    List<TokenBase> tokenBaseLocalVars = new List<TokenBase>();
+                    httpRequestMessageLocalVar.RequestUri = uriBuilderLocalVar.Uri;
+
+                    OAuthToken oauthTokenLocalVar1 = (OAuthToken) await OauthTokenProvider.GetAsync(cancellation: cancellationToken).ConfigureAwait(false);
+
+                    tokenBaseLocalVars.Add(oauthTokenLocalVar1);
+
+                    oauthTokenLocalVar1.UseInHeader(httpRequestMessageLocalVar, "");
+
+                    string[] contentTypes = new string[] {
+                        "multipart/form-data"
+                    };
+
+                    string[] acceptLocalVars = new string[] {
+                        "application/json"
+                    };
+
+                    IEnumerable<MediaTypeWithQualityHeaderValue> acceptHeaderValuesLocalVar = ClientUtils.SelectHeaderAcceptArray(acceptLocalVars);
+
+                    foreach (var acceptLocalVar in acceptHeaderValuesLocalVar)
+                        httpRequestMessageLocalVar.Headers.Accept.Add(acceptLocalVar);
+                    httpRequestMessageLocalVar.Method = new HttpMethod("POST");
+
+                    DateTime requestedAtLocalVar = DateTime.UtcNow;
+
+                    using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
+                    {
+                        ILogger<UploadFilesApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<UploadFilesApiResponse>();
+                        UploadFilesApiResponse apiResponseLocalVar;
+
+                        switch ((int)httpResponseMessageLocalVar.StatusCode) {
+                            default: {
+                                string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                apiResponseLocalVar = new UploadFilesApiResponse(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/pet/{petId}/uploadImages", requestedAtLocalVar, _jsonSerializerOptions);
+
+                                break;
+                            }
+                        }
+
+                        AfterUploadFilesDefaultImplementation(apiResponseLocalVar, files, petId);
+
+                        Events.ExecuteOnUploadFiles(apiResponseLocalVar);
+
+                        if (apiResponseLocalVar.StatusCode == (HttpStatusCode) 429)
+                            foreach(TokenBase tokenBaseLocalVar in tokenBaseLocalVars)
+                                tokenBaseLocalVar.BeginRateLimit();
+
+                        return apiResponseLocalVar;
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                OnErrorUploadFilesDefaultImplementation(e, "/pet/{petId}/uploadImages", uriBuilderLocalVar.Path, files, petId);
+                Events.ExecuteOnErrorUploadFiles(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="UploadFilesApiResponse"/>
+        /// </summary>
+        public partial class UploadFilesApiResponse : Org.OpenAPITools.Client.ApiResponse, IUploadFilesApiResponse
+        {
+            /// <summary>
+            /// The logger
+            /// </summary>
+            public ILogger<UploadFilesApiResponse> Logger { get; }
+
+            /// <summary>
+            /// The <see cref="UploadFilesApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="rawContent"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public UploadFilesApiResponse(ILogger<UploadFilesApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            /// <summary>
+            /// The <see cref="UploadFilesApiResponse"/>
+            /// </summary>
+            /// <param name="logger"></param>
+            /// <param name="httpRequestMessage"></param>
+            /// <param name="httpResponseMessage"></param>
+            /// <param name="contentStream"></param>
+            /// <param name="path"></param>
+            /// <param name="requestedAt"></param>
+            /// <param name="jsonSerializerOptions"></param>
+            public UploadFilesApiResponse(ILogger<UploadFilesApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            {
+                Logger = logger;
+                OnCreated(httpRequestMessage, httpResponseMessage);
+            }
+
+            partial void OnCreated(global::System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage);
 
             /// <summary>
             /// Returns true if the response is 200 Ok

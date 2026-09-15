@@ -48,32 +48,32 @@ class ApiResponse
         /**
      * @var int|null
      * @SerializedName("code")
-     * @Assert\Type("int")
      * @Type("int")
      */
+    #[Assert\Type("int")]
     protected ?int $code = null;
 
     /**
      * @var string|null
      * @SerializedName("type")
-     * @Assert\Type("string")
      * @Type("string")
      */
+    #[Assert\Type("string")]
     protected ?string $type = null;
 
     /**
      * @var string|null
      * @SerializedName("message")
-     * @Assert\Type("string")
      * @Type("string")
      */
+    #[Assert\Type("string")]
     protected ?string $message = null;
 
     /**
      * Constructor
      * @param array|null $data Associated array of property values initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         if (is_array($data)) {
             $this->code = array_key_exists('code', $data) ? $data['code'] : $this->code;
@@ -92,8 +92,6 @@ class ApiResponse
         return $this->code;
     }
 
-
-
     /**
      * Sets code.
      *
@@ -108,6 +106,9 @@ class ApiResponse
         return $this;
     }
 
+
+
+
     /**
      * Gets type.
      *
@@ -117,8 +118,6 @@ class ApiResponse
     {
         return $this->type;
     }
-
-
 
     /**
      * Sets type.
@@ -134,6 +133,9 @@ class ApiResponse
         return $this;
     }
 
+
+
+
     /**
      * Gets message.
      *
@@ -143,8 +145,6 @@ class ApiResponse
     {
         return $this->message;
     }
-
-
 
     /**
      * Sets message.
@@ -159,6 +159,9 @@ class ApiResponse
 
         return $this;
     }
+
+
+
 }
 
 

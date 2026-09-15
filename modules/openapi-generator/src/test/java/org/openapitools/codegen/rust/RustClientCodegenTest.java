@@ -19,11 +19,21 @@ package org.openapitools.codegen.rust;
 
 import io.swagger.v3.oas.models.media.IntegerSchema;
 import org.openapitools.codegen.CodegenConstants;
+import org.openapitools.codegen.DefaultGenerator;
+import org.openapitools.codegen.TestUtils;
+import org.openapitools.codegen.config.CodegenConfigurator;
 import org.openapitools.codegen.languages.RustClientCodegen;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+
+import static org.openapitools.codegen.TestUtils.linearize;
 
 public class RustClientCodegenTest {
 
@@ -243,4 +253,62 @@ public class RustClientCodegenTest {
         Assert.assertEquals(codegen.getSchemaType(s), "i64");
     }
 
+    @Test
+    public void testMultipleArrayTypesEnum() throws IOException {
+        Path target = Files.createTempDirectory("test");
+        final CodegenConfigurator configurator = new CodegenConfigurator()
+                .setGeneratorName("rust")
+                .setInputSpec("src/test/resources/3_1/issue_18527.yaml")
+                .setSkipOverwrite(false)
+                .setOutputDir(target.toAbsolutePath().toString().replace("\\", "/"));
+        List<File> files = new DefaultGenerator().opts(configurator.toClientOptInput()).generate();
+        files.forEach(File::deleteOnExit);
+        Path outputPath = Path.of(target.toString(), "/src/models/option1_or_option2_options.rs");
+        String enumSpec = linearize("pub enum Option1OrOption2Options { " +
+                "ArrayVecString(Vec<String>), " +
+                "ArrayVeci32(Vec<i32>)," +
+                "}");
+        TestUtils.assertFileExists(outputPath);
+        TestUtils.assertFileContains(outputPath, enumSpec);
+    }
+
+    @Test
+    public void testIntegerPropertyEnum() throws IOException {
+        Path target = Files.createTempDirectory("test");
+        target.toFile().deleteOnExit();
+        final CodegenConfigurator configurator = new CodegenConfigurator()
+                .setGeneratorName("rust")
+                .setInputSpec("src/test/resources/3_1/rust_integer_property_enum.yaml")
+                .setSkipOverwrite(false)
+                .setOutputDir(target.toAbsolutePath().toString().replace("\\", "/"));
+        new DefaultGenerator().opts(configurator.toClientOptInput()).generate();
+        Path outputPath = Path.of(target.toString(), "/src/models/signed_message_signature.rs");
+        TestUtils.assertFileExists(outputPath);
+        // The integer-enum property must use serde_repr (not string rename)
+        TestUtils.assertFileContains(outputPath, "use serde_repr::{Serialize_repr,Deserialize_repr}");
+        TestUtils.assertFileContains(outputPath, "Serialize_repr, Deserialize_repr");
+        TestUtils.assertFileContains(outputPath, "= 0");
+        TestUtils.assertFileContains(outputPath, "= 1");
+        // Must NOT contain a string rename for an integer variant
+        TestUtils.assertFileNotContains(outputPath, linearize("#[serde(rename = \"0\")]"));
+    }
+
+    @Test
+    public void testArrayWithObjectEnumValues() throws IOException {
+        Path target = Files.createTempDirectory("test");
+        target.toFile().deleteOnExit();
+        final CodegenConfigurator configurator = new CodegenConfigurator()
+                .setGeneratorName("rust")
+                .setInputSpec("src/test/resources/3_1/issue_23278.yaml")
+                .setSkipOverwrite(false)
+                .setOutputDir(target.toAbsolutePath().toString().replace("\\", "/"));
+        new DefaultGenerator().opts(configurator.toClientOptInput()).generate();
+        Path outputPath = Path.of(target.toString(), "/src/models/object_arrays_options.rs");
+        String enumSpec = linearize("pub enum ObjectArraysOptions { " +
+                "ArrayVecTestObject(Vec<models::TestObject>), " +
+                "ArrayVecTestArray(Vec<models::TestArray>)," +
+                "}");
+        TestUtils.assertFileExists(outputPath);
+        TestUtils.assertFileContains(outputPath, enumSpec);
+    }
 }

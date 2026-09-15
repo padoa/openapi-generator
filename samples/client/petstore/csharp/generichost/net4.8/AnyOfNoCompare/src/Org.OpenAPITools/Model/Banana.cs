@@ -45,14 +45,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Count
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<decimal?> CountOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Count
         /// </summary>
         [JsonPropertyName("count")]
-        public decimal? Count { get { return this.CountOption; } set { this.CountOption = new Option<decimal?>(value); } }
+        public decimal? Count { get { return this.CountOption.Value; } set { this.CountOption = new Option<decimal?>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -125,8 +125,7 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "count":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                count = new Option<decimal?>(utf8JsonReader.GetDecimal());
+                            count = new Option<decimal?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (decimal?)null : utf8JsonReader.GetDecimal());
                             break;
                         default:
                             break;

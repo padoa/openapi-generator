@@ -48,27 +48,27 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Class
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> ClassOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Class
         /// </summary>
         [JsonPropertyName("class")]
-        public string Class { get { return this.ClassOption; } set { this.ClassOption = new(value); } }
+        public string Class { get { return this.ClassOption.Value; } set { this.ClassOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of Name
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> NameOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Name
         /// </summary>
         [JsonPropertyName("name")]
-        public int? Name { get { return this.NameOption; } set { this.NameOption = new(value); } }
+        public int? Name { get { return this.NameOption.Value; } set { this.NameOption = new(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -146,8 +146,7 @@ namespace Org.OpenAPITools.Model
                             varClass = new Option<string>(utf8JsonReader.GetString());
                             break;
                         case "name":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                name = new Option<int?>(utf8JsonReader.GetInt32());
+                            name = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;

@@ -48,47 +48,47 @@ class Pet
         /**
      * @var int|null
      * @SerializedName("id")
-     * @Assert\Type("int")
      * @Type("int")
      */
+    #[Assert\Type("int")]
     protected ?int $id = null;
 
     /**
      * @var Category|null
      * @SerializedName("category")
-     * @Assert\Type("OpenAPI\Server\Model\Category")
      * @Type("OpenAPI\Server\Model\Category")
      */
+    #[Assert\Type("OpenAPI\Server\Model\Category")]
     protected ?Category $category = null;
 
     /**
      * @var string|null
      * @SerializedName("name")
-     * @Assert\NotNull()
-     * @Assert\Type("string")
      * @Type("string")
      */
+    #[Assert\NotNull]
+    #[Assert\Type("string")]
     protected ?string $name = null;
 
     /**
      * @var string[]|null
      * @SerializedName("photoUrls")
-     * @Assert\NotNull()
-     * @Assert\All({
-     *   @Assert\Type("string")
-     * })
      * @Type("array<string>")
      */
+    #[Assert\NotNull]
+    #[Assert\All([
+        new Assert\Type("string"),
+    ])]
     protected ?array $photoUrls = null;
 
     /**
      * @var Tag[]|null
      * @SerializedName("tags")
-     * @Assert\All({
-     *   @Assert\Type("OpenAPI\Server\Model\Tag")
-     * })
      * @Type("array<OpenAPI\Server\Model\Tag>")
      */
+    #[Assert\All([
+        new Assert\Type("OpenAPI\Server\Model\Tag"),
+    ])]
     protected ?array $tags = null;
 
     /**
@@ -96,17 +96,17 @@ class Pet
      *
      * @var string|null
      * @SerializedName("status")
-     * @Assert\Choice({ "available", "pending", "sold" })
-     * @Assert\Type("string")
      * @Type("string")
      */
+    #[Assert\Choice(['available', 'pending', 'sold'])]
+    #[Assert\Type("string")]
     protected ?string $status = null;
 
     /**
      * Constructor
      * @param array|null $data Associated array of property values initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         if (is_array($data)) {
             $this->id = array_key_exists('id', $data) ? $data['id'] : $this->id;
@@ -128,8 +128,6 @@ class Pet
         return $this->id;
     }
 
-
-
     /**
      * Sets id.
      *
@@ -144,6 +142,9 @@ class Pet
         return $this;
     }
 
+
+
+
     /**
      * Gets category.
      *
@@ -153,8 +154,6 @@ class Pet
     {
         return $this->category;
     }
-
-
 
     /**
      * Sets category.
@@ -170,6 +169,9 @@ class Pet
         return $this;
     }
 
+
+
+
     /**
      * Gets name.
      *
@@ -179,8 +181,6 @@ class Pet
     {
         return $this->name;
     }
-
-
 
     /**
      * Sets name.
@@ -196,6 +196,9 @@ class Pet
         return $this;
     }
 
+
+
+
     /**
      * Gets photoUrls.
      *
@@ -205,8 +208,6 @@ class Pet
     {
         return $this->photoUrls;
     }
-
-
 
     /**
      * Sets photoUrls.
@@ -222,6 +223,9 @@ class Pet
         return $this;
     }
 
+
+
+
     /**
      * Gets tags.
      *
@@ -231,8 +235,6 @@ class Pet
     {
         return $this->tags;
     }
-
-
 
     /**
      * Sets tags.
@@ -248,6 +250,9 @@ class Pet
         return $this;
     }
 
+
+
+
     /**
      * Gets status.
      *
@@ -257,8 +262,6 @@ class Pet
     {
         return $this->status;
     }
-
-
 
     /**
      * Sets status.
@@ -273,6 +276,9 @@ class Pet
 
         return $this;
     }
+
+
+
 }
 
 

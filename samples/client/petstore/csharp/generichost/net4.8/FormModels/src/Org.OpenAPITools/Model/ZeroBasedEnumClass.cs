@@ -46,14 +46,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of ZeroBasedEnum
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<ZeroBasedEnumClassZeroBasedEnum?> ZeroBasedEnumOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets ZeroBasedEnum
         /// </summary>
         [JsonPropertyName("ZeroBasedEnum")]
-        public ZeroBasedEnumClassZeroBasedEnum? ZeroBasedEnum { get { return this.ZeroBasedEnumOption; } set { this.ZeroBasedEnumOption = new Option<ZeroBasedEnumClassZeroBasedEnum?>(value); } }
+        public ZeroBasedEnumClassZeroBasedEnum? ZeroBasedEnum { get { return this.ZeroBasedEnumOption.Value; } set { this.ZeroBasedEnumOption = new Option<ZeroBasedEnumClassZeroBasedEnum?>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties

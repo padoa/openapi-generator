@@ -50,40 +50,40 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of ColorCode
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> ColorCodeOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets ColorCode
         /// </summary>
         [JsonPropertyName("color_code")]
-        public string ColorCode { get { return this.ColorCodeOption; } set { this.ColorCodeOption = new(value); } }
+        public string ColorCode { get { return this.ColorCodeOption.Value; } set { this.ColorCodeOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of Cultivar
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> CultivarOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Cultivar
         /// </summary>
         [JsonPropertyName("cultivar")]
-        public string Cultivar { get { return this.CultivarOption; } set { this.CultivarOption = new(value); } }
+        public string Cultivar { get { return this.CultivarOption.Value; } set { this.CultivarOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of Origin
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> OriginOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Origin
         /// </summary>
         [JsonPropertyName("origin")]
-        public string Origin { get { return this.OriginOption; } set { this.OriginOption = new(value); } }
+        public string Origin { get { return this.OriginOption.Value; } set { this.OriginOption = new(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties

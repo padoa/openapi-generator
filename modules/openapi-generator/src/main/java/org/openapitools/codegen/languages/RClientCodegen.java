@@ -19,8 +19,6 @@ package org.openapitools.codegen.languages;
 
 import com.samskivert.mustache.Mustache;
 import com.samskivert.mustache.Template;
-
-//import com.sun.media.sound.InvalidDataException;
 import io.swagger.v3.oas.models.examples.Example;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
@@ -46,6 +44,12 @@ import static org.openapitools.codegen.utils.CamelizeOption.LOWERCASE_FIRST_LETT
 import static org.openapitools.codegen.utils.StringUtils.camelize;
 import static org.openapitools.codegen.utils.StringUtils.underscore;
 
+/**
+ * <p>Mustache templates are located in
+ * {@code src/main/resources/r/} (root templates shared across all libraries) and
+ * {@code src/main/resources/r/libraries/} (library-specific overrides).
+ * A library-specific template shadows a root-level template of the same name.
+ */
 public class RClientCodegen extends DefaultCodegen implements CodegenConfig {
     private final Logger LOGGER = LoggerFactory.getLogger(RClientCodegen.class);
 
@@ -603,6 +607,7 @@ public class RClientCodegen extends DefaultCodegen implements CodegenConfig {
     public ModelsMap postProcessModels(ModelsMap objs) {
         for (ModelMap mo : objs.getModels()) {
             CodegenModel cm = mo.getModel();
+            boolean needsExtractSimpleType = false;
             for (CodegenProperty var : cm.vars) {
                 // check to see if base name is an empty string
                 if ("".equals(var.baseName)) {
@@ -610,9 +615,16 @@ public class RClientCodegen extends DefaultCodegen implements CodegenConfig {
                     var.baseName = "empty_string";
                 }
 
+                if (!var.isPrimitiveType) {
+                    needsExtractSimpleType = true;
+                }
+
                 // create extension x-r-doc-type to store the data type in r doc format
                 var.vendorExtensions.put("x-r-doc-type", constructRdocType(var));
             }
+
+            // create extension x-r-has-non-primitive-field to indicate whether generated models need special handling for complex types
+            cm.vendorExtensions.put("x-r-has-non-primitive-field", needsExtractSimpleType);
 
             // apply the same fix, enhancement for allVars
             for (CodegenProperty var : cm.allVars) {

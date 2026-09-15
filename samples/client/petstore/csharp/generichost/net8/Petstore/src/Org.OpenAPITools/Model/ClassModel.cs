@@ -46,14 +46,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Class
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> ClassOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Class
         /// </summary>
         [JsonPropertyName("_class")]
-        public string Class { get { return this.ClassOption; } set { this.ClassOption = new(value); } }
+        public string Class { get { return this.ClassOption.Value; } set { this.ClassOption = new(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties

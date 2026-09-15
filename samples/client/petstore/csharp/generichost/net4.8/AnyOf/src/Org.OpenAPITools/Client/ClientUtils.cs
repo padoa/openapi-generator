@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 using KellermanSoftware.CompareNetObjects;
 using Org.OpenAPITools.Model;
 using System.Runtime.CompilerServices;
+using System.Net.Http.Headers;
 
 [assembly: InternalsVisibleTo("Org.OpenAPITools.Test")]
 
@@ -94,17 +95,6 @@ namespace Org.OpenAPITools.Client
                 result = default;
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Sanitize filename by removing the path
-        /// </summary>
-        /// <param name="filename">Filename</param>
-        /// <returns>Filename</returns>
-        public static string SanitizeFilename(string filename)
-        {
-            Match match = Regex.Match(filename, @".*[/\\](.*)$");
-            return match.Success ? match.Groups[1].Value : filename;
         }
 
         /// <summary>
@@ -186,7 +176,7 @@ namespace Org.OpenAPITools.Client
         /// <returns>Encoded string.</returns>
         public static string Base64Encode(string text)
         {
-            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(text));
+            return Convert.ToBase64String(global::System.Text.Encoding.UTF8.GetBytes(text));
         }
 
         /// <summary>
@@ -242,10 +232,30 @@ namespace Org.OpenAPITools.Client
             return string.Join(",", accepts);
         }
 
+        
+
+        /// <summary>
+        /// Select the Accept header's value from the given accepts array:
+        /// if JSON exists in the given array, use it;
+        /// otherwise use all of them.
+        /// </summary>
+        /// <param name="accepts">The accepts array to select from.</param>
+        /// <returns>The Accept header values to use.</returns>
+        public static IEnumerable<MediaTypeWithQualityHeaderValue> SelectHeaderAcceptArray(string[] accepts)
+        {
+            if (accepts.Length == 0)
+                    return Enumerable.Empty<MediaTypeWithQualityHeaderValue>();
+
+            if (accepts.Contains("application/json", StringComparer.OrdinalIgnoreCase))
+                    return new [] { MediaTypeWithQualityHeaderValue.Parse("application/json") };
+
+            return accepts.Select(MediaTypeWithQualityHeaderValue.Parse);
+        }
+
         /// <summary>
         /// Provides a case-insensitive check that a provided content type is a known JSON-like content type.
         /// </summary>
-        public static readonly Regex JsonRegex = new Regex("(?i)^(application/json|[^;/ \t]+/[^;/ \t]+[+]json)[ \t]*(;.*)?$");
+        private static readonly Regex JsonRegex = new Regex("(?i)^(application/json|[^;/ \t]+/[^;/ \t]+[+]json)[ \t]*(;.*)?$");
 
         /// <summary>
         /// Check if the given MIME is a JSON MIME.

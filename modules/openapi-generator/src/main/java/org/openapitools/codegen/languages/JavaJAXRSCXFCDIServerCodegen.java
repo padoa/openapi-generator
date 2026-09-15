@@ -17,7 +17,10 @@
 
 package org.openapitools.codegen.languages;
 
-import org.openapitools.codegen.*;
+import org.openapitools.codegen.CodegenConstants;
+import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.features.BeanValidationFeatures;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.OperationsMap;
@@ -31,6 +34,7 @@ import java.util.List;
  * Similar to the original JAXRS generator, this creates API and Service classes
  * in /src/gen/java and a sample ServiceImpl in /src/main/java. The API uses CDI
  * to get an instance of ServiceImpl that implements the Service interface.
+ * <p>Mustache templates are located in {@code src/main/resources/JavaJaxRS/cxf-cdi/}.
  */
 public class JavaJAXRSCXFCDIServerCodegen extends JavaJAXRSSpecServerCodegen implements BeanValidationFeatures {
 
@@ -58,6 +62,8 @@ public class JavaJAXRSCXFCDIServerCodegen extends JavaJAXRSSpecServerCodegen imp
 
         // Updated template directory
         embeddedTemplateDir = templateDir = JAXRS_TEMPLATE_DIRECTORY_NAME + File.separator + "cxf-cdi";
+
+        removeOption(JavaJAXRSSpecServerCodegen.GENERATE_JSON_CREATOR);
     }
 
     @Override
@@ -73,17 +79,17 @@ public class JavaJAXRSCXFCDIServerCodegen extends JavaJAXRSSpecServerCodegen imp
 
         // POM
         supportingFiles.add(new SupportingFile("pom.mustache", "", "pom.xml")
-            .doNotOverwrite());
+                .doNotOverwrite());
 
         // RestApplication into src/main/java
         supportingFiles.add(new SupportingFile("RestApplication.mustache",
                 (implFolder + '/' + invokerPackage).replace(".", "/"), "RestApplication.java")
-            .doNotOverwrite());
+                .doNotOverwrite());
 
         // Make CDI work in containers with implicit archive scanning disabled
         supportingFiles.add(new SupportingFile("beans.mustache",
                 "src/main/webapp/WEB-INF", "beans.xml")
-            .doNotOverwrite());
+                .doNotOverwrite());
     }
 
     @Override

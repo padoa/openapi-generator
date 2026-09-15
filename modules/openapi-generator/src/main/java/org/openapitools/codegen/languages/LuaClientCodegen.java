@@ -38,6 +38,9 @@ import java.util.*;
 import static org.openapitools.codegen.utils.StringUtils.camelize;
 import static org.openapitools.codegen.utils.StringUtils.underscore;
 
+/**
+ * <p>Mustache templates are located in {@code src/main/resources/lua/}.
+ */
 public class LuaClientCodegen extends DefaultCodegen implements CodegenConfig {
     private final Logger LOGGER = LoggerFactory.getLogger(LuaClientCodegen.class);
 
@@ -89,8 +92,8 @@ public class LuaClientCodegen extends DefaultCodegen implements CodegenConfig {
         );
 
         generatorMetadata = GeneratorMetadata.newBuilder(generatorMetadata)
-            .stability(Stability.BETA)
-            .build();
+                .stability(Stability.BETA)
+                .build();
 
         outputFolder = "generated-code/lua";
         modelTemplateFiles.put("model.mustache", ".lua");
@@ -604,5 +607,7 @@ public class LuaClientCodegen extends DefaultCodegen implements CodegenConfig {
     }
 
     @Override
-    public GeneratorLanguage generatorLanguage() { return GeneratorLanguage.LUA; }
+    public GeneratorLanguage generatorLanguage() {
+        return GeneratorLanguage.LUA;
+    }
 }

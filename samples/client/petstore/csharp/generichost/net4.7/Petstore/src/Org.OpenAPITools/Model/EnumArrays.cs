@@ -180,27 +180,27 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of JustSymbol
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<JustSymbolEnum?> JustSymbolOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets JustSymbol
         /// </summary>
         [JsonPropertyName("just_symbol")]
-        public JustSymbolEnum? JustSymbol { get { return this.JustSymbolOption; } set { this.JustSymbolOption = new Option<JustSymbolEnum?>(value); } }
+        public JustSymbolEnum? JustSymbol { get { return this.JustSymbolOption.Value; } set { this.JustSymbolOption = new Option<JustSymbolEnum?>(value); } }
 
         /// <summary>
         /// Used to track the state of ArrayEnum
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<EnumArrays.ArrayEnumEnum>> ArrayEnumOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets ArrayEnum
         /// </summary>
         [JsonPropertyName("array_enum")]
-        public List<EnumArrays.ArrayEnumEnum> ArrayEnum { get { return this.ArrayEnumOption; } set { this.ArrayEnumOption = new Option<List<EnumArrays.ArrayEnumEnum>>(value); } }
+        public List<EnumArrays.ArrayEnumEnum> ArrayEnum { get { return this.ArrayEnumOption.Value; } set { this.ArrayEnumOption = new Option<List<EnumArrays.ArrayEnumEnum>>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -275,8 +275,7 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "array_enum":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                arrayEnum = new Option<List<EnumArrays.ArrayEnumEnum>>(JsonSerializer.Deserialize<List<EnumArrays.ArrayEnumEnum>>(ref utf8JsonReader, jsonSerializerOptions));
+                            arrayEnum = new Option<List<EnumArrays.ArrayEnumEnum>>(JsonSerializer.Deserialize<List<EnumArrays.ArrayEnumEnum>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "just_symbol":
                             string justSymbolRawValue = utf8JsonReader.GetString();

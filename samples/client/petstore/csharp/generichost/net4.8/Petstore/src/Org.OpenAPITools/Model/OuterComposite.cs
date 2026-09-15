@@ -50,40 +50,40 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of MyBoolean
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<bool?> MyBooleanOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets MyBoolean
         /// </summary>
         [JsonPropertyName("my_boolean")]
-        public bool? MyBoolean { get { return this.MyBooleanOption; } set { this.MyBooleanOption = new Option<bool?>(value); } }
+        public bool? MyBoolean { get { return this.MyBooleanOption.Value; } set { this.MyBooleanOption = new Option<bool?>(value); } }
 
         /// <summary>
         /// Used to track the state of MyNumber
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<decimal?> MyNumberOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets MyNumber
         /// </summary>
         [JsonPropertyName("my_number")]
-        public decimal? MyNumber { get { return this.MyNumberOption; } set { this.MyNumberOption = new Option<decimal?>(value); } }
+        public decimal? MyNumber { get { return this.MyNumberOption.Value; } set { this.MyNumberOption = new Option<decimal?>(value); } }
 
         /// <summary>
         /// Used to track the state of MyString
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> MyStringOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets MyString
         /// </summary>
         [JsonPropertyName("my_string")]
-        public string MyString { get { return this.MyStringOption; } set { this.MyStringOption = new Option<string>(value); } }
+        public string MyString { get { return this.MyStringOption.Value; } set { this.MyStringOption = new Option<string>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -160,12 +160,10 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "my_boolean":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                myBoolean = new Option<bool?>(utf8JsonReader.GetBoolean());
+                            myBoolean = new Option<bool?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (bool?)null : utf8JsonReader.GetBoolean());
                             break;
                         case "my_number":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                myNumber = new Option<decimal?>(utf8JsonReader.GetDecimal());
+                            myNumber = new Option<decimal?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (decimal?)null : utf8JsonReader.GetDecimal());
                             break;
                         case "my_string":
                             myString = new Option<string>(utf8JsonReader.GetString());

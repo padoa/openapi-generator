@@ -36,7 +36,14 @@ import java.net.URL;
 import java.util.*;
 
 import static java.util.UUID.randomUUID;
+import static org.openapitools.codegen.CodegenConstants.X_CSHARP_VALUE_TYPE;
 
+/**
+ * <p>Mustache templates are located in
+ * {@code src/main/resources/csharp-functions/} (root templates shared across all libraries) and
+ * {@code src/main/resources/csharp-functions/libraries/} (library-specific overrides).
+ * A library-specific template shadows a root-level template of the same name.
+ */
 public class CSharpFunctionsServerCodegen extends AbstractCSharpCodegen {
 
     public static final String NET_CORE_VERSION = "netCoreVersion";
@@ -260,7 +267,7 @@ public class CSharpFunctionsServerCodegen extends AbstractCSharpCodegen {
     @Override
     protected Set<String> getNullableTypes() {
         return new HashSet<>(Arrays.asList("decimal", "bool", "int", "uint", "long", "ulong", "float", "double",
-            "DateTime", "DateTimeOffset", "Guid"));
+                "DateTime", "DateTimeOffset", "Guid"));
     }
 
     @Override
@@ -287,7 +294,7 @@ public class CSharpFunctionsServerCodegen extends AbstractCSharpCodegen {
         super.patchProperty(enumRefs, model, property);
 
         if (!property.isContainer && (this.getNullableTypes().contains(property.dataType) || property.isEnum)) {
-            property.vendorExtensions.put("x-csharp-value-type", true);
+            property.vendorExtensions.put(X_CSHARP_VALUE_TYPE, true);
         }
     }
 
@@ -295,7 +302,7 @@ public class CSharpFunctionsServerCodegen extends AbstractCSharpCodegen {
     protected void updateCodegenParameterEnum(CodegenParameter parameter, CodegenModel model) {
         super.updateCodegenParameterEnumLegacy(parameter, model);
 
-        if (!parameter.required && parameter.vendorExtensions.get("x-csharp-value-type") != null) { //optional
+        if (!parameter.required && parameter.vendorExtensions.get(X_CSHARP_VALUE_TYPE) != null) { //optional
             parameter.dataType = parameter.dataType + "?";
         }
     }
@@ -538,15 +545,8 @@ public class CSharpFunctionsServerCodegen extends AbstractCSharpCodegen {
     }
 
     private void setClassModifier() {
-        // CHeck for class modifier if not present set the default value.
+        // Check for class modifier if not present set the default value.
         setCliOption(classModifier);
-
-        // If class modifier is abstract then the methods need to be abstract too.
-        if ("abstract".equals(classModifier.getOptValue())) {
-            operationModifier.setOptValue(classModifier.getOptValue());
-            additionalProperties.put(OPERATION_MODIFIER, operationModifier.getOptValue());
-            LOGGER.warn("classModifier is {} so forcing operationModifier to {}", classModifier.getOptValue(), operationModifier.getOptValue());
-        }
     }
 
     private void setOperationModifier() {
@@ -599,11 +599,11 @@ public class CSharpFunctionsServerCodegen extends AbstractCSharpCodegen {
         //set .NET target version
         String targetFrameworkVersion = "net" + netCoreVersion.getOptValue();
         additionalProperties.put(TARGET_FRAMEWORK, targetFrameworkVersion);
-        setAddititonalPropertyForFramework();
+        setAdditionalPropertyForFramework();
     }
 
-    private void setAddititonalPropertyForFramework() {
-        if (((String)additionalProperties.get(TARGET_FRAMEWORK)).startsWith("net6.0")) {
+    private void setAdditionalPropertyForFramework() {
+        if (((String) additionalProperties.get(TARGET_FRAMEWORK)).startsWith("net6.0")) {
             additionalProperties.put(NET_60_OR_LATER, true);
         }
     }

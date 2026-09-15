@@ -29,7 +29,10 @@ data class ModelApiResponse(
 
     @Schema(example = "null", description = "")
     @get:JsonProperty("message") val message: kotlin.String? = null
-) {
+) : java.io.Serializable {
 
+    companion object {
+        private const val serialVersionUID: kotlin.Long = 1
+    }
 }
 

@@ -20,7 +20,7 @@ class ApiClient(
     private var baseUrl: String = defaultBasePath,
     private val okHttpClientBuilder: OkHttpClient.Builder? = null,
     private val serializerBuilder: GsonBuilder = Serializer.gsonBuilder,
-    private val callFactory : Call.Factory? = null,
+    private val callFactory: Call.Factory? = null,
     private val callAdapterFactories: List<CallAdapter.Factory> = listOf(
     ),
     private val converterFactories: List<Converter.Factory> = listOf(
@@ -150,7 +150,7 @@ class ApiClient(
 
     private inline fun <T, reified U> Iterable<T>.runOnFirst(callback: U.() -> Unit) {
         for (element in this) {
-            if (element is U)  {
+            if (element is U) {
                 callback.invoke(element)
                 break
             }
@@ -158,12 +158,16 @@ class ApiClient(
     }
 
     companion object {
-        @JvmStatic
-        protected val baseUrlKey = "org.openapitools.client.baseUrl"
+        protected const val BASE_URL_KEY: String = "org.openapitools.client.baseUrl"
+        @Deprecated(
+          message = "Please use the capitalized constant `BASE_URL_KEY` instead.",
+          replaceWith = ReplaceWith("BASE_URL_KEY")
+        )
+        protected const val baseUrlKey: String = BASE_URL_KEY
 
         @JvmStatic
         val defaultBasePath: String by lazy {
-            System.getProperties().getProperty(baseUrlKey, "http://localhost:3000")
+            System.getProperties().getProperty(BASE_URL_KEY, "http://localhost:3000")
         }
     }
 }

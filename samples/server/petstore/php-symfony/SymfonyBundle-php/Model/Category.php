@@ -48,25 +48,25 @@ class Category
         /**
      * @var int|null
      * @SerializedName("id")
-     * @Assert\Type("int")
      * @Type("int")
      */
+    #[Assert\Type("int")]
     protected ?int $id = null;
 
     /**
      * @var string|null
      * @SerializedName("name")
-     * @Assert\Type("string")
      * @Type("string")
-     * @Assert\Regex("/^[a-zA-Z0-9]+[a-zA-Z0-9\\.\\-_]*[a-zA-Z0-9]+$/")
      */
+    #[Assert\Type("string")]
+    #[Assert\Regex("/^[a-zA-Z0-9]+[a-zA-Z0-9\\.\\-_]*[a-zA-Z0-9]+$/")]
     protected ?string $name = null;
 
     /**
      * Constructor
      * @param array|null $data Associated array of property values initializing the model
      */
-    public function __construct(array $data = null)
+    public function __construct(?array $data = null)
     {
         if (is_array($data)) {
             $this->id = array_key_exists('id', $data) ? $data['id'] : $this->id;
@@ -84,8 +84,6 @@ class Category
         return $this->id;
     }
 
-
-
     /**
      * Sets id.
      *
@@ -100,6 +98,9 @@ class Category
         return $this;
     }
 
+
+
+
     /**
      * Gets name.
      *
@@ -109,8 +110,6 @@ class Category
     {
         return $this->name;
     }
-
-
 
     /**
      * Sets name.
@@ -125,6 +124,9 @@ class Category
 
         return $this;
     }
+
+
+
 }
 
 

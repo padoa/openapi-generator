@@ -69,14 +69,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Color
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> ColorOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Color
         /// </summary>
         [JsonPropertyName("color")]
-        public string Color { get { return this.ColorOption; } set { this.ColorOption = new Option<string>(value); } }
+        public string Color { get { return this.ColorOption.Value; } set { this.ColorOption = new Option<string>(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object

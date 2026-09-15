@@ -3,10 +3,13 @@
 /* eslint-disable */
 {{>licenseInfo}}
 
+
 import type { Configuration } from '{{apiRelativeToRoot}}configuration{{#supportsES6}}.js{{/supportsES6}}';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
+import type { Readable } from 'stream';
 import { randomUUID } from 'crypto';
+export type RequestFile = Readable;
 {{#withNodeImports}}
 // URLSearchParams not necessarily used
 // @ts-ignore
@@ -17,7 +20,7 @@ import FormData from 'form-data'
 {{/withNodeImports}}
 // Some imports not used depending on template conditions
 // @ts-ignore
-import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction } from '{{apiRelativeToRoot}}common{{#supportsES6}}.js{{/supportsES6}}';
+import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction, replaceWithSerializableTypeIfNeeded{{#withAWSV4Signature}}, setAWS4SignatureInterceptor{{/withAWSV4Signature}} } from '{{apiRelativeToRoot}}common{{#supportsES6}}.js{{/supportsES6}}';
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, type RequestArgs, BaseAPI, RequiredError, operationServerMap } from '{{apiRelativeToRoot}}base{{#supportsES6}}.js{{/supportsES6}}';
 {{#imports}}
@@ -31,7 +34,6 @@ import type { {{classname}} } from '{{apiRelativeToRoot}}{{tsModelPackage}}';
 /**
  * {{classname}} - axios parameter creator{{#description}}
  * {{&description}}{{/description}}
- * @export
  */
 export const {{classname}}AxiosParamCreator = function (configuration?: Configuration) {
     return {
@@ -48,7 +50,7 @@ export const {{classname}}AxiosParamCreator = function (configuration?: Configur
          * @deprecated{{/isDeprecated}}
          * @throws {RequiredError}
          */
-        {{nickname}}: async ({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}, {{/allParams}}options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        {{nickname}}: async ({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}, {{/allParams}}options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
     {{#allParams}}
     {{#required}}
             // verify required parameter '{{paramName}}' is not null or undefined
@@ -56,14 +58,15 @@ export const {{classname}}AxiosParamCreator = function (configuration?: Configur
     {{/required}}
     {{/allParams}}
             const localVarPath = `{{{path}}}`{{#pathParams}}
-                .replace(`{${"{{baseName}}"}}`, encodeURIComponent(String({{paramName}}))){{/pathParams}};
+                .replace({{=<< >>=}}'{<<baseName>>}'<<={{ }}=>>, encodeURIComponent(String({{paramName}}))){{/pathParams}};
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
             if (configuration) {
                 baseOptions = configuration.baseOptions;
             }
-            const localVarRequestOptions = { method: '{{httpMethod}}',{{#isResponseFile}} responseType: 'stream',{{/isResponseFile}} ...baseOptions, ...options};
+
+            const localVarRequestOptions = { method: '{{httpMethod}}', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;{{#vendorExtensions}}{{#hasFormParams}}
             const localVarFormParams = new {{^multipartFormData}}URLSearchParams(){{/multipartFormData}}{{#multipartFormData}}((configuration && configuration.formDataCtor) || FormData)(){{/multipartFormData}};{{/hasFormParams}}{{/vendorExtensions}}
@@ -71,6 +74,10 @@ export const {{classname}}AxiosParamCreator = function (configuration?: Configur
     {{#authMethods}}
             // authentication {{name}} required
             {{#isApiKey}}
+            {{#withAWSV4Signature}}
+            // aws v4 signature authentication required
+            await setAWS4SignatureInterceptor(globalAxios, configuration)
+            {{/withAWSV4Signature}}
             {{#isKeyInHeader}}
             await setApiKeyToObject(localVarHeaderParameter, "{{keyParamName}}", configuration)
             {{/isKeyInHeader}}
@@ -156,14 +163,64 @@ export const {{classname}}AxiosParamCreator = function (configuration?: Configur
             {{/isArray}}
 
     {{/queryParams}}
+    {{#vendorExtensions}}
+    {{#formParams}}
+            {{#isArray}}
+            if ({{paramName}}) {
+            {{#isCollectionFormatMulti}}
+              {{#contentType}}
+                localVarFormParams.append('{{baseName}}', new Blob([JSON.stringify({{paramName}}, replaceWithSerializableTypeIfNeeded)], { type: "{{contentType}}", }));
+              {{/contentType}}
+              {{^contentType}}
+                {{paramName}}.forEach((element) => {
+                    localVarFormParams.{{#multipartFormData}}append{{/multipartFormData}}{{^multipartFormData}}set{{/multipartFormData}}('{{baseName}}{{#useSquareBracketsInArrayNames}}[]{{/useSquareBracketsInArrayNames}}', element as any);
+                })
+              {{/contentType}}
+            {{/isCollectionFormatMulti}}
+            {{^isCollectionFormatMulti}}
+                localVarFormParams.{{#multipartFormData}}append{{/multipartFormData}}{{^multipartFormData}}set{{/multipartFormData}}('{{baseName}}{{#useSquareBracketsInArrayNames}}[]{{/useSquareBracketsInArrayNames}}', {{paramName}}.join(COLLECTION_FORMATS.{{collectionFormat}}));
+            {{/isCollectionFormatMulti}}
+            }{{/isArray}}
+            {{^isArray}}
+            if ({{paramName}} !== undefined) { {{^multipartFormData}}
+                localVarFormParams.set('{{baseName}}', {{paramName}} as any);{{/multipartFormData}}{{#multipartFormData}}{{#isPrimitiveType}}{{^isBoolean}}
+                localVarFormParams.append('{{baseName}}', {{paramName}} as any);{{/isBoolean}}{{/isPrimitiveType}}{{#isPrimitiveType}}{{#isBoolean}}
+                localVarFormParams.append('{{baseName}}', String({{paramName}}) as any);{{/isBoolean}}{{/isPrimitiveType}}{{^isPrimitiveType}}{{#isEnumRef}}
+                localVarFormParams.append('{{baseName}}', {{paramName}} as any);{{/isEnumRef}}{{^isEnumRef}}
+                localVarFormParams.append('{{baseName}}', new Blob([JSON.stringify({{paramName}}, replaceWithSerializableTypeIfNeeded)], { type: "application/json", }));{{/isEnumRef}}{{/isPrimitiveType}}{{/multipartFormData}}
+            }{{/isArray}}
+    {{/formParams}}
+    {{/vendorExtensions}}
+    {{#vendorExtensions}}
+    {{#hasFormParams}}
+    {{^multipartFormData}}
+            localVarHeaderParameter['Content-Type'] = 'application/x-www-form-urlencoded';
+    {{/multipartFormData}}
+    {{#multipartFormData}}
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    {{/multipartFormData}}
+    {{/hasFormParams}}
+    {{/vendorExtensions}}
+    {{#bodyParam}}
+            {{^consumes}}
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+            {{/consumes}}
+            {{#consumes.0}}
+            localVarHeaderParameter['Content-Type'] = '{{{mediaType}}}';
+            {{/consumes.0}}
+    {{/bodyParam}}
+    {{#hasProduces}}
+            localVarHeaderParameter['Accept'] = '{{#produces}}{{{mediaType}}}{{^-last}},{{/-last}}{{/produces}}';
+    {{/hasProduces}}
+
     {{#headerParams}}
             {{#isArray}}
             if ({{paramName}}) {
                 {{#uniqueItems}}
-                let mapped = Array.from({{paramName}}).map(value => (<any>"{{{dataType}}}" !== "Set<string>") ? JSON.stringify(value) : (value || ""));
+                let mapped = Array.from({{paramName}}).map(value => (<any>"{{{dataType}}}" !== "Set<string>") ? JSON.stringify(value, replaceWithSerializableTypeIfNeeded) : (value || ""));
                 {{/uniqueItems}}
                 {{^uniqueItems}}
-                let mapped = {{paramName}}.map(value => (<any>"{{{dataType}}}" !== "Array<string>") ? JSON.stringify(value) : (value || ""));
+                let mapped = {{paramName}}.map(value => (<any>"{{{dataType}}}" !== "Array<string>") ? JSON.stringify(value, replaceWithSerializableTypeIfNeeded) : (value || ""));
                 {{/uniqueItems}}
                 localVarHeaderParameter['{{baseName}}'] = mapped.join(COLLECTION_FORMATS["{{collectionFormat}}"]);
             }
@@ -178,52 +235,11 @@ export const {{classname}}AxiosParamCreator = function (configuration?: Configur
                 {{! isString is falsy also for $ref that defines a string or enum type}}
                 localVarHeaderParameter['{{baseName}}'] = typeof {{paramName}} === 'string'
                     ? {{paramName}}
-                    : JSON.stringify({{paramName}});
+                    : JSON.stringify({{paramName}}, replaceWithSerializableTypeIfNeeded);
                 {{/isString}}
             }
             {{/isArray}}
-
     {{/headerParams}}
-    {{#vendorExtensions}}
-    {{#formParams}}
-            {{#isArray}}
-            if ({{paramName}}) {
-            {{#isCollectionFormatMulti}}
-              {{#contentType}}
-                localVarFormParams.append('{{baseName}}', new Blob([JSON.stringify({{paramName}})], { type: "{{contentType}}", }));
-              {{/contentType}}
-              {{^contentType}}
-                {{paramName}}.forEach((element) => {
-                    localVarFormParams.{{#multipartFormData}}append{{/multipartFormData}}{{^multipartFormData}}set{{/multipartFormData}}('{{baseName}}{{#useSquareBracketsInArrayNames}}[]{{/useSquareBracketsInArrayNames}}', element as any{{#isFile}}, { filename: randomUUID()}{{/isFile}});
-                })
-              {{/contentType}}
-            {{/isCollectionFormatMulti}}
-            {{^isCollectionFormatMulti}}
-                localVarFormParams.{{#multipartFormData}}append{{/multipartFormData}}{{^multipartFormData}}set{{/multipartFormData}}('{{baseName}}{{#useSquareBracketsInArrayNames}}[]{{/useSquareBracketsInArrayNames}}', {{paramName}}.join(COLLECTION_FORMATS.{{collectionFormat}}));
-            {{/isCollectionFormatMulti}}
-            }{{/isArray}}
-            {{^isArray}}
-            if ({{paramName}} !== undefined) { {{^multipartFormData}}
-                localVarFormParams.set('{{baseName}}', {{paramName}} as any);{{/multipartFormData}}{{#multipartFormData}}{{#isPrimitiveType}}{{^isBoolean}}
-                localVarFormParams.append('{{baseName}}', {{paramName}} as any{{#isFile}}, { filename: randomUUID()}{{/isFile}});{{/isBoolean}}{{/isPrimitiveType}}{{#isPrimitiveType}}{{#isBoolean}}
-                localVarFormParams.append('{{baseName}}', String({{paramName}}) as any);{{/isBoolean}}{{/isPrimitiveType}}{{^isPrimitiveType}}{{#isEnumRef}}
-                localVarFormParams.append('{{baseName}}', {{paramName}} as any);{{/isEnumRef}}{{^isEnumRef}}
-                localVarFormParams.append('{{baseName}}', JSON.stringify({{paramName}}));{{/isEnumRef}}{{/isPrimitiveType}}{{/multipartFormData}}
-            }{{/isArray}}
-    {{/formParams}}{{/vendorExtensions}}
-    {{#vendorExtensions}}{{#hasFormParams}}{{^multipartFormData}}
-            localVarHeaderParameter['Content-Type'] = 'application/x-www-form-urlencoded';{{/multipartFormData}}{{#multipartFormData}}
-            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';{{/multipartFormData}}
-    {{/hasFormParams}}{{/vendorExtensions}}
-    {{#bodyParam}}
-            {{^consumes}}
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-            {{/consumes}}
-            {{#consumes.0}}
-            localVarHeaderParameter['Content-Type'] = '{{{mediaType}}}';
-            {{/consumes.0}}
-
-    {{/bodyParam}}
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions,{{#hasFormParams}}{{#multipartFormData}} ...(localVarFormParams as any).getHeaders?.(),{{/multipartFormData}}{{/hasFormParams}} ...options.headers};
@@ -246,7 +262,6 @@ export const {{classname}}AxiosParamCreator = function (configuration?: Configur
 /**
  * {{classname}} - functional programming interface{{#description}}
  * {{{.}}}{{/description}}
- * @export
  */
 export const {{classname}}Fp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = {{classname}}AxiosParamCreator(configuration)
@@ -264,7 +279,7 @@ export const {{classname}}Fp = function(configuration?: Configuration) {
          * @deprecated{{/isDeprecated}}
          * @throws {RequiredError}
          */
-        async {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}, {{/allParams}}options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{{{returnType}}}{{^returnType}}void{{/returnType}}>> {
+        async {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}, {{/allParams}}options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<{{{returnType}}}{{^returnType}}void{{/returnType}}>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['{{classname}}.{{nickname}}']?.[localVarOperationServerIndex]?.url;
@@ -277,7 +292,6 @@ export const {{classname}}Fp = function(configuration?: Configuration) {
 /**
  * {{classname}} - factory interface{{#description}}
  * {{&description}}{{/description}}
- * @export
  */
 export const {{classname}}Factory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
     const localVarFp = {{classname}}Fp(configuration)
@@ -303,12 +317,12 @@ export const {{classname}}Factory = function (configuration?: Configuration, bas
          * @throws {RequiredError}
          */
         {{#useSingleRequestParameter}}
-        {{nickname}}({{#allParams.0}}requestParameters: {{classname}}{{operationIdCamelCase}}Request{{^hasRequiredParams}} = {}{{/hasRequiredParams}}, {{/allParams.0}}options?: AxiosRequestConfig): AxiosPromise<{{{returnType}}}{{^returnType}}void{{/returnType}}> {
+        {{nickname}}({{#allParams.0}}requestParameters: {{classname}}{{operationIdCamelCase}}Request{{^hasRequiredParams}} = {}{{/hasRequiredParams}}, {{/allParams.0}}options?: RawAxiosRequestConfig): AxiosPromise<{{{returnType}}}{{^returnType}}void{{/returnType}}> {
             return localVarFp.{{nickname}}({{#allParams.0}}{{#allParams}}requestParameters.{{paramName}}, {{/allParams}}{{/allParams.0}}options).then((request) => request(axios, basePath));
         },
         {{/useSingleRequestParameter}}
         {{^useSingleRequestParameter}}
-        {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}, {{/allParams}}options?: any): AxiosPromise<{{{returnType}}}{{^returnType}}void{{/returnType}}> {
+        {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}, {{/allParams}}options?: RawAxiosRequestConfig): AxiosPromise<{{{returnType}}}{{^returnType}}void{{/returnType}}> {
             return localVarFp.{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options).then((request) => request(axios, basePath));
         },
         {{/useSingleRequestParameter}}
@@ -320,8 +334,6 @@ export const {{classname}}Factory = function (configuration?: Configuration, bas
 /**
  * {{classname}} - interface{{#description}}
  * {{&description}}{{/description}}
- * @export
- * @interface {{classname}}
  */
 export interface {{classname}}Interface {
 {{#operation}}
@@ -330,15 +342,26 @@ export interface {{classname}}Interface {
      {{#summary}}
      * @summary {{&summary}}
      {{/summary}}
+     {{#useSingleRequestParameter}}
+     {{#allParams.0}}
+     * @param {{=<% %>=}}{<%& classname %><%& operationIdCamelCase %>Request}<%={{ }}=%> requestParameters Request parameters.
+     {{/allParams.0}}
+     {{/useSingleRequestParameter}}
+     {{^useSingleRequestParameter}}
      {{#allParams}}
      * @param {{=<% %>=}}{<%#isEnum%><%&datatypeWithEnum%><%/isEnum%><%^isEnum%><%&dataType%><%#isNullable%> | null<%/isNullable%><%/isEnum%>}<%={{ }}=%> {{^required}}[{{/required}}{{paramName}}{{^required}}]{{/required}} {{description}}
      {{/allParams}}
+     {{/useSingleRequestParameter}}
      * @param {*} [options] Override http request option.{{#isDeprecated}}
      * @deprecated{{/isDeprecated}}
      * @throws {RequiredError}
-     * @memberof {{classname}}Interface
      */
-    {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}, {{/allParams}}options?: AxiosRequestConfig): AxiosPromise<{{{returnType}}}{{^returnType}}void{{/returnType}}>;
+    {{#useSingleRequestParameter}}
+    {{nickname}}({{#allParams.0}}requestParameters{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{classname}}{{operationIdCamelCase}}Request, {{/allParams.0}}options?: RawAxiosRequestConfig): AxiosPromise<{{{returnType}}}{{^returnType}}void{{/returnType}}>;
+    {{/useSingleRequestParameter}}
+    {{^useSingleRequestParameter}}
+    {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}, {{/allParams}}options?: RawAxiosRequestConfig): AxiosPromise<{{{returnType}}}{{^returnType}}void{{/returnType}}>;
+    {{/useSingleRequestParameter}}
 
 {{/operation}}
 }
@@ -349,16 +372,14 @@ export interface {{classname}}Interface {
 {{#allParams.0}}
 /**
  * Request parameters for {{nickname}} operation in {{classname}}.
- * @export
- * @interface {{classname}}{{operationIdCamelCase}}Request
  */
 export interface {{classname}}{{operationIdCamelCase}}Request {
     {{#allParams}}
+    {{#description}}
     /**
      * {{description}}
-     * @type {{=<% %>=}}{<%&dataType%>}<%={{ }}=%>
-     * @memberof {{classname}}{{operationIdCamelCase}}
      */
+    {{/description}}
     readonly {{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}
     {{^-last}}
 
@@ -372,9 +393,6 @@ export interface {{classname}}{{operationIdCamelCase}}Request {
 /**
  * {{classname}} - object-oriented interface{{#description}}
  * {{{.}}}{{/description}}
- * @export
- * @class {{classname}}
- * @extends {BaseAPI}
  */
 {{#withInterfaces}}
 export class {{classname}} extends BaseAPI implements {{classname}}Interface {
@@ -401,15 +419,14 @@ export class {{classname}} extends BaseAPI {
      * @param {*} [options] Override http request option.{{#isDeprecated}}
      * @deprecated{{/isDeprecated}}
      * @throws {RequiredError}
-     * @memberof {{classname}}
      */
     {{#useSingleRequestParameter}}
-    public {{nickname}}({{#allParams.0}}requestParameters: {{classname}}{{operationIdCamelCase}}Request{{^hasRequiredParams}} = {}{{/hasRequiredParams}}, {{/allParams.0}}options?: AxiosRequestConfig) {
+    public {{nickname}}({{#allParams.0}}requestParameters: {{classname}}{{operationIdCamelCase}}Request{{^hasRequiredParams}} = {}{{/hasRequiredParams}}, {{/allParams.0}}options?: RawAxiosRequestConfig) {
         return {{classname}}Fp(this.configuration).{{nickname}}({{#allParams.0}}{{#allParams}}requestParameters.{{paramName}}, {{/allParams}}{{/allParams.0}}options).then((request) => request(this.axios, this.basePath));
     }
     {{/useSingleRequestParameter}}
     {{^useSingleRequestParameter}}
-    public {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}, {{/allParams}}options?: AxiosRequestConfig) {
+    public {{nickname}}({{#allParams}}{{paramName}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{dataType}}}{{#isNullable}} | null{{/isNullable}}{{/isEnum}}, {{/allParams}}options?: RawAxiosRequestConfig) {
         return {{classname}}Fp(this.configuration).{{nickname}}({{#allParams}}{{paramName}}, {{/allParams}}options).then((request) => request(this.axios, this.basePath));
     }
     {{/useSingleRequestParameter}}
@@ -425,10 +442,6 @@ export class {{classname}} extends BaseAPI {
 {{#allParams}}
 {{#isEnum}}
 {{#stringEnums}}
-/**
-  * @export
-  * @enum {string}
-  */
 export enum {{operationIdCamelCase}}{{enumName}} {
 {{#allowableValues}}
     {{#enumVars}}
@@ -438,13 +451,10 @@ export enum {{operationIdCamelCase}}{{enumName}} {
 }
 {{/stringEnums}}
 {{^stringEnums}}
-/**
- * @export
- */
 export const {{operationIdCamelCase}}{{enumName}} = {
 {{#allowableValues}}
     {{#enumVars}}
-    {{{name}}}: {{{value}}}{{^-last}},{{/-last}}
+    {{{name}}}: {{{value}}},
     {{/enumVars}}
 {{/allowableValues}}
 } as const;

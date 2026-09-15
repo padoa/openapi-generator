@@ -48,27 +48,27 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of VarSpecialModelName
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> VarSpecialModelNameOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets VarSpecialModelName
         /// </summary>
         [JsonPropertyName("_special_model.name_")]
-        public string VarSpecialModelName { get { return this.VarSpecialModelNameOption; } set { this.VarSpecialModelNameOption = new Option<string>(value); } }
+        public string VarSpecialModelName { get { return this.VarSpecialModelNameOption.Value; } set { this.VarSpecialModelNameOption = new Option<string>(value); } }
 
         /// <summary>
         /// Used to track the state of SpecialPropertyName
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<long?> SpecialPropertyNameOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets SpecialPropertyName
         /// </summary>
         [JsonPropertyName("$special[property.name]")]
-        public long? SpecialPropertyName { get { return this.SpecialPropertyNameOption; } set { this.SpecialPropertyNameOption = new Option<long?>(value); } }
+        public long? SpecialPropertyName { get { return this.SpecialPropertyNameOption.Value; } set { this.SpecialPropertyNameOption = new Option<long?>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -146,8 +146,7 @@ namespace Org.OpenAPITools.Model
                             varSpecialModelName = new Option<string>(utf8JsonReader.GetString());
                             break;
                         case "$special[property.name]":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                specialPropertyName = new Option<long?>(utf8JsonReader.GetInt64());
+                            specialPropertyName = new Option<long?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (long?)null : utf8JsonReader.GetInt64());
                             break;
                         default:
                             break;

@@ -46,7 +46,7 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of SourceURI
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> SourceURIOption { get; private set; }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Org.OpenAPITools.Model
         /// </summary>
         /// <value>Test capitalization</value>
         [JsonPropertyName("sourceURI")]
-        public string SourceURI { get { return this.SourceURIOption; } set { this.SourceURIOption = new(value); } }
+        public string SourceURI { get { return this.SourceURIOption.Value; } set { this.SourceURIOption = new(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties

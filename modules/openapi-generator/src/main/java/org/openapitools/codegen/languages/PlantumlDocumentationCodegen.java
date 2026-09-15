@@ -27,10 +27,13 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * <p>Mustache templates are located in {@code src/main/resources/plantuml/}.
+ */
 public class PlantumlDocumentationCodegen extends DefaultCodegen implements CodegenConfig {
     public static final String ALL_OF_SUFFIX = "AllOf";
 
-     final Logger LOGGER = LoggerFactory.getLogger(PlantumlDocumentationCodegen.class);
+    final Logger LOGGER = LoggerFactory.getLogger(PlantumlDocumentationCodegen.class);
 
     @Override
     public CodegenType getTag() {
@@ -219,5 +222,7 @@ public class PlantumlDocumentationCodegen extends DefaultCodegen implements Code
     }
 
     @Override
-    public GeneratorLanguage generatorLanguage() { return null; }
+    public GeneratorLanguage generatorLanguage() {
+        return null;
+    }
 }

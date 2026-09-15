@@ -2,7 +2,7 @@
 
 OpenAPI Petstore
 - API version: 1.0.0
-  - Generator version: 7.7.0-SNAPSHOT
+  - Generator version: 7.22.0-SNAPSHOT
 
 This spec is mainly for testing Petstore server and contains fake endpoints, models. Please do not use this for any other purpose. Special characters: \" \\
 
@@ -83,7 +83,7 @@ Please follow the [installation](#installation) instruction and execute the foll
 import org.openapitools.client.ApiClient;
 import org.openapitools.client.ApiException;
 import org.openapitools.client.Configuration;
-import org.openapitools.client.models.*;
+import org.openapitools.client.model.*;
 import org.openapitools.client.api.AnotherFakeApi;
 
 public class Example {
@@ -117,8 +117,8 @@ Class | Method | HTTP request | Description
 *AnotherFakeApi* | [**call123testSpecialTags**](docs/AnotherFakeApi.md#call123testSpecialTags) | **PATCH** /another-fake/dummy | To test special tags
 *AnotherFakeApi* | [**getParameterArrayNumber**](docs/AnotherFakeApi.md#getParameterArrayNumber) | **GET** /fake/parameter-array-number | parameter array number default value
 *AnotherFakeApi* | [**getParameterStringNumber**](docs/AnotherFakeApi.md#getParameterStringNumber) | **GET** /fake/parameter-string-number | parameter string number
-*AnotherFakeApi* | [**nullRequestBody**](docs/AnotherFakeApi.md#nullRequestBody) | **GET** /fake/null-request-body | null request body
 *DefaultApi* | [**fakeAnyOfWIthSameErasureGet**](docs/DefaultApi.md#fakeAnyOfWIthSameErasureGet) | **GET** /fake/anyOfWIthSameErasure | 
+*DefaultApi* | [**fakeFreeFormQueryParametersGet**](docs/DefaultApi.md#fakeFreeFormQueryParametersGet) | **GET** /fake/free-form-query-parameters | 
 *DefaultApi* | [**fakeOneOfWIthSameErasureGet**](docs/DefaultApi.md#fakeOneOfWIthSameErasureGet) | **GET** /fake/oneOfWIthSameErasure | 
 *DefaultApi* | [**fooGet**](docs/DefaultApi.md#fooGet) | **GET** /foo | 
 *FakeApi* | [**fakeGetFreeFormObjectGet**](docs/FakeApi.md#fakeGetFreeFormObjectGet) | **GET** /fake/get-free-form-object | 
@@ -126,7 +126,9 @@ Class | Method | HTTP request | Description
 *FakeApi* | [**fakeOuterCompositeSerialize**](docs/FakeApi.md#fakeOuterCompositeSerialize) | **POST** /fake/outer/composite | 
 *FakeApi* | [**fakeOuterNumberSerialize**](docs/FakeApi.md#fakeOuterNumberSerialize) | **POST** /fake/outer/number | 
 *FakeApi* | [**fakeOuterStringSerialize**](docs/FakeApi.md#fakeOuterStringSerialize) | **POST** /fake/outer/string | 
-*FakeApi* | [**fakeUploadRefRequestBodies**](docs/FakeApi.md#fakeUploadRefRequestBodies) | **POST** /fake/pet/{petId}/uploadImage | fake uploads an image with ref request bodies
+*FakeApi* | [**fakeRefParameter**](docs/FakeApi.md#fakeRefParameter) | **POST** /fake/pet/{petId}/reference/parameter | fake reference parameter
+*FakeApi* | [**fakeRequiredNullableBodyGet**](docs/FakeApi.md#fakeRequiredNullableBodyGet) | **GET** /fake/required-nullable-body | fields in the response body, required and nullable are both true
+*FakeApi* | [**fakeUploadRefRequestBodies**](docs/FakeApi.md#fakeUploadRefRequestBodies) | **POST** /fake/pet/{petId}/uploadImage | fake reference parameter
 *FakeApi* | [**getFakeArrayofenums**](docs/FakeApi.md#getFakeArrayofenums) | **GET** /fake/array-of-enums | Array of Enums
 *FakeApi* | [**getFakeHealth**](docs/FakeApi.md#getFakeHealth) | **GET** /fake/health | Health check endpoint
 *FakeApi* | [**getParameterNameMapping**](docs/FakeApi.md#getParameterNameMapping) | **GET** /fake/parameter-name-mapping | parameter name mapping test
@@ -175,6 +177,9 @@ Class | Method | HTTP request | Description
  - [AllOfModelArrayAnyOfAllOfAttributesC](docs/AllOfModelArrayAnyOfAllOfAttributesC.md)
  - [AllOfModelArrayAnyOfAllOfLinkListColumn1](docs/AllOfModelArrayAnyOfAllOfLinkListColumn1.md)
  - [AllOfModelArrayAnyOfAllOfLinkListColumn1Value](docs/AllOfModelArrayAnyOfAllOfLinkListColumn1Value.md)
+ - [AllOfRefToDouble](docs/AllOfRefToDouble.md)
+ - [AllOfRefToFloat](docs/AllOfRefToFloat.md)
+ - [AllOfRefToLong](docs/AllOfRefToLong.md)
  - [Animal](docs/Animal.md)
  - [Apple](docs/Apple.md)
  - [AppleReq](docs/AppleReq.md)
@@ -206,6 +211,7 @@ Class | Method | HTTP request | Description
  - [EquilateralTriangle](docs/EquilateralTriangle.md)
  - [FakeAnyOfWIthSameErasureGet200Response](docs/FakeAnyOfWIthSameErasureGet200Response.md)
  - [FakeOneOfWIthSameErasureGet200Response](docs/FakeOneOfWIthSameErasureGet200Response.md)
+ - [FakeRefParameterPetIdParameter](docs/FakeRefParameterPetIdParameter.md)
  - [FileSchemaTestClass](docs/FileSchemaTestClass.md)
  - [Foo](docs/Foo.md)
  - [FooGetDefaultResponse](docs/FooGetDefaultResponse.md)
@@ -220,6 +226,7 @@ Class | Method | HTTP request | Description
  - [HealthCheckResult](docs/HealthCheckResult.md)
  - [IsoscelesTriangle](docs/IsoscelesTriangle.md)
  - [Mammal](docs/Mammal.md)
+ - [MammalAnyof](docs/MammalAnyof.md)
  - [MapTest](docs/MapTest.md)
  - [MixedPropertiesAndAdditionalPropertiesClass](docs/MixedPropertiesAndAdditionalPropertiesClass.md)
  - [Model200Response](docs/Model200Response.md)
@@ -229,10 +236,12 @@ Class | Method | HTTP request | Description
  - [ModelReturn](docs/ModelReturn.md)
  - [ModelWithOneOfAnyOfProperties](docs/ModelWithOneOfAnyOfProperties.md)
  - [Name](docs/Name.md)
+ - [NestedArrayWithDefaultValues](docs/NestedArrayWithDefaultValues.md)
  - [NewPet](docs/NewPet.md)
  - [NewPetCategoryInlineAllof](docs/NewPetCategoryInlineAllof.md)
  - [NewPetCategoryInlineAllofAllOfCategoryTag](docs/NewPetCategoryInlineAllofAllOfCategoryTag.md)
  - [NullableClass](docs/NullableClass.md)
+ - [NullableEnum](docs/NullableEnum.md)
  - [NullableShape](docs/NullableShape.md)
  - [NumberOnly](docs/NumberOnly.md)
  - [ObjectWithDeprecatedFields](docs/ObjectWithDeprecatedFields.md)
@@ -253,6 +262,7 @@ Class | Method | HTTP request | Description
  - [Quadrilateral](docs/Quadrilateral.md)
  - [QuadrilateralInterface](docs/QuadrilateralInterface.md)
  - [ReadOnlyFirst](docs/ReadOnlyFirst.md)
+ - [RequiredNullableBody](docs/RequiredNullableBody.md)
  - [Scalar](docs/Scalar.md)
  - [ScalarAnyOf](docs/ScalarAnyOf.md)
  - [ScaleneTriangle](docs/ScaleneTriangle.md)

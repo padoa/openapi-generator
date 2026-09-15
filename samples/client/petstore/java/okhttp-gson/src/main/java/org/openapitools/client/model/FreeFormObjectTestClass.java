@@ -38,7 +38,6 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -50,20 +49,22 @@ import org.openapitools.client.JSON;
 /**
  * FreeFormObjectTestClass
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.22.0-SNAPSHOT")
 public class FreeFormObjectTestClass {
   public static final String SERIALIZED_NAME_NAME = "name";
   @SerializedName(SERIALIZED_NAME_NAME)
+  @javax.annotation.Nullable
   private String name;
 
   public static final String SERIALIZED_NAME_PROPERTIES = "properties";
   @SerializedName(SERIALIZED_NAME_PROPERTIES)
+  @javax.annotation.Nullable
   private FreeFormObjectTestClassProperties properties;
 
   public FreeFormObjectTestClass() {
   }
 
-  public FreeFormObjectTestClass name(String name) {
+  public FreeFormObjectTestClass name(@javax.annotation.Nullable String name) {
     this.name = name;
     return this;
   }
@@ -77,12 +78,12 @@ public class FreeFormObjectTestClass {
     return name;
   }
 
-  public void setName(String name) {
+  public void setName(@javax.annotation.Nullable String name) {
     this.name = name;
   }
 
 
-  public FreeFormObjectTestClass properties(FreeFormObjectTestClassProperties properties) {
+  public FreeFormObjectTestClass properties(@javax.annotation.Nullable FreeFormObjectTestClassProperties properties) {
     this.properties = properties;
     return this;
   }
@@ -96,7 +97,7 @@ public class FreeFormObjectTestClass {
     return properties;
   }
 
-  public void setProperties(FreeFormObjectTestClassProperties properties) {
+  public void setProperties(@javax.annotation.Nullable FreeFormObjectTestClassProperties properties) {
     this.properties = properties;
   }
 
@@ -181,10 +182,7 @@ public class FreeFormObjectTestClass {
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
+    return o == null ? "null" : o.toString().replace("\n", "\n    ");
   }
 
 
@@ -193,12 +191,10 @@ public class FreeFormObjectTestClass {
 
   static {
     // a set of all properties/fields (JSON key names)
-    openapiFields = new HashSet<String>();
-    openapiFields.add("name");
-    openapiFields.add("properties");
+    openapiFields = new HashSet<String>(Arrays.asList("name", "properties"));
 
     // a set of required properties/fields (JSON key names)
-    openapiRequiredFields = new HashSet<String>();
+    openapiRequiredFields = new HashSet<String>(0);
   }
 
   /**
@@ -210,12 +206,12 @@ public class FreeFormObjectTestClass {
   public static void validateJsonElement(JsonElement jsonElement) throws IOException {
       if (jsonElement == null) {
         if (!FreeFormObjectTestClass.openapiRequiredFields.isEmpty()) { // has required fields but JSON element is null
-          throw new IllegalArgumentException(String.format("The required field(s) %s in FreeFormObjectTestClass is not found in the empty JSON string", FreeFormObjectTestClass.openapiRequiredFields.toString()));
+          throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "The required field(s) %s in FreeFormObjectTestClass is not found in the empty JSON string", FreeFormObjectTestClass.openapiRequiredFields.toString()));
         }
       }
         JsonObject jsonObj = jsonElement.getAsJsonObject();
       if ((jsonObj.get("name") != null && !jsonObj.get("name").isJsonNull()) && !jsonObj.get("name").isJsonPrimitive()) {
-        throw new IllegalArgumentException(String.format("Expected the field `name` to be a primitive type in the JSON string but got `%s`", jsonObj.get("name").toString()));
+        throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `name` to be a primitive type in the JSON string but got `%s`", jsonObj.get("name").toString()));
       }
       // validate the optional field `properties`
       if (jsonObj.get("properties") != null && !jsonObj.get("properties").isJsonNull()) {
@@ -280,7 +276,7 @@ public class FreeFormObjectTestClass {
                    else if (entry.getValue().getAsJsonPrimitive().isBoolean())
                      instance.putAdditionalProperty(entry.getKey(), entry.getValue().getAsBoolean());
                    else
-                     throw new IllegalArgumentException(String.format("The field `%s` has unknown primitive type. Value: %s", entry.getKey(), entry.getValue().toString()));
+                     throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "The field `%s` has unknown primitive type. Value: %s", entry.getKey(), entry.getValue().toString()));
                  } else if (entry.getValue().isJsonArray()) {
                      instance.putAdditionalProperty(entry.getKey(), gson.fromJson(entry.getValue(), List.class));
                  } else { // JSON object

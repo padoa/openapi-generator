@@ -51,6 +51,7 @@ import java.util.*;
  * An Apache CXF-based JAX-RS server with extended capabilities.
  *
  * @author Adrian Price, TIBCO Software Inc.
+ * <p>Mustache templates are located in {@code src/main/resources/JavaJaxRS/cxf-ext/}.
  */
 public class JavaCXFExtServerCodegen extends JavaCXFServerCodegen implements CXFExtServerFeatures {
     class CodegenVariable {
@@ -431,7 +432,6 @@ public class JavaCXFExtServerCodegen extends JavaCXFServerCodegen implements CXF
      * @param var
      * @param localVars
      * @param models
-     *
      * @return <code>localVar</code> with a numeric suffix if necessary to ensure uniqueness.
      */
     private String appendLocalVariable(StringBuilder buffer, String indent, CodegenOperation op, CodegenVariable var,
@@ -746,7 +746,7 @@ public class JavaCXFExtServerCodegen extends JavaCXFServerCodegen implements CXF
             BigDecimal exclusiveMin = new BigDecimal(var != null && var.exclusiveMinimum ? 1 : 0);
             BigDecimal inclusiveMax = new BigDecimal(var == null || !var.exclusiveMaximum ? 1 : 0);
             long randomLong = min.add(exclusiveMin).add(
-                    max.add(inclusiveMax).subtract(min).subtract(exclusiveMin).multiply(BigDecimal.valueOf(Math.random())))
+                            max.add(inclusiveMax).subtract(min).subtract(exclusiveMin).multiply(BigDecimal.valueOf(Math.random())))
                     .longValue();
 
             if (loadTestDataFromFile) {

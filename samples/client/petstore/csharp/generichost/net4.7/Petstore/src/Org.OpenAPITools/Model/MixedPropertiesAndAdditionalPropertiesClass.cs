@@ -52,53 +52,53 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of DateTime
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<DateTime?> DateTimeOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets DateTime
         /// </summary>
         [JsonPropertyName("dateTime")]
-        public DateTime? DateTime { get { return this.DateTimeOption; } set { this.DateTimeOption = new Option<DateTime?>(value); } }
+        public DateTime? DateTime { get { return this.DateTimeOption.Value; } set { this.DateTimeOption = new Option<DateTime?>(value); } }
 
         /// <summary>
         /// Used to track the state of Map
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Dictionary<string, Animal>> MapOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Map
         /// </summary>
         [JsonPropertyName("map")]
-        public Dictionary<string, Animal> Map { get { return this.MapOption; } set { this.MapOption = new Option<Dictionary<string, Animal>>(value); } }
+        public Dictionary<string, Animal> Map { get { return this.MapOption.Value; } set { this.MapOption = new Option<Dictionary<string, Animal>>(value); } }
 
         /// <summary>
         /// Used to track the state of Uuid
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Guid?> UuidOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Uuid
         /// </summary>
         [JsonPropertyName("uuid")]
-        public Guid? Uuid { get { return this.UuidOption; } set { this.UuidOption = new Option<Guid?>(value); } }
+        public Guid? Uuid { get { return this.UuidOption.Value; } set { this.UuidOption = new Option<Guid?>(value); } }
 
         /// <summary>
         /// Used to track the state of UuidWithPattern
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Guid?> UuidWithPatternOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets UuidWithPattern
         /// </summary>
         [JsonPropertyName("uuid_with_pattern")]
-        public Guid? UuidWithPattern { get { return this.UuidWithPatternOption; } set { this.UuidWithPatternOption = new Option<Guid?>(value); } }
+        public Guid? UuidWithPattern { get { return this.UuidWithPatternOption.Value; } set { this.UuidWithPatternOption = new Option<Guid?>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -189,20 +189,16 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "dateTime":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                dateTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
+                            dateTime = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "map":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                map = new Option<Dictionary<string, Animal>>(JsonSerializer.Deserialize<Dictionary<string, Animal>>(ref utf8JsonReader, jsonSerializerOptions));
+                            map = new Option<Dictionary<string, Animal>>(JsonSerializer.Deserialize<Dictionary<string, Animal>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "uuid":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                uuid = new Option<Guid?>(utf8JsonReader.GetGuid());
+                            uuid = new Option<Guid?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (Guid?)null : utf8JsonReader.GetGuid());
                             break;
                         case "uuid_with_pattern":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                uuidWithPattern = new Option<Guid?>(utf8JsonReader.GetGuid());
+                            uuidWithPattern = new Option<Guid?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (Guid?)null : utf8JsonReader.GetGuid());
                             break;
                         default:
                             break;

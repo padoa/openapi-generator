@@ -18,7 +18,6 @@ package org.openapitools.codegen.languages;
 
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache.Lambda;
-
 import io.swagger.v3.core.util.Json;
 import io.swagger.v3.oas.models.media.Schema;
 import lombok.Getter;
@@ -30,15 +29,15 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
-import org.openapitools.codegen.templating.mustache.*;
+import org.openapitools.codegen.templating.mustache.CamelCaseAndSanitizeLambda;
 import org.openapitools.codegen.utils.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
+import static org.openapitools.codegen.CodegenConstants.X_ENUM_BYTE;
 import static org.openapitools.codegen.utils.CamelizeOption.LOWERCASE_FIRST_LETTER;
 import static org.openapitools.codegen.utils.StringUtils.camelize;
 import static org.openapitools.codegen.utils.StringUtils.underscore;
@@ -435,7 +434,7 @@ public abstract class AbstractFSharpCodegen extends DefaultCodegen implements Co
                     if (model.dataType.startsWith("byte")) {
                         // F# Actually supports byte and short enums, swagger spec only supports byte.
                         isByte = true;
-                        model.vendorExtensions.put("x-enum-byte", true);
+                        model.vendorExtensions.put(X_ENUM_BYTE, true);
                     } else if (model.dataType.startsWith("int32")) {
                         isInteger = true;
                         model.vendorExtensions.put("x-enum-integer", true);
@@ -489,7 +488,7 @@ public abstract class AbstractFSharpCodegen extends DefaultCodegen implements Co
         // Because C# uses nullable primitives for datatype, and datatype is used in DefaultCodegen for determining enum-ness, guard against weirdness here.
         if (var.isEnum) {
             if ("byte".equals(var.dataFormat)) {// C# Actually supports byte and short enums.
-                var.vendorExtensions.put("x-enum-byte", true);
+                var.vendorExtensions.put(X_ENUM_BYTE, true);
                 var.isString = false;
                 var.isLong = false;
                 var.isInteger = false;
@@ -1039,6 +1038,7 @@ public abstract class AbstractFSharpCodegen extends DefaultCodegen implements Co
 
     @Override
     public void postProcessFile(File file, String fileType) {
+        super.postProcessFile(file, fileType);
         if (file == null) {
             return;
         }
@@ -1050,20 +1050,7 @@ public abstract class AbstractFSharpCodegen extends DefaultCodegen implements Co
 
         // only process files with .fs extension
         if ("fs".equals(FilenameUtils.getExtension(file.toString()))) {
-            String command = fsharpPostProcessFile + " " + file;
-            try {
-                Process p = Runtime.getRuntime().exec(command);
-                int exitValue = p.waitFor();
-                if (exitValue != 0) {
-                    LOGGER.error("Error running the command ({}). Exit code: {}", command, exitValue);
-                } else {
-                    LOGGER.info("Successfully executed: {}", command);
-                }
-            } catch (InterruptedException | IOException e) {
-                LOGGER.error("Error running the command ({}). Exception: {}", command, e.getMessage());
-                // Restore interrupted state
-                Thread.currentThread().interrupt();
-            }
+            this.executePostProcessor(new String[]{fsharpPostProcessFile, file.toString()});
         }
     }
 

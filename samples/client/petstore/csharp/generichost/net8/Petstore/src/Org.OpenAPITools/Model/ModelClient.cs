@@ -46,14 +46,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of VarClient
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> VarClientOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets VarClient
         /// </summary>
         [JsonPropertyName("client")]
-        public string VarClient { get { return this.VarClientOption; } set { this.VarClientOption = new(value); } }
+        public string VarClient { get { return this.VarClientOption.Value; } set { this.VarClientOption = new(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties

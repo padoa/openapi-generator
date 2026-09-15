@@ -13,12 +13,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import org.openapitools.jackson.nullable.JsonNullable;
 
 
 
 @org.eclipse.microprofile.openapi.annotations.media.Schema(description="")
 @JsonTypeName("ArrayTest")
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaJAXRSSpecServerCodegen", comments = "Generator version: 7.22.0-SNAPSHOT")
 public class ArrayTest  implements Serializable {
   private @Valid List<String> arrayOfString = new ArrayList<>();
   private @Valid List<List<Long>> arrayArrayOfInteger = new ArrayList<>();
@@ -175,10 +176,7 @@ public class ArrayTest  implements Serializable {
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
+    return o == null ? "null" : o.toString().replace("\n", "\n    ");
   }
 
 
@@ -186,7 +184,7 @@ public class ArrayTest  implements Serializable {
     return new ArrayTestBuilderImpl();
   }
 
-  private static class ArrayTestBuilderImpl extends ArrayTestBuilder<ArrayTest, ArrayTestBuilderImpl> {
+  private static final class ArrayTestBuilderImpl extends ArrayTestBuilder<ArrayTest, ArrayTestBuilderImpl> {
 
     @Override
     protected ArrayTestBuilderImpl self() {
@@ -202,7 +200,7 @@ public class ArrayTest  implements Serializable {
   public static abstract class ArrayTestBuilder<C extends ArrayTest, B extends ArrayTestBuilder<C, B>>  {
     private List<String> arrayOfString = new ArrayList<>();
     private List<List<Long>> arrayArrayOfInteger = new ArrayList<>();
-    private List<List<@Valid ReadOnlyFirst>> arrayArrayOfModel = new ArrayList<>();
+    private List<List<ReadOnlyFirst>> arrayArrayOfModel = new ArrayList<>();
     protected abstract B self();
 
     public abstract C build();
@@ -215,10 +213,9 @@ public class ArrayTest  implements Serializable {
       this.arrayArrayOfInteger = arrayArrayOfInteger;
       return self();
     }
-    public B arrayArrayOfModel(List<List<@Valid ReadOnlyFirst>> arrayArrayOfModel) {
+    public B arrayArrayOfModel(List<List<ReadOnlyFirst>> arrayArrayOfModel) {
       this.arrayArrayOfModel = arrayArrayOfModel;
       return self();
     }
   }
 }
-

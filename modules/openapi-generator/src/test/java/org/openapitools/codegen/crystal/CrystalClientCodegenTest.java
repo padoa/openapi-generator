@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.List;
 
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -130,6 +130,77 @@ public class CrystalClientCodegenTest {
         }
         if (!apiFileGenerated) {
             fail("Default api file is not generated!");
+        }
+    }
+
+    @Test
+    public void testAuthSettingsWithNoAuthMethodsEmitsValidCrystal() throws Exception {
+        // Regression test: when an OpenAPI spec has no recognized auth methods,
+        // the generated configuration.cr's auth_settings method must not emit
+        // a bare `Hash{}` literal, which is invalid Crystal. Crystal requires
+        // `{} of K => V` for empty hash literals.
+        final File output = Files.createTempDirectory("test").toFile();
+        output.mkdirs();
+        output.deleteOnExit();
+
+        final OpenAPI openAPI = TestUtils.parseFlattenSpec("src/test/resources/2_0/pathWithHtmlEntity.yaml");
+        CodegenConfig codegenConfig = new CrystalClientCodegen();
+        codegenConfig.setOutputDir(output.getAbsolutePath());
+
+        ClientOptInput clientOptInput = new ClientOptInput().openAPI(openAPI).config(codegenConfig);
+
+        DefaultGenerator generator = new DefaultGenerator();
+        List<File> files = generator.opts(clientOptInput).generate();
+        boolean configFileGenerated = false;
+        for (File file : files) {
+            if (file.getName().equals("configuration.cr")) {
+                configFileGenerated = true;
+                String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+                // Bug: the previous template emitted `Hash{\n      }` for empty
+                // auth methods, which Crystal rejects with:
+                //   Error: for empty hashes use '{} of KeyType => ValueType'
+                Assert.assertFalse(content.contains("Hash{\n      }"),
+                        "configuration.cr must not contain an empty `Hash{}` literal");
+                Assert.assertFalse(content.contains("Hash{}"),
+                        "configuration.cr must not contain an empty `Hash{}` literal");
+                // Fix: emit a typed empty hash literal that compiles in Crystal.
+                assertTrue(content.contains("{} of String => Hash(Symbol, String)"),
+                        "configuration.cr must emit a typed empty hash literal in auth_settings");
+            }
+        }
+        if (!configFileGenerated) {
+            fail("configuration.cr file is not generated!");
+        }
+    }
+
+    @Test
+    public void testAuthSettingsWithAuthMethodsStillEmitsHashLiteral() throws Exception {
+        // Ensure the empty-auth fix did not regress the populated case.
+        final File output = Files.createTempDirectory("test").toFile();
+        output.mkdirs();
+        output.deleteOnExit();
+
+        final OpenAPI openAPI = TestUtils.parseFlattenSpec("src/test/resources/3_0/crystal/petstore.yaml");
+        CodegenConfig codegenConfig = new CrystalClientCodegen();
+        codegenConfig.setOutputDir(output.getAbsolutePath());
+
+        ClientOptInput clientOptInput = new ClientOptInput().openAPI(openAPI).config(codegenConfig);
+
+        DefaultGenerator generator = new DefaultGenerator();
+        List<File> files = generator.opts(clientOptInput).generate();
+        boolean configFileGenerated = false;
+        for (File file : files) {
+            if (file.getName().equals("configuration.cr")) {
+                configFileGenerated = true;
+                String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+                assertTrue(content.contains("Hash{"),
+                        "configuration.cr should still emit `Hash{` for populated auth methods");
+                Assert.assertFalse(content.contains("{} of String => Hash(Symbol, String)"),
+                        "configuration.cr should not emit empty hash literal when auth methods exist");
+            }
+        }
+        if (!configFileGenerated) {
+            fail("configuration.cr file is not generated!");
         }
     }
 

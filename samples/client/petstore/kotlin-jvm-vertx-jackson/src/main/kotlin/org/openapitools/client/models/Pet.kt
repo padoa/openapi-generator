@@ -8,9 +8,17 @@
 
 @file:Suppress(
     "ArrayInDataClass",
+    "DuplicatedCode",
     "EnumEntryName",
     "RemoveRedundantQualifierName",
-    "UnusedImport"
+    "RemoveRedundantCallsOfConversionMethods",
+    "REDUNDANT_CALL_OF_CONVERSION_METHOD",
+    "RedundantUnitReturnType",
+    "RemoveEmptyClassBody",
+    "UnnecessaryVariable",
+    "UnusedImport",
+    "UnnecessaryVariable",
+    "unused"
 )
 
 package org.openapitools.client.models
@@ -34,23 +42,23 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class Pet (
 
-    @field:JsonProperty("name")
+    @get:JsonProperty("name")
     val name: kotlin.String,
 
-    @field:JsonProperty("photoUrls")
+    @get:JsonProperty("photoUrls")
     val photoUrls: kotlin.collections.List<kotlin.String>,
 
-    @field:JsonProperty("id")
+    @get:JsonProperty("id")
     val id: kotlin.Long? = null,
 
-    @field:JsonProperty("category")
+    @get:JsonProperty("category")
     val category: Category? = null,
 
-    @field:JsonProperty("tags")
+    @get:JsonProperty("tags")
     val tags: kotlin.collections.List<Tag>? = null,
 
     /* pet status in the store */
-    @field:JsonProperty("status")
+    @get:JsonProperty("status")
     @Deprecated(message = "This property is deprecated.")
     val status: Pet.Status? = null
 

@@ -35,6 +35,7 @@ namespace Org.OpenAPITools.Model
         [JsonConstructor]
         public GrandparentAnimal()
         {
+            PetType = this.GetType().Name;
             OnCreated();
         }
 
@@ -44,8 +45,8 @@ namespace Org.OpenAPITools.Model
         /// The discriminator
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-        public string PetType { get; } = "GrandparentAnimal";
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public string PetType { get; }
 
         /// <summary>
         /// Gets or Sets additional properties

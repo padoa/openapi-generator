@@ -58,40 +58,40 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Property
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> PropertyOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Property
         /// </summary>
         [JsonPropertyName("property")]
-        public string Property { get { return this.PropertyOption; } set { this.PropertyOption = new(value); } }
+        public string Property { get { return this.PropertyOption.Value; } set { this.PropertyOption = new(value); } }
 
         /// <summary>
         /// Used to track the state of SnakeCase
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> SnakeCaseOption { get; }
 
         /// <summary>
         /// Gets or Sets SnakeCase
         /// </summary>
         [JsonPropertyName("snake_case")]
-        public int? SnakeCase { get { return this.SnakeCaseOption; } }
+        public int? SnakeCase { get { return this.SnakeCaseOption.Value; } }
 
         /// <summary>
         /// Used to track the state of Var123Number
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> Var123NumberOption { get; }
 
         /// <summary>
         /// Gets or Sets Var123Number
         /// </summary>
         [JsonPropertyName("123Number")]
-        public int? Var123Number { get { return this.Var123NumberOption; } }
+        public int? Var123Number { get { return this.Var123NumberOption.Value; } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -211,19 +211,16 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "name":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                varName = new Option<int?>(utf8JsonReader.GetInt32());
+                            varName = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "property":
                             property = new Option<string>(utf8JsonReader.GetString());
                             break;
                         case "snake_case":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                snakeCase = new Option<int?>(utf8JsonReader.GetInt32());
+                            snakeCase = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "123Number":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                var123Number = new Option<int?>(utf8JsonReader.GetInt32());
+                            var123Number = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         default:
                             break;

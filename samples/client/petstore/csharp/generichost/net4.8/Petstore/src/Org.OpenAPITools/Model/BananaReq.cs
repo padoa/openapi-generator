@@ -54,14 +54,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Sweet
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<bool?> SweetOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Sweet
         /// </summary>
         [JsonPropertyName("sweet")]
-        public bool? Sweet { get { return this.SweetOption; } set { this.SweetOption = new Option<bool?>(value); } }
+        public bool? Sweet { get { return this.SweetOption.Value; } set { this.SweetOption = new Option<bool?>(value); } }
 
         /// <summary>
         /// Returns the string presentation of the object
@@ -129,12 +129,10 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "lengthCm":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                lengthCm = new Option<decimal?>(utf8JsonReader.GetDecimal());
+                            lengthCm = new Option<decimal?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (decimal?)null : utf8JsonReader.GetDecimal());
                             break;
                         case "sweet":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                sweet = new Option<bool?>(utf8JsonReader.GetBoolean());
+                            sweet = new Option<bool?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (bool?)null : utf8JsonReader.GetBoolean());
                             break;
                         default:
                             break;

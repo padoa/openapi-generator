@@ -48,14 +48,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Type
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<ZebraType?> TypeOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Type
         /// </summary>
         [JsonPropertyName("type")]
-        public ZebraType? Type { get { return this.TypeOption; } set { this.TypeOption = new Option<ZebraType?>(value); } }
+        public ZebraType? Type { get { return this.TypeOption.Value; } set { this.TypeOption = new Option<ZebraType?>(value); } }
 
         /// <summary>
         /// Gets or Sets ClassName

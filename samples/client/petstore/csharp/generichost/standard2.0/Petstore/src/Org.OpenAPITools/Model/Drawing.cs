@@ -52,53 +52,53 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of MainShape
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Shape> MainShapeOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets MainShape
         /// </summary>
         [JsonPropertyName("mainShape")]
-        public Shape MainShape { get { return this.MainShapeOption; } set { this.MainShapeOption = new Option<Shape>(value); } }
+        public Shape MainShape { get { return this.MainShapeOption.Value; } set { this.MainShapeOption = new Option<Shape>(value); } }
 
         /// <summary>
         /// Used to track the state of NullableShape
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<NullableShape> NullableShapeOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets NullableShape
         /// </summary>
         [JsonPropertyName("nullableShape")]
-        public NullableShape NullableShape { get { return this.NullableShapeOption; } set { this.NullableShapeOption = new Option<NullableShape>(value); } }
+        public NullableShape NullableShape { get { return this.NullableShapeOption.Value; } set { this.NullableShapeOption = new Option<NullableShape>(value); } }
 
         /// <summary>
         /// Used to track the state of ShapeOrNull
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<ShapeOrNull> ShapeOrNullOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets ShapeOrNull
         /// </summary>
         [JsonPropertyName("shapeOrNull")]
-        public ShapeOrNull ShapeOrNull { get { return this.ShapeOrNullOption; } set { this.ShapeOrNullOption = new Option<ShapeOrNull>(value); } }
+        public ShapeOrNull ShapeOrNull { get { return this.ShapeOrNullOption.Value; } set { this.ShapeOrNullOption = new Option<ShapeOrNull>(value); } }
 
         /// <summary>
         /// Used to track the state of Shapes
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<Shape>> ShapesOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Shapes
         /// </summary>
         [JsonPropertyName("shapes")]
-        public List<Shape> Shapes { get { return this.ShapesOption; } set { this.ShapesOption = new Option<List<Shape>>(value); } }
+        public List<Shape> Shapes { get { return this.ShapesOption.Value; } set { this.ShapesOption = new Option<List<Shape>>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -177,20 +177,16 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "mainShape":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                mainShape = new Option<Shape>(JsonSerializer.Deserialize<Shape>(ref utf8JsonReader, jsonSerializerOptions));
+                            mainShape = new Option<Shape>(JsonSerializer.Deserialize<Shape>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "nullableShape":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                nullableShape = new Option<NullableShape>(JsonSerializer.Deserialize<NullableShape>(ref utf8JsonReader, jsonSerializerOptions));
+                            nullableShape = new Option<NullableShape>(JsonSerializer.Deserialize<NullableShape>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "shapeOrNull":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                shapeOrNull = new Option<ShapeOrNull>(JsonSerializer.Deserialize<ShapeOrNull>(ref utf8JsonReader, jsonSerializerOptions));
+                            shapeOrNull = new Option<ShapeOrNull>(JsonSerializer.Deserialize<ShapeOrNull>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "shapes":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                shapes = new Option<List<Shape>>(JsonSerializer.Deserialize<List<Shape>>(ref utf8JsonReader, jsonSerializerOptions));
+                            shapes = new Option<List<Shape>>(JsonSerializer.Deserialize<List<Shape>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;

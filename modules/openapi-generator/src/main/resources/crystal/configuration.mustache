@@ -209,12 +209,13 @@ module {{moduleName}}
 
     # Returns Auth Settings hash for api client.
     def auth_settings
+{{#authMethods.0}}
       Hash{
 {{#authMethods}}
 {{#isApiKey}}
         "{{name}}" => {
           type: "api_key",
-          in: {{#isKeyInHeader}}"header"{{/isKeyInHeader}}{{#isKeyInQuery}}"query"{{/isKeyInQuery}},
+          in: {{#isKeyInCookie}}"cookie"{{/isKeyInCookie}}{{#isKeyInHeader}}"header"{{/isKeyInHeader}}{{#isKeyInQuery}}"query"{{/isKeyInQuery}},
           key: "{{keyParamName}}",
           value: api_key_with_prefix(:{{keyParamName}})
         },
@@ -250,6 +251,10 @@ module {{moduleName}}
 {{/isOAuth}}
 {{/authMethods}}
       }
+{{/authMethods.0}}
+{{^authMethods}}
+      {} of String => Hash(Symbol, String)
+{{/authMethods}}
     end
 
     # Returns an array of Server setting

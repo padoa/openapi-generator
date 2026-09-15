@@ -136,9 +136,9 @@ namespace Org.OpenAPITools.Test.Api
         public async Task UploadFileAsyncTest()
         {
             long petId = default!;
-            Client.Option<System.IO.Stream> file = default!;
             Client.Option<string> additionalMetadata = default!;
-            var response = await _instance.UploadFileAsync(petId, file, additionalMetadata);
+            Client.Option<Org.OpenAPITools.Client.FileParameter> file = default!;
+            var response = await _instance.UploadFileAsync(petId, additionalMetadata, file);
             var model = response.Ok();
             Assert.IsType<ApiResponse>(model);
         }
@@ -149,10 +149,23 @@ namespace Org.OpenAPITools.Test.Api
         [Fact (Skip = "not implemented")]
         public async Task UploadFileWithRequiredFileAsyncTest()
         {
-            System.IO.Stream requiredFile = default!;
             long petId = default!;
+            Org.OpenAPITools.Client.FileParameter requiredFile = default!;
             Client.Option<string> additionalMetadata = default!;
-            var response = await _instance.UploadFileWithRequiredFileAsync(requiredFile, petId, additionalMetadata);
+            var response = await _instance.UploadFileWithRequiredFileAsync(petId, requiredFile, additionalMetadata);
+            var model = response.Ok();
+            Assert.IsType<ApiResponse>(model);
+        }
+
+        /// <summary>
+        /// Test UploadFiles
+        /// </summary>
+        [Fact (Skip = "not implemented")]
+        public async Task UploadFilesAsyncTest()
+        {
+            List<Org.OpenAPITools.Client.FileParameter> files = default!;
+            long petId = default!;
+            var response = await _instance.UploadFilesAsync(files, petId);
             var model = response.Ok();
             Assert.IsType<ApiResponse>(model);
         }

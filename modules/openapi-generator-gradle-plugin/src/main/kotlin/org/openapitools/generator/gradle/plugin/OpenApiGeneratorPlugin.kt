@@ -60,7 +60,7 @@ class OpenApiGeneratorPlugin : Plugin<Project> {
                 project
             )
 
-            generate.outputDir.set("$buildDir/generate-resources/main")
+            generate.outputDir.convention(layout.buildDirectory.dir("generate-resources/main"))
 
             tasks.apply {
                 register("openApiGenerators", GeneratorsTask::class.java).configure {
@@ -84,7 +84,9 @@ class OpenApiGeneratorPlugin : Plugin<Project> {
                     description = "Validates an Open API 2.0 or 3.x specification document."
 
                     inputSpec.set(validate.inputSpec)
+                    remoteInputSpec.set(validate.remoteInputSpec)
                     recommend.set(validate.recommend)
+                    treatWarningsAsErrors.set(validate.treatWarningsAsErrors)
                 }
 
                 register("openApiGenerate", GenerateTask::class.java).configure {
@@ -98,6 +100,7 @@ class OpenApiGeneratorPlugin : Plugin<Project> {
                     outputDir.set(generate.outputDir)
                     inputSpec.set(generate.inputSpec)
                     inputSpecRootDirectory.set(generate.inputSpecRootDirectory)
+                    inputSpecRootDirectorySkipMerge.set(generate.inputSpecRootDirectorySkipMerge)
                     remoteInputSpec.set(generate.remoteInputSpec)
                     templateDir.set(generate.templateDir)
                     templateResourcePath.set(generate.templateResourcePath)
@@ -116,6 +119,7 @@ class OpenApiGeneratorPlugin : Plugin<Project> {
                     additionalProperties.set(generate.additionalProperties)
                     serverVariables.set(generate.serverVariables)
                     languageSpecificPrimitives.set(generate.languageSpecificPrimitives)
+                    openapiGeneratorIgnoreList.set(generate.openapiGeneratorIgnoreList)
                     importMappings.set(generate.importMappings)
                     schemaMappings.set(generate.schemaMappings)
                     inlineSchemaNameMappings.set(generate.inlineSchemaNameMappings)

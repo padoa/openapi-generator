@@ -20,6 +20,7 @@ package org.openapitools.codegen.languages;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.google.common.collect.ImmutableMap;
 import com.samskivert.mustache.Mustache;
+import com.samskivert.mustache.Template;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.media.StringSchema;
 import lombok.Getter;
@@ -29,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.*;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
+import org.openapitools.codegen.model.OperationsMap;
 import org.openapitools.codegen.templating.mustache.EscapeChar;
 import org.openapitools.codegen.utils.ModelUtils;
 import org.slf4j.Logger;
@@ -36,6 +38,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -53,6 +57,15 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
 
     public static final String JAVAX_PACKAGE = "javaxPackage";
     public static final String USE_JAKARTA_EE = "useJakartaEe";
+    public static final String USE_JACKSON_3 = "useJackson3";
+    public static final String JACKSON2_PACKAGE = "com.fasterxml.jackson";
+    public static final String JACKSON3_PACKAGE = "tools.jackson";
+    public static final String JACKSON_PACKAGE = "jacksonPackage";
+    public static final String SCHEMA_IMPLEMENTS = "schemaImplements";
+    public static final String SCHEMA_IMPLEMENTS_FIELDS = "schemaImplementsFields";
+    public static final String X_KOTLIN_IMPLEMENTS_SKIP = "xKotlinImplementsSkip";
+    public static final String X_KOTLIN_IMPLEMENTS_FIELDS_SKIP = "xKotlinImplementsFieldsSkip";
+    public static final String IMPLICIT_HEADERS = "implicitHeaders";
 
     private final Logger LOGGER = LoggerFactory.getLogger(AbstractKotlinCodegen.class);
 
@@ -68,11 +81,13 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
 
     protected String apiDocPath = "docs/";
     protected String modelDocPath = "docs/";
+    @Setter
     protected boolean parcelizeModels = false;
     @Getter @Setter
     protected boolean serializableModel = false;
 
     @Setter protected boolean useJakartaEe = false;
+    @Getter @Setter protected boolean useJackson3 = false;
 
     @Setter protected boolean nonPublicApi = false;
 
@@ -85,6 +100,20 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
     private final Map<String, String> schemaKeyToModelNameCache = new HashMap<>();
     @Getter @Setter
     protected List<String> additionalModelTypeAnnotations = new LinkedList<>();
+    @Getter
+    @Setter
+    protected Map<String, List<String>> schemaImplements = new HashMap<>();
+    @Getter
+    @Setter
+    protected Map<String, List<String>> schemaImplementsFields = new HashMap<>();
+    @Getter
+    @Setter
+    protected List<String> xKotlinImplementsSkip = new ArrayList<>();
+    @Getter
+    @Setter
+    protected Map<String, List<String>> xKotlinImplementsFieldsSkip = new HashMap<>();
+    @Setter
+    protected boolean implicitHeaders = false;
 
     public AbstractKotlinCodegen() {
         super();
@@ -268,6 +297,7 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
 
         cliOptions.add(CliOption.newBoolean(MODEL_MUTABLE, MODEL_MUTABLE_DESC, false));
         cliOptions.add(CliOption.newString(ADDITIONAL_MODEL_TYPE_ANNOTATIONS, "Additional annotations for model type(class level annotations). List separated by semicolon(;) or new line (Linux or Windows)"));
+        cliOptions.add(CliOption.newBoolean(IMPLICIT_HEADERS, "Skip header parameters in the generated API methods.", implicitHeaders));
     }
 
     @Override
@@ -347,6 +377,12 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
         return toModelName(type);
     }
 
+    private String getItemsTypeDeclaration(Schema items) {
+        String itemsTypeDeclaration = getTypeDeclaration(items);
+        String nullable = items.getNullable() != null && items.getNullable() && !itemsTypeDeclaration.endsWith("?") ? "?" : "";
+        return itemsTypeDeclaration + nullable;
+    }
+
     /**
      * Output the type declaration of the property
      *
@@ -358,8 +394,8 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
         Schema<?> schema = unaliasSchema(p);
         Schema<?> target = ModelUtils.isGenerateAliasAsModel() ? p : schema;
         if (ModelUtils.isArraySchema(target)) {
-            Schema<?> items = ModelUtils.getSchemaItems( schema);
-            return getSchemaType(target) + "<" + getTypeDeclaration(items) + ">";
+            Schema<?> items = ModelUtils.getSchemaItems(schema);
+            return getSchemaType(target) + "<" + getItemsTypeDeclaration(items) + ">";
         } else if (ModelUtils.isMapSchema(target)) {
             // Note: ModelUtils.isMapSchema(p) returns true when p is a composed schema that also defines
             // additionalproperties: true
@@ -369,7 +405,7 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
                 inner = new StringSchema().description("TODO default missing map inner type to string");
                 p.setAdditionalProperties(inner);
             }
-            return getSchemaType(target) + "<kotlin.String, " + getTypeDeclaration(inner) + ">";
+            return getSchemaType(target) + "<kotlin.String, " + getItemsTypeDeclaration(inner) + ">";
         }
         return super.getTypeDeclaration(target);
     }
@@ -385,9 +421,27 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, ModelsMap> postProcessAllModels(Map<String, ModelsMap> objs) {
         objs = super.postProcessAllModels(objs);
         objs = super.updateAllModels(objs);
+
+        // Bridge x-implements (set by oneOf pipeline) into x-kotlin-implements (read by Kotlin templates)
+        for (ModelsMap modelsAttrs : objs.values()) {
+            for (ModelMap mo : modelsAttrs.getModels()) {
+                CodegenModel cm = mo.getModel();
+                List<String> xImplements = (List<String>) cm.getVendorExtensions().get(CodegenConstants.X_IMPLEMENTS);
+                if (xImplements != null && !xImplements.isEmpty()) {
+                    List<String> kotlinImplements = (List<String>) cm.getVendorExtensions()
+                            .computeIfAbsent(VendorExtension.X_KOTLIN_IMPLEMENTS.getName(), k -> new ArrayList<>());
+                    for (String iface : xImplements) {
+                        if (!kotlinImplements.contains(iface)) {
+                            kotlinImplements.add(iface);
+                        }
+                    }
+                }
+            }
+        }
 
         if (!additionalModelTypeAnnotations.isEmpty()) {
             for (String modelName : objs.keySet()) {
@@ -420,12 +474,51 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
     }
 
     @Override
+    public OperationsMap postProcessOperationsWithModels(OperationsMap objs, List<ModelMap> allModels) {
+        handleImplicitHeaders(objs);
+        return objs;
+    }
+
+    protected void handleImplicitHeaders(OperationsMap objs) {
+        if (!implicitHeaders) {
+            return;
+        }
+
+        objs.getOperations().getOperation().forEach(this::handleImplicitHeaders);
+    }
+
+    /**
+     * This method removes all implicit header parameters from the list of parameters
+     *
+     * @param operation - operation to be processed
+     */
+    private void handleImplicitHeaders(CodegenOperation operation) {
+        if (operation.allParams.isEmpty()) {
+            return;
+        }
+        final ArrayList<CodegenParameter> copy = new ArrayList<>(operation.allParams);
+        operation.allParams.clear();
+
+        for (CodegenParameter p : copy) {
+            if (p.isHeaderParam) {
+                operation.implicitHeadersParams.add(p);
+                operation.headerParams.removeIf(header -> header.baseName.equals(p.baseName));
+                LOGGER.debug("Update operation [{}]. Remove header [{}] because it's marked to be implicit", operation.operationId, p.baseName);
+            } else {
+                operation.allParams.add(p);
+            }
+        }
+    }
+
+    @Override
     public void processOpts() {
         super.processOpts();
 
         if (StringUtils.isEmpty(System.getenv("KOTLIN_POST_PROCESS_FILE"))) {
             LOGGER.info("Environment variable KOTLIN_POST_PROCESS_FILE not defined so the Kotlin code may not be properly formatted. To define it, try 'export KOTLIN_POST_PROCESS_FILE=\"/usr/local/bin/ktlint -F\"' (Linux/Mac)");
             LOGGER.info("NOTE: To enable file post-processing, 'enablePostProcessFile' must be set to `true` (--enable-post-process-file for CLI).");
+        } else if (!this.isEnablePostProcessFile()) {
+            LOGGER.info("Warning: Environment variable 'KOTLIN_POST_PROCESS_FILE' is set but file post-processing is not enabled. To enable file post-processing, 'enablePostProcessFile' must be set to `true` (--enable-post-process-file for CLI).");
         }
 
         if (additionalProperties.containsKey(MODEL_MUTABLE)) {
@@ -502,7 +595,19 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
 
         if (additionalProperties.containsKey(ADDITIONAL_MODEL_TYPE_ANNOTATIONS)) {
             String additionalAnnotationsList = additionalProperties.get(ADDITIONAL_MODEL_TYPE_ANNOTATIONS).toString();
-            this.setAdditionalModelTypeAnnotations(Arrays.asList(additionalAnnotationsList.trim().split("\\s*(;|\\r?\\n)\\s*")));
+            this.setAdditionalModelTypeAnnotations(Arrays.asList(SPLIT_ON_SEMICOLON_OR_NEWLINE_REGEX.split(additionalAnnotationsList.trim())));
+        }
+        if (additionalProperties.containsKey(SCHEMA_IMPLEMENTS)) {
+            this.setSchemaImplements(getPropertyAsStringListMap(SCHEMA_IMPLEMENTS));
+        }
+        if (additionalProperties.containsKey(SCHEMA_IMPLEMENTS_FIELDS)) {
+            this.setSchemaImplementsFields(getPropertyAsStringListMap(SCHEMA_IMPLEMENTS_FIELDS));
+        }
+        if (additionalProperties.containsKey(X_KOTLIN_IMPLEMENTS_SKIP)) {
+            this.setXKotlinImplementsSkip(getPropertyAsStringList(X_KOTLIN_IMPLEMENTS_SKIP));
+        }
+        if (additionalProperties.containsKey(X_KOTLIN_IMPLEMENTS_FIELDS_SKIP)) {
+            this.setXKotlinImplementsFieldsSkip(getPropertyAsStringListMap(X_KOTLIN_IMPLEMENTS_FIELDS_SKIP));
         }
 
         additionalProperties.put(CodegenConstants.SORT_PARAMS_BY_REQUIRED_FLAG, getSortParamsByRequiredFlag());
@@ -530,18 +635,23 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
         } else {
             applyJavaxPackage();
         }
+
+        if (additionalProperties.containsKey(USE_JACKSON_3)) {
+            setUseJackson3(Boolean.parseBoolean(additionalProperties.get(USE_JACKSON_3).toString()));
+        }
+        additionalProperties.put(USE_JACKSON_3, useJackson3);
+
+        if (useJackson3) {
+            applyJackson3Package();
+        } else {
+            applyJackson2Package();
+        }
+
+        convertPropertyToBooleanAndWriteBack(IMPLICIT_HEADERS, this::setImplicitHeaders);
     }
 
     protected boolean isModelMutable() {
         return Boolean.TRUE.equals(additionalProperties.get(MODEL_MUTABLE));
-    }
-
-    public Boolean getParcelizeModels() {
-        return parcelizeModels;
-    }
-
-    public void setParcelizeModels(Boolean parcelizeModels) {
-        this.parcelizeModels = parcelizeModels;
     }
 
     public boolean nonPublicApi() {
@@ -565,7 +675,7 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
         if (value.isEmpty()) {
             modified = "EMPTY";
         } else {
-            modified = value;
+            modified = value.replaceAll("-", "_");
             modified = sanitizeKotlinSpecificNames(modified);
         }
 
@@ -805,6 +915,14 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
         writePropertyBack(JAVAX_PACKAGE, "jakarta");
     }
 
+    protected void applyJackson2Package() {
+        writePropertyBack(JACKSON_PACKAGE, JACKSON2_PACKAGE);
+    }
+
+    protected void applyJackson3Package() {
+        writePropertyBack(JACKSON_PACKAGE, JACKSON3_PACKAGE);
+    }
+
     @Override
     protected boolean isReservedWord(String word) {
         // We want case-sensitive escaping, to avoid unnecessary backtick-escaping.
@@ -828,6 +946,52 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
     @Override
     public CodegenModel fromModel(String name, Schema schema) {
         CodegenModel m = super.fromModel(name, schema);
+        m.getVendorExtensions().putIfAbsent(VendorExtension.X_KOTLIN_IMPLEMENTS.getName(), List.of());
+        List<String> schemaImplementedInterfacesClasses = this.getSchemaImplements().getOrDefault(m.getSchemaName(), List.of());
+        List<String> schemaImplementedInterfacesFields = this.getSchemaImplementsFields().getOrDefault(m.getSchemaName(), List.of());
+        List<String> vendorExtensionImplementedInterfacesClasses = (List<String>) m.getVendorExtensions().get(VendorExtension.X_KOTLIN_IMPLEMENTS.getName());
+        List<String> interfacesToSkip = this.getXKotlinImplementsSkip().stream()
+                .filter(vendorExtensionImplementedInterfacesClasses::contains)
+                .collect(Collectors.toList());
+        if (!interfacesToSkip.isEmpty()) {
+            LOGGER.info("Interface(s) {} in model {} are skipped from being marked as implemented via config option '{}'.",
+                    interfacesToSkip, name, X_KOTLIN_IMPLEMENTS_SKIP);
+        }
+        List<String> vendorExtensionImplementedInterfacesClassesFiltered = vendorExtensionImplementedInterfacesClasses.stream()
+                .filter(interfaceName -> !interfacesToSkip.contains(interfaceName))
+                .collect(Collectors.toList());
+        List<String> vendorExtensionImplementedInterfacesFields = Optional.ofNullable((List<String>) m.getVendorExtensions().get(VendorExtension.X_KOTLIN_IMPLEMENTS_FIELDS.getName()))
+                .map(xKotlinImplementsFields -> {
+                    if (vendorExtensionImplementedInterfacesClassesFiltered.isEmpty() && !xKotlinImplementsFields.isEmpty()) {
+                        LOGGER.warn("Annotating {} with {} without {} is not supported. {} will be ignored.",
+                                name, VendorExtension.X_KOTLIN_IMPLEMENTS_FIELDS.getName(), VendorExtension.X_KOTLIN_IMPLEMENTS.getName(),
+                                VendorExtension.X_KOTLIN_IMPLEMENTS_FIELDS.getName());
+                    }
+                    return xKotlinImplementsFields;
+                }).orElse(List.of());
+        List<String> fieldsToSkip = this.getXKotlinImplementsFieldsSkip().getOrDefault(m.getSchemaName(), List.of())
+                .stream()
+                .filter(vendorExtensionImplementedInterfacesFields::contains)
+                .collect(Collectors.toList());
+        if (!fieldsToSkip.isEmpty()) {
+            LOGGER.info("Field(s) {} in model {} are skipped from being marked as inherited via config option '{}'.",
+                    fieldsToSkip, name, X_KOTLIN_IMPLEMENTS_FIELDS_SKIP);
+        }
+        List<String> vendorExtensionImplementedInterfacesFieldsFiltered = vendorExtensionImplementedInterfacesFields.stream()
+                .filter(interfaceName -> !fieldsToSkip.contains(interfaceName))
+                .collect(Collectors.toList());
+        List<String> combinedImplementedInterfacesClasses = Stream.concat(vendorExtensionImplementedInterfacesClassesFiltered.stream(), schemaImplementedInterfacesClasses.stream())
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
+        List<String> combinedImplementedInterfacesFields = Stream.concat(vendorExtensionImplementedInterfacesFieldsFiltered.stream(), schemaImplementedInterfacesFields.stream())
+                .distinct()
+                .collect(Collectors.toList());
+        if (serializableModel && !combinedImplementedInterfacesClasses.contains("java.io.Serializable")) {
+            combinedImplementedInterfacesClasses.add("java.io.Serializable");
+        }
+        m.getVendorExtensions().replace(VendorExtension.X_KOTLIN_IMPLEMENTS.getName(), combinedImplementedInterfacesClasses);
+        LOGGER.info("Model {} implements interface(s): {}", name, combinedImplementedInterfacesClasses);
         m.optionalVars = m.optionalVars.stream().distinct().collect(Collectors.toList());
         // Update allVars/requiredVars/optionalVars with isInherited
         // Each of these lists contains elements that are similar, but they are all cloned
@@ -843,7 +1007,9 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
         // Update any other vars (requiredVars, optionalVars)
         Stream.of(m.requiredVars, m.optionalVars)
                 .flatMap(List::stream)
-                .filter(p -> allVarsMap.containsKey(p.baseName))
+                .filter(p -> allVarsMap.containsKey(p.baseName)
+                             || combinedImplementedInterfacesFields.contains(p.baseName)
+                )
                 .forEach(p -> p.isInherited = true);
         return m;
     }
@@ -958,6 +1124,7 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
 
     @Override
     public void postProcessFile(File file, String fileType) {
+        super.postProcessFile(file, fileType);
         if (file == null) {
             return;
         }
@@ -969,21 +1136,7 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
 
         // only process files with kt extension
         if ("kt".equals(FilenameUtils.getExtension(file.toString()))) {
-            String command = kotlinPostProcessFile + " " + file;
-            try {
-                Process p = Runtime.getRuntime().exec(command);
-                p.waitFor();
-                int exitValue = p.exitValue();
-                if (exitValue != 0) {
-                    LOGGER.error("Error running the command ({}). Exit value: {}", command, exitValue);
-                } else {
-                    LOGGER.info("Successfully executed: {}", command);
-                }
-            } catch (InterruptedException | IOException e) {
-                LOGGER.error("Error running the command ({}). Exception: {}", command, e.getMessage());
-                // Restore interrupted state
-                Thread.currentThread().interrupt();
-            }
+            this.executePostProcessor(new String[]{kotlinPostProcessFile, file.toString()});
         }
     }
 
@@ -1018,18 +1171,15 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
             if (schema.getDefault() != null) {
                 return fixNumberValue(schema.getDefault().toString(), schema);
             }
-        }
-        else if (ModelUtils.isIntegerSchema(schema)) {
+        } else if (ModelUtils.isIntegerSchema(schema)) {
             if (schema.getDefault() != null) {
                 return fixNumberValue(schema.getDefault().toString(), schema);
             }
-        }
-        else if (ModelUtils.isURISchema(schema)) {
+        } else if (ModelUtils.isURISchema(schema)) {
             if (schema.getDefault() != null) {
                 return importMapping.get("URI") + ".create(\"" + schema.getDefault() + "\")";
             }
-        }
-        else if (ModelUtils.isArraySchema(schema)) {
+        } else if (ModelUtils.isArraySchema(schema)) {
             return toArrayDefaultValue(cp, schema);
         } else if (ModelUtils.isStringSchema(schema)) {
             if (schema.getDefault() != null) {
@@ -1111,7 +1261,7 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
             addAdditionPropertiesToCodeGenModel(m, schema);
         } else {
             m.setIsMap(false);
-            if (ModelUtils.isFreeFormObject(schema)) {
+            if (ModelUtils.isFreeFormObject(schema, openAPI)) {
                 // non-composed object type with no properties + additionalProperties
                 // additionalProperties must be null, ObjectSchema, or empty Schema
                 addAdditionPropertiesToCodeGenModel(m, schema);
@@ -1128,6 +1278,8 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
     }
 
     protected interface DataTypeAssigner {
+        void setIsVoid(Boolean isVoid);
+
         void setReturnType(String returnType);
 
         void setReturnContainer(String returnContainer);
@@ -1140,6 +1292,7 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
     protected void doDataTypeAssignment(final String returnType, DataTypeAssigner dataTypeAssigner) {
         if (returnType == null) {
             dataTypeAssigner.setReturnType("Unit");
+            dataTypeAssigner.setIsVoid(true);
         } else if (returnType.startsWith("kotlin.collections.List")) {
             int end = returnType.lastIndexOf(">");
             if (end > 0) {
@@ -1165,5 +1318,16 @@ public abstract class AbstractKotlinCodegen extends DefaultCodegen implements Co
                 dataTypeAssigner.setReturnContainer("Map");
             }
         }
+    }
+
+    protected static abstract class CustomLambda implements Mustache.Lambda {
+        @Override
+        public void execute(Template.Fragment frag, Writer out) throws IOException {
+            final StringWriter tempWriter = new StringWriter();
+            frag.execute(tempWriter);
+            out.write(formatFragment(tempWriter.toString()));
+        }
+
+        public abstract String formatFragment(String fragment);
     }
 }

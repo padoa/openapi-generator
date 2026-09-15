@@ -36,6 +36,7 @@ namespace Org.OpenAPITools.Model
         [JsonConstructor]
         public Animal(Option<string> color = default)
         {
+            ClassName = this.GetType().Name;
             ColorOption = color;
             OnCreated();
         }
@@ -46,21 +47,21 @@ namespace Org.OpenAPITools.Model
         /// The discriminator
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-        public string ClassName { get; } = "Animal";
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public string ClassName { get; }
 
         /// <summary>
         /// Used to track the state of Color
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> ColorOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Color
         /// </summary>
         [JsonPropertyName("color")]
-        public string Color { get { return this.ColorOption; } set { this.ColorOption = new Option<string>(value); } }
+        public string Color { get { return this.ColorOption.Value; } set { this.ColorOption = new Option<string>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties

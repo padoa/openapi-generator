@@ -46,14 +46,14 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of TestCollectionEndingWithWordList
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<List<TestCollectionEndingWithWordList>> TestCollectionEndingWithWordListOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets TestCollectionEndingWithWordList
         /// </summary>
         [JsonPropertyName("TestCollectionEndingWithWordList")]
-        public List<TestCollectionEndingWithWordList> TestCollectionEndingWithWordList { get { return this.TestCollectionEndingWithWordListOption; } set { this.TestCollectionEndingWithWordListOption = new Option<List<TestCollectionEndingWithWordList>>(value); } }
+        public List<TestCollectionEndingWithWordList> TestCollectionEndingWithWordList { get { return this.TestCollectionEndingWithWordListOption.Value; } set { this.TestCollectionEndingWithWordListOption = new Option<List<TestCollectionEndingWithWordList>>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -126,8 +126,7 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "TestCollectionEndingWithWordList":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                testCollectionEndingWithWordList = new Option<List<TestCollectionEndingWithWordList>>(JsonSerializer.Deserialize<List<TestCollectionEndingWithWordList>>(ref utf8JsonReader, jsonSerializerOptions));
+                            testCollectionEndingWithWordList = new Option<List<TestCollectionEndingWithWordList>>(JsonSerializer.Deserialize<List<TestCollectionEndingWithWordList>>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;

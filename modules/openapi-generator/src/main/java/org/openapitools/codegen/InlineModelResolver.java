@@ -106,7 +106,20 @@ public class InlineModelResolver {
         }
 
         flattenPaths();
+        flattenWebhooks();
         flattenComponents();
+        flattenComponentResponses();
+    }
+
+    /**
+     * Flatten inline models in Webhooks
+     */
+    private void flattenWebhooks() {
+        Map<String, PathItem> webhooks = openAPI.getWebhooks();
+        if (webhooks == null) {
+            return;
+        }
+        flattenPathItems(webhooks);
     }
 
     /**
@@ -117,8 +130,16 @@ public class InlineModelResolver {
         if (paths == null) {
             return;
         }
+        flattenPathItems(paths);
+    }
 
-        for (Map.Entry<String, PathItem> pathsEntry : paths.entrySet()) {
+    /**
+     * Flatten inline models in path items
+     *
+     * @param pathItemMap Map of path items
+     */
+    private void flattenPathItems(Map<String, PathItem> pathItemMap) {
+        for (Map.Entry<String, PathItem> pathsEntry : pathItemMap.entrySet()) {
             PathItem path = pathsEntry.getValue();
             List<Map.Entry<HttpMethod, Operation>> toFlatten = new ArrayList<>(path.readOperationsMap().entrySet());
 
@@ -141,11 +162,15 @@ public class InlineModelResolver {
                 }
             }
 
+            // flatten path-level parameters
+            flattenParameters(pathname, path.getParameters(), null);
+
+            // flatten parameters for each operation
             for (Map.Entry<HttpMethod, Operation> operationEntry : toFlatten) {
                 Operation operation = operationEntry.getValue();
                 String inlineSchemaName = this.getInlineSchemaName(operationEntry.getKey(), pathname);
                 flattenRequestBody(inlineSchemaName, operation);
-                flattenParameters(inlineSchemaName, operation);
+                flattenParameters(inlineSchemaName, operation.getParameters(), operation.getOperationId());
                 flattenResponses(inlineSchemaName, operation);
             }
         }
@@ -179,7 +204,7 @@ public class InlineModelResolver {
 
     /**
      * Return false if model can be represented by primitives e.g. string, object
-     * without properties, array or map of other model (model contanier), etc.
+     * without properties, array or map of other model (model container), etc.
      * <p>
      * Return true if a model should be generated e.g. object with properties,
      * enum, oneOf, allOf, anyOf, etc.
@@ -192,7 +217,7 @@ public class InlineModelResolver {
 
     /**
      * Return false if model can be represented by primitives e.g. string, object
-     * without properties, array or map of other model (model contanier), etc.
+     * without properties, array or map of other model (model container), etc.
      * <p>
      * Return true if a model should be generated e.g. object with properties,
      * enum, oneOf, allOf, anyOf, etc.
@@ -210,9 +235,9 @@ public class InlineModelResolver {
         if (resolveInlineEnums && schema.getEnum() != null && schema.getEnum().size() > 0) {
             return true;
         }
-        if (schema.getType() == null || "object".equals(schema.getType())) {
+        if (schema.getType() == null || ModelUtils.isObjectTypeOAS30(schema)) {
             // object or undeclared type with properties
-            if (schema.getProperties() != null && schema.getProperties().size() > 0) {
+            if (ModelUtils.hasProperties(schema)) {
                 return true;
             }
         }
@@ -238,7 +263,7 @@ public class InlineModelResolver {
                 return isModelNeeded((Schema) schema.getAllOf().get(0), visitedSchemas);
             }
 
-            if (schema.getAllOf() != null && !schema.getAllOf().isEmpty()) {
+            if (ModelUtils.hasAllOf(schema)) {
                 // check to ensure at least one of the allOf item is model
                 for (Object inner : schema.getAllOf()) {
                     if (isModelNeeded(ModelUtils.getReferencedSchema(openAPI, (Schema) inner), visitedSchemas)) {
@@ -249,10 +274,10 @@ public class InlineModelResolver {
                 return false;
             }
 
-            if (schema.getAnyOf() != null && !schema.getAnyOf().isEmpty()) {
+            if (ModelUtils.hasAnyOf(schema)) {
                 return true;
             }
-            if (schema.getOneOf() != null && !schema.getOneOf().isEmpty()) {
+            if (ModelUtils.hasOneOf(schema)) {
                 return true;
             }
         }
@@ -271,9 +296,9 @@ public class InlineModelResolver {
         if (schema.get$ref() != null) {
             // if ref already, no inline schemas should be present but check for
             // any to catch OpenAPI violations
-            if (isModelNeeded(schema) || "object".equals(schema.getType()) ||
+            if (isModelNeeded(schema) || ModelUtils.isObjectTypeOAS30(schema) ||
                     schema.getProperties() != null || schema.getAdditionalProperties() != null ||
-                    ModelUtils.isComposedSchema(schema)) {
+                ModelUtils.isComposedSchema(schema)) {
                 LOGGER.error("Illegal schema found with $ref combined with other properties," +
                         " no properties should be defined alongside a $ref:\n " + schema.toString());
             }
@@ -282,7 +307,7 @@ public class InlineModelResolver {
         // Check object models / any type models / composed models for properties,
         // if the schema has a type defined that is not "object" it should not define
         // any properties
-        if (schema.getType() == null || "object".equals(schema.getType())) {
+        if (schema.getType() == null || ModelUtils.isObjectTypeOAS30(schema)) {
             // Check properties and recurse, each property could be its own inline model
             Map<String, Schema> props = schema.getProperties();
             if (props != null) {
@@ -316,7 +341,7 @@ public class InlineModelResolver {
                 if (schema.getAdditionalProperties() instanceof Schema) {
                     Schema inner = (Schema) schema.getAdditionalProperties();
                     if (inner != null) {
-                        String schemaName = resolveModelName(schema.getTitle(), modelPrefix + this.inlineSchemaOptions.get("MAP_ITEM_SUFFIX"));
+                        String schemaName = resolveModelName(inner.getTitle(), modelPrefix + this.inlineSchemaOptions.get("MAP_ITEM_SUFFIX"));
                         // Recurse to create $refs for inner models
                         gatherInlineModels(inner, schemaName);
                         if (isModelNeeded(inner)) {
@@ -330,7 +355,9 @@ public class InlineModelResolver {
         } else if (schema.getProperties() != null) {
             // If non-object type is specified but also properties
             LOGGER.error("Illegal schema found with non-object type combined with properties," +
-                    " no properties should be defined:\n " + schema.toString());
+                    " no properties should be defined:" +
+                    " consider using --openapi-normalizer REMOVE_PROPERTIES_FROM_TYPE_OTHER_THAN_OBJECT=true\n " +
+                    schema.toString());
             return;
         } else if (schema.getAdditionalProperties() != null) {
             // If non-object type is specified but also additionalProperties
@@ -348,7 +375,7 @@ public class InlineModelResolver {
             }
 
             if (items == null) {
-                LOGGER.debug("prefixItems in array schema is not supported at the moment: {}",  schema.toString());
+                LOGGER.debug("prefixItems in array schema is not supported at the moment: {}", schema.toString());
                 return;
             }
             String schemaName = resolveModelName(items.getTitle(), modelPrefix + this.inlineSchemaOptions.get("ARRAY_ITEM_SUFFIX"));
@@ -508,16 +535,21 @@ public class InlineModelResolver {
     /**
      * Flatten inline models in parameters
      *
-     * @param modelName model name
-     * @param operation target operation
+     * @param modelName   model name
+     * @param parameters  list of parameters
+     * @param operationId operation Id (optional)
      */
-    private void flattenParameters(String modelName, Operation operation) {
-        List<Parameter> parameters = operation.getParameters();
+    private void flattenParameters(String modelName, List<Parameter> parameters, String operationId) {
+        //List<Parameter> parameters = operation.getParameters();
         if (parameters == null) {
             return;
         }
 
         for (Parameter parameter : parameters) {
+            if (StringUtils.isNotEmpty(parameter.get$ref())) {
+                parameter = ModelUtils.getReferencedParameter(openAPI, parameter);
+            }
+
             if (parameter.getSchema() == null) {
                 continue;
             }
@@ -528,7 +560,7 @@ public class InlineModelResolver {
                 continue;
             }
             String schemaName = resolveModelName(parameterSchema.getTitle(),
-                    (operation.getOperationId() == null ? modelName : operation.getOperationId()) + "_" + parameter.getName() + "_parameter");
+                    (operationId == null ? modelName : operationId) + "_" + parameter.getName() + "_parameter");
             // Recursively gather/make inline models within this schema if any
             gatherInlineModels(parameterSchema, schemaName);
             if (isModelNeeded(parameterSchema)) {
@@ -560,6 +592,20 @@ public class InlineModelResolver {
     }
 
     /**
+     * Flatten inline models in the responses section in the components.
+     */
+    private void flattenComponentResponses() {
+        Map<String, ApiResponse> apiResponses = openAPI.getComponents().getResponses();
+        if (apiResponses == null) {
+            return;
+        }
+
+        for (Map.Entry<String, ApiResponse> entry : apiResponses.entrySet()) {
+            flattenContent(entry.getValue().getContent(), null);
+        }
+    }
+
+    /**
      * Flattens properties of inline object schemas that belong to a composed schema into a
      * single flat list of properties. This is useful to generate a single or multiple
      * inheritance model.
@@ -572,18 +618,18 @@ public class InlineModelResolver {
      * allOf:
      * - $ref: '#/components/schemas/Animal'
      * - type: object
-     *   properties:
-     *     name:
-     *       type: string
-     *     age:
-     *       type: string
+     * properties:
+     * name:
+     * type: string
+     * age:
+     * type: string
      * - type: object
-     *   properties:
-     *     breed:
-     *       type: string
+     * properties:
+     * breed:
+     * type: string
      *
-     * @param key      a unique name ofr the composed schema.
-     * @param children the list of nested schemas within a composed schema (allOf, anyOf, oneOf).
+     * @param key                    a unique name for the composed schema.
+     * @param children               the list of nested schemas within a composed schema (allOf, anyOf, oneOf).
      * @param skipAllOfInlineSchemas true if allOf inline schemas need to be skipped.
      */
     private void flattenComposedChildren(String key, List<Schema> children, boolean skipAllOfInlineSchemas) {
@@ -593,10 +639,8 @@ public class InlineModelResolver {
         ListIterator<Schema> listIterator = children.listIterator();
         while (listIterator.hasNext()) {
             Schema component = listIterator.next();
-            if ((component != null) &&
-                    (component.get$ref() == null) &&
-                    ((component.getProperties() != null && !component.getProperties().isEmpty()) ||
-                            (component.getEnum() != null && !component.getEnum().isEmpty()))) {
+            boolean componentDoesNotHaveRef = component != null && component.get$ref() == null;
+            if (componentDoesNotHaveRef && (ModelUtils.hasProperties(component) || ModelUtils.hasEnum(component))) {
                 // If a `title` attribute is defined in the inline schema, codegen uses it to name the
                 // inline schema. Otherwise, we'll use the default naming such as InlineObject1, etc.
                 // We know that this is not the best way to name the model.
@@ -650,6 +694,10 @@ public class InlineModelResolver {
             } else if (ModelUtils.isOneOf(model)) { // contains oneOf only
                 gatherInlineModels(model, modelName);
             } else if (ModelUtils.isComposedSchema(model)) {
+                // composed Schema can have properties!
+                if (ModelUtils.hasProperties(model)) {
+                    gatherInlineModels(model, modelName);
+                }
                 // inline child schemas
                 flattenComposedChildren(modelName + "_allOf", model.getAllOf(), !Boolean.TRUE.equals(this.refactorAllOfInlineSchemas));
                 flattenComposedChildren(modelName + "_anyOf", model.getAnyOf(), false);
@@ -792,7 +840,7 @@ public class InlineModelResolver {
                 Schema inner = ModelUtils.getSchemaItems(property);
                 if (ModelUtils.isObjectSchema(inner)) {
                     Schema op = inner;
-                    if (op.getProperties() != null && op.getProperties().size() > 0) {
+                    if (ModelUtils.hasProperties(op)) {
                         flattenProperties(openAPI, op.getProperties(), path);
                         String modelName = resolveModelName(op.getTitle(), path + "_" + key);
                         Schema innerModel = modelFromProperty(openAPI, op, modelName);
@@ -822,7 +870,7 @@ public class InlineModelResolver {
                 Schema inner = ModelUtils.getAdditionalProperties(property);
                 if (ModelUtils.isObjectSchema(inner)) {
                     Schema op = inner;
-                    if (op.getProperties() != null && op.getProperties().size() > 0) {
+                    if (ModelUtils.hasProperties(op)) {
                         flattenProperties(openAPI, op.getProperties(), path);
                         String modelName = resolveModelName(op.getTitle(), path + "_" + key);
                         Schema innerModel = modelFromProperty(openAPI, op, modelName);
@@ -996,7 +1044,7 @@ public class InlineModelResolver {
      * Add the schemas to the components
      *
      * @param name   name of the inline schema
-     * @param schema inilne schema
+     * @param schema inline schema
      * @return the actual model name (based on inlineSchemaNameMapping if provided)
      */
     private String addSchemas(String name, Schema schema) {

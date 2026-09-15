@@ -38,6 +38,9 @@ import java.util.regex.Pattern;
 import static org.openapitools.codegen.utils.CamelizeOption.LOWERCASE_FIRST_LETTER;
 import static org.openapitools.codegen.utils.StringUtils.camelize;
 
+/**
+ * <p>Mustache templates are located in {@code src/main/resources/JavaPlayFramework/}.
+ */
 public class JavaPlayFrameworkCodegen extends AbstractJavaCodegen implements BeanValidationFeatures {
     private final Logger LOGGER = LoggerFactory.getLogger(JavaPlayFrameworkCodegen.class);
     public static final String TITLE = "title";
@@ -341,7 +344,7 @@ public class JavaPlayFrameworkCodegen extends AbstractJavaCodegen implements Bea
         @Override
         public CodegenSecurity filterByScopeNames(List<String> filterScopes) {
             CodegenSecurity codegenSecurity = super.filterByScopeNames(filterScopes);
-            ExtendedCodegenSecurity extendedCodegenSecurity =  new ExtendedCodegenSecurity(codegenSecurity);
+            ExtendedCodegenSecurity extendedCodegenSecurity = new ExtendedCodegenSecurity(codegenSecurity);
             extendedCodegenSecurity.jwksUrl = this.jwksUrl;
             extendedCodegenSecurity.tokenIntrospectUrl = this.tokenIntrospectUrl;
             return extendedCodegenSecurity;

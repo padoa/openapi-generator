@@ -40,7 +40,10 @@ data class User(
     @get:JsonProperty("phone") val phone: kotlin.String? = null,
 
     @get:JsonProperty("userStatus") val userStatus: kotlin.Int? = null
-) {
+) : java.io.Serializable {
 
+    companion object {
+        private const val serialVersionUID: kotlin.Long = 1
+    }
 }
 

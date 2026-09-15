@@ -8,24 +8,24 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import org.openapitools.model.Cat;
+import org.springframework.lang.Nullable;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
-import javax.validation.Valid;
-import javax.validation.constraints.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 
 import java.util.*;
-import javax.annotation.Generated;
+import jakarta.annotation.Generated;
 
 /**
  * BigCat
  */
 
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.7.0-SNAPSHOT")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.22.0-SNAPSHOT")
 public class BigCat extends Cat {
 
   /**
@@ -40,7 +40,7 @@ public class BigCat extends Cat {
     
     JAGUARS("jaguars");
 
-    private String value;
+    private final String value;
 
     KindEnum(String value) {
       this.value = value;
@@ -81,7 +81,7 @@ public class BigCat extends Cat {
   }
 
   public BigCat kind(KindEnum kind) {
-    this.kind = Optional.of(kind);
+    this.kind = Optional.ofNullable(kind);
     return this;
   }
 
@@ -90,12 +90,13 @@ public class BigCat extends Cat {
    * @return kind
    */
   
-  @ApiModelProperty(value = "")
+  @Schema(name = "kind", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("kind")
   public Optional<KindEnum> getKind() {
     return kind;
   }
 
+  @JsonProperty("kind")
   public void setKind(Optional<KindEnum> kind) {
     this.kind = kind;
   }
@@ -148,10 +149,7 @@ public class BigCat extends Cat {
    * (except the first line).
    */
   private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
+    return o == null ? "null" : o.toString().replace("\n", "\n    ");
   }
   
   public static class Builder extends Cat.Builder {
@@ -168,7 +166,7 @@ public class BigCat extends Cat {
     }
 
     protected Builder copyOf(BigCat value) { 
-      super.copyOf(instance);
+      super.copyOf(value);
       this.instance.setKind(value.kind);
       return this;
     }

@@ -68,7 +68,7 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of AnyTypeProp
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Object> AnyTypePropOption { get; private set; }
 
         /// <summary>
@@ -76,13 +76,13 @@ namespace Org.OpenAPITools.Model
         /// </summary>
         /// <value>test code generation for any type Here the &#39;type&#39; attribute is not specified, which means the value can be anything, including the null value, string, number, boolean, array or object. See https://github.com/OAI/OpenAPI-Specification/issues/1389</value>
         [JsonPropertyName("anyTypeProp")]
-        public Object AnyTypeProp { get { return this.AnyTypePropOption; } set { this.AnyTypePropOption = new Option<Object>(value); } }
+        public Object AnyTypeProp { get { return this.AnyTypePropOption.Value; } set { this.AnyTypePropOption = new Option<Object>(value); } }
 
         /// <summary>
         /// Used to track the state of AnyTypePropNullable
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Object> AnyTypePropNullableOption { get; private set; }
 
         /// <summary>
@@ -90,65 +90,65 @@ namespace Org.OpenAPITools.Model
         /// </summary>
         /// <value>test code generation for any type Here the &#39;type&#39; attribute is not specified, which means the value can be anything, including the null value, string, number, boolean, array or object. The &#39;nullable&#39; attribute does not change the allowed values.</value>
         [JsonPropertyName("anyTypePropNullable")]
-        public Object AnyTypePropNullable { get { return this.AnyTypePropNullableOption; } set { this.AnyTypePropNullableOption = new Option<Object>(value); } }
+        public Object AnyTypePropNullable { get { return this.AnyTypePropNullableOption.Value; } set { this.AnyTypePropNullableOption = new Option<Object>(value); } }
 
         /// <summary>
         /// Used to track the state of Email
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> EmailOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Email
         /// </summary>
         [JsonPropertyName("email")]
-        public string Email { get { return this.EmailOption; } set { this.EmailOption = new Option<string>(value); } }
+        public string Email { get { return this.EmailOption.Value; } set { this.EmailOption = new Option<string>(value); } }
 
         /// <summary>
         /// Used to track the state of FirstName
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> FirstNameOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets FirstName
         /// </summary>
         [JsonPropertyName("firstName")]
-        public string FirstName { get { return this.FirstNameOption; } set { this.FirstNameOption = new Option<string>(value); } }
+        public string FirstName { get { return this.FirstNameOption.Value; } set { this.FirstNameOption = new Option<string>(value); } }
 
         /// <summary>
         /// Used to track the state of Id
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<long?> IdOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Id
         /// </summary>
         [JsonPropertyName("id")]
-        public long? Id { get { return this.IdOption; } set { this.IdOption = new Option<long?>(value); } }
+        public long? Id { get { return this.IdOption.Value; } set { this.IdOption = new Option<long?>(value); } }
 
         /// <summary>
         /// Used to track the state of LastName
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> LastNameOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets LastName
         /// </summary>
         [JsonPropertyName("lastName")]
-        public string LastName { get { return this.LastNameOption; } set { this.LastNameOption = new Option<string>(value); } }
+        public string LastName { get { return this.LastNameOption.Value; } set { this.LastNameOption = new Option<string>(value); } }
 
         /// <summary>
         /// Used to track the state of ObjectWithNoDeclaredProps
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Object> ObjectWithNoDeclaredPropsOption { get; private set; }
 
         /// <summary>
@@ -156,13 +156,13 @@ namespace Org.OpenAPITools.Model
         /// </summary>
         /// <value>test code generation for objects Value must be a map of strings to values. It cannot be the &#39;null&#39; value.</value>
         [JsonPropertyName("objectWithNoDeclaredProps")]
-        public Object ObjectWithNoDeclaredProps { get { return this.ObjectWithNoDeclaredPropsOption; } set { this.ObjectWithNoDeclaredPropsOption = new Option<Object>(value); } }
+        public Object ObjectWithNoDeclaredProps { get { return this.ObjectWithNoDeclaredPropsOption.Value; } set { this.ObjectWithNoDeclaredPropsOption = new Option<Object>(value); } }
 
         /// <summary>
         /// Used to track the state of ObjectWithNoDeclaredPropsNullable
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Object> ObjectWithNoDeclaredPropsNullableOption { get; private set; }
 
         /// <summary>
@@ -170,39 +170,39 @@ namespace Org.OpenAPITools.Model
         /// </summary>
         /// <value>test code generation for nullable objects. Value must be a map of strings to values or the &#39;null&#39; value.</value>
         [JsonPropertyName("objectWithNoDeclaredPropsNullable")]
-        public Object ObjectWithNoDeclaredPropsNullable { get { return this.ObjectWithNoDeclaredPropsNullableOption; } set { this.ObjectWithNoDeclaredPropsNullableOption = new Option<Object>(value); } }
+        public Object ObjectWithNoDeclaredPropsNullable { get { return this.ObjectWithNoDeclaredPropsNullableOption.Value; } set { this.ObjectWithNoDeclaredPropsNullableOption = new Option<Object>(value); } }
 
         /// <summary>
         /// Used to track the state of Password
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> PasswordOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Password
         /// </summary>
         [JsonPropertyName("password")]
-        public string Password { get { return this.PasswordOption; } set { this.PasswordOption = new Option<string>(value); } }
+        public string Password { get { return this.PasswordOption.Value; } set { this.PasswordOption = new Option<string>(value); } }
 
         /// <summary>
         /// Used to track the state of Phone
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> PhoneOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Phone
         /// </summary>
         [JsonPropertyName("phone")]
-        public string Phone { get { return this.PhoneOption; } set { this.PhoneOption = new Option<string>(value); } }
+        public string Phone { get { return this.PhoneOption.Value; } set { this.PhoneOption = new Option<string>(value); } }
 
         /// <summary>
         /// Used to track the state of UserStatus
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<int?> UserStatusOption { get; private set; }
 
         /// <summary>
@@ -210,20 +210,20 @@ namespace Org.OpenAPITools.Model
         /// </summary>
         /// <value>User Status</value>
         [JsonPropertyName("userStatus")]
-        public int? UserStatus { get { return this.UserStatusOption; } set { this.UserStatusOption = new Option<int?>(value); } }
+        public int? UserStatus { get { return this.UserStatusOption.Value; } set { this.UserStatusOption = new Option<int?>(value); } }
 
         /// <summary>
         /// Used to track the state of Username
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> UsernameOption { get; private set; }
 
         /// <summary>
         /// Gets or Sets Username
         /// </summary>
         [JsonPropertyName("username")]
-        public string Username { get { return this.UsernameOption; } set { this.UsernameOption = new Option<string>(value); } }
+        public string Username { get { return this.UsernameOption.Value; } set { this.UsernameOption = new Option<string>(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -318,12 +318,10 @@ namespace Org.OpenAPITools.Model
                     switch (localVarJsonPropertyName)
                     {
                         case "anyTypeProp":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                anyTypeProp = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
+                            anyTypeProp = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "anyTypePropNullable":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                anyTypePropNullable = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
+                            anyTypePropNullable = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "email":
                             email = new Option<string>(utf8JsonReader.GetString());
@@ -332,19 +330,16 @@ namespace Org.OpenAPITools.Model
                             firstName = new Option<string>(utf8JsonReader.GetString());
                             break;
                         case "id":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                id = new Option<long?>(utf8JsonReader.GetInt64());
+                            id = new Option<long?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (long?)null : utf8JsonReader.GetInt64());
                             break;
                         case "lastName":
                             lastName = new Option<string>(utf8JsonReader.GetString());
                             break;
                         case "objectWithNoDeclaredProps":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                objectWithNoDeclaredProps = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
+                            objectWithNoDeclaredProps = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "objectWithNoDeclaredPropsNullable":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                objectWithNoDeclaredPropsNullable = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
+                            objectWithNoDeclaredPropsNullable = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         case "password":
                             password = new Option<string>(utf8JsonReader.GetString());
@@ -353,8 +348,7 @@ namespace Org.OpenAPITools.Model
                             phone = new Option<string>(utf8JsonReader.GetString());
                             break;
                         case "userStatus":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                userStatus = new Option<int?>(utf8JsonReader.GetInt32());
+                            userStatus = new Option<int?>(utf8JsonReader.TokenType == JsonTokenType.Null ? (int?)null : utf8JsonReader.GetInt32());
                             break;
                         case "username":
                             username = new Option<string>(utf8JsonReader.GetString());

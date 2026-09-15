@@ -58,11 +58,15 @@ namespace Org.OpenAPITools.Client
             _jsonOptions.Converters.Add(new ChildCatJsonConverter());
             _jsonOptions.Converters.Add(new ClassModelJsonConverter());
             _jsonOptions.Converters.Add(new ComplexQuadrilateralJsonConverter());
+            _jsonOptions.Converters.Add(new CopyActivityJsonConverter());
             _jsonOptions.Converters.Add(new DanishPigJsonConverter());
             _jsonOptions.Converters.Add(new DateOnlyClassJsonConverter());
             _jsonOptions.Converters.Add(new DeprecatedObjectJsonConverter());
+            _jsonOptions.Converters.Add(new Descendant1JsonConverter());
+            _jsonOptions.Converters.Add(new Descendant2JsonConverter());
             _jsonOptions.Converters.Add(new DogJsonConverter());
             _jsonOptions.Converters.Add(new DrawingJsonConverter());
+            _jsonOptions.Converters.Add(new EntityBaseJsonConverter());
             _jsonOptions.Converters.Add(new EnumArraysJsonConverter());
             _jsonOptions.Converters.Add(new EnumClassJsonConverter());
             _jsonOptions.Converters.Add(new EnumClassNullableJsonConverter());
@@ -84,7 +88,6 @@ namespace Org.OpenAPITools.Client
             _jsonOptions.Converters.Add(new LiteralStringClassJsonConverter());
             _jsonOptions.Converters.Add(new MammalJsonConverter());
             _jsonOptions.Converters.Add(new MapTestJsonConverter());
-            _jsonOptions.Converters.Add(new MixLogJsonConverter());
             _jsonOptions.Converters.Add(new MixedAnyOfJsonConverter());
             _jsonOptions.Converters.Add(new MixedAnyOfContentJsonConverter());
             _jsonOptions.Converters.Add(new MixedOneOfJsonConverter());
@@ -121,6 +124,7 @@ namespace Org.OpenAPITools.Client
             _jsonOptions.Converters.Add(new QuadrilateralInterfaceJsonConverter());
             _jsonOptions.Converters.Add(new ReadOnlyFirstJsonConverter());
             _jsonOptions.Converters.Add(new RequiredClassJsonConverter());
+            _jsonOptions.Converters.Add(new ResultJsonConverter());
             _jsonOptions.Converters.Add(new ReturnJsonConverter());
             _jsonOptions.Converters.Add(new RolesReportsHashJsonConverter());
             _jsonOptions.Converters.Add(new RolesReportsHashRoleJsonConverter());
@@ -133,7 +137,11 @@ namespace Org.OpenAPITools.Client
             _jsonOptions.Converters.Add(new TagJsonConverter());
             _jsonOptions.Converters.Add(new TestCollectionEndingWithWordListJsonConverter());
             _jsonOptions.Converters.Add(new TestCollectionEndingWithWordListObjectJsonConverter());
+            _jsonOptions.Converters.Add(new TestDescendantsJsonConverter());
             _jsonOptions.Converters.Add(new TestInlineFreeformAdditionalPropertiesRequestJsonConverter());
+            _jsonOptions.Converters.Add(new TestResultJsonConverter());
+            _jsonOptions.Converters.Add(new TestResultCodeJsonConverter());
+            _jsonOptions.Converters.Add(new TestResultCodeNullableJsonConverter());
             _jsonOptions.Converters.Add(new TriangleJsonConverter());
             _jsonOptions.Converters.Add(new TriangleInterfaceJsonConverter());
             _jsonOptions.Converters.Add(new UserJsonConverter());
@@ -146,19 +154,12 @@ namespace Org.OpenAPITools.Client
             _services.AddSingleton(jsonSerializerOptionsProvider);
             _services.AddSingleton<IApiFactory, ApiFactory>();
             _services.AddSingleton<AnotherFakeApiEvents>();
-            _services.AddTransient<IAnotherFakeApi, AnotherFakeApi>();
             _services.AddSingleton<DefaultApiEvents>();
-            _services.AddTransient<IDefaultApi, DefaultApi>();
             _services.AddSingleton<FakeApiEvents>();
-            _services.AddTransient<IFakeApi, FakeApi>();
             _services.AddSingleton<FakeClassnameTags123ApiEvents>();
-            _services.AddTransient<IFakeClassnameTags123Api, FakeClassnameTags123Api>();
             _services.AddSingleton<PetApiEvents>();
-            _services.AddTransient<IPetApi, PetApi>();
             _services.AddSingleton<StoreApiEvents>();
-            _services.AddTransient<IStoreApi, StoreApi>();
             _services.AddSingleton<UserApiEvents>();
-            _services.AddTransient<IUserApi, UserApi>();
         }
 
         /// <summary>
@@ -176,13 +177,13 @@ namespace Org.OpenAPITools.Client
 
             List<IHttpClientBuilder> builders = new List<IHttpClientBuilder>();
 
-            builders.Add(_services.AddHttpClient<IAnotherFakeApi, AnotherFakeApi>(client));
-            builders.Add(_services.AddHttpClient<IDefaultApi, DefaultApi>(client));
-            builders.Add(_services.AddHttpClient<IFakeApi, FakeApi>(client));
-            builders.Add(_services.AddHttpClient<IFakeClassnameTags123Api, FakeClassnameTags123Api>(client));
-            builders.Add(_services.AddHttpClient<IPetApi, PetApi>(client));
-            builders.Add(_services.AddHttpClient<IStoreApi, StoreApi>(client));
-            builders.Add(_services.AddHttpClient<IUserApi, UserApi>(client));
+            builders.Add(_services.AddHttpClient<IAnotherFakeApi, AnotherFakeApi>("Org.OpenAPITools.Api.IAnotherFakeApi", client));
+            builders.Add(_services.AddHttpClient<IDefaultApi, DefaultApi>("Org.OpenAPITools.Api.IDefaultApi", client));
+            builders.Add(_services.AddHttpClient<IFakeApi, FakeApi>("Org.OpenAPITools.Api.IFakeApi", client));
+            builders.Add(_services.AddHttpClient<IFakeClassnameTags123Api, FakeClassnameTags123Api>("Org.OpenAPITools.Api.IFakeClassnameTags123Api", client));
+            builders.Add(_services.AddHttpClient<IPetApi, PetApi>("Org.OpenAPITools.Api.IPetApi", client));
+            builders.Add(_services.AddHttpClient<IStoreApi, StoreApi>("Org.OpenAPITools.Api.IStoreApi", client));
+            builders.Add(_services.AddHttpClient<IUserApi, UserApi>("Org.OpenAPITools.Api.IUserApi", client));
             
             if (builder != null)
                 foreach (IHttpClientBuilder instance in builders)

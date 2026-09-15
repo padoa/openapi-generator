@@ -10,7 +10,7 @@ title: Documentation for the python Generator
 | generator stability | STABLE | |
 | generator type | CLIENT | |
 | generator language | Python | |
-| generator language version | 3.7+ | |
+| generator language version | 3.10+ | |
 | generator default templating engine | mustache | |
 | helpTxt | Generates a Python client library. | |
 
@@ -19,16 +19,19 @@ These options may be applied as additional-properties (cli) or configOptions (pl
 
 | Option | Description | Values | Default |
 | ------ | ----------- | ------ | ------- |
+|buildSystem|Build system to use in pyproject.toml (setuptools, hatchling).| |setuptools|
 |dateFormat|date format for query parameters| |%Y-%m-%d|
 |datetimeFormat|datetime format for query parameters| |%Y-%m-%dT%H:%M:%S%z|
 |disallowAdditionalPropertiesIfNotPresent|If false, the 'additionalProperties' implementation (set to true by default) is compliant with the OAS and JSON schema specifications. If true (default), keep the old (incorrect) behaviour that 'additionalProperties' is set to false by default.|<dl><dt>**false**</dt><dd>The 'additionalProperties' implementation is compliant with the OAS and JSON schema specifications.</dd><dt>**true**</dt><dd>Keep the old (incorrect) behaviour that 'additionalProperties' is set to false by default.</dd></dl>|true|
 |generateSourceCodeOnly|Specifies that only a library source code is to be generated.| |false|
 |hideGenerationTimestamp|Hides the generation timestamp when files are generated.| |true|
-|library|library template (sub-template) to use: asyncio, tornado (deprecated), urllib3| |urllib3|
+|lazyImports|Enable lazy imports.| |false|
+|library|library template (sub-template) to use: asyncio, tornado (deprecated), urllib3, httpx| |urllib3|
 |mapNumberTo|Map number to Union[StrictFloat, StrictInt], StrictStr or float.| |Union[StrictFloat, StrictInt]|
 |packageName|python package name (convention: snake_case).| |openapi_client|
 |packageUrl|python package URL.| |null|
 |packageVersion|python package version.| |1.0.0|
+|poetry1|Fallback to formatting pyproject.toml to Poetry 1.x format.| |null|
 |projectName|python project name in setup.py (e.g. petstore-api).| |null|
 |recursionLimit|Set the recursion limit. If not set, use the system default value.| |null|
 |setEnsureAsciiToFalse|When set to true, add `ensure_ascii=False` in json.dumps when creating the HTTP request body.| |false|
@@ -51,8 +54,8 @@ These options may be applied as additional-properties (cli) or configOptions (pl
 <ul class="column-ul">
 <li>Dict</li>
 <li>List</li>
+<li>UUID</li>
 <li>bool</li>
-<li>bytearray</li>
 <li>bytes</li>
 <li>date</li>
 <li>datetime</li>
@@ -153,7 +156,7 @@ These options may be applied as additional-properties (cli) or configOptions (pl
 |DateTime|✓|OAS2,OAS3
 |Password|✓|OAS2,OAS3
 |File|✓|OAS2
-|Uuid|✗|
+|Uuid|✓|
 |Array|✓|OAS2,OAS3
 |Null|✗|OAS3
 |AnyType|✗|OAS2,OAS3

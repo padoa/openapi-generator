@@ -48,27 +48,27 @@ namespace Org.OpenAPITools.Model
         /// Used to track the state of Prop1
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<string> Prop1Option { get; private set; }
 
         /// <summary>
         /// Gets or Sets Prop1
         /// </summary>
         [JsonPropertyName("prop1")]
-        public string Prop1 { get { return this.Prop1Option; } set { this.Prop1Option = new(value); } }
+        public string Prop1 { get { return this.Prop1Option.Value; } set { this.Prop1Option = new(value); } }
 
         /// <summary>
         /// Used to track the state of Prop2
         /// </summary>
         [JsonIgnore]
-        [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
         public Option<Object> Prop2Option { get; private set; }
 
         /// <summary>
         /// Gets or Sets Prop2
         /// </summary>
         [JsonPropertyName("prop2")]
-        public Object Prop2 { get { return this.Prop2Option; } set { this.Prop2Option = new(value); } }
+        public Object Prop2 { get { return this.Prop2Option.Value; } set { this.Prop2Option = new(value); } }
 
         /// <summary>
         /// Gets or Sets additional properties
@@ -146,8 +146,7 @@ namespace Org.OpenAPITools.Model
                             prop1 = new Option<string>(utf8JsonReader.GetString());
                             break;
                         case "prop2":
-                            if (utf8JsonReader.TokenType != JsonTokenType.Null)
-                                prop2 = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
+                            prop2 = new Option<Object>(JsonSerializer.Deserialize<Object>(ref utf8JsonReader, jsonSerializerOptions));
                             break;
                         default:
                             break;

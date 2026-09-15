@@ -16,12 +16,18 @@
 
 package org.openapitools.codegen.languages;
 
-import org.openapitools.codegen.*;
+import org.openapitools.codegen.CliOption;
+import org.openapitools.codegen.CodegenConstants;
+import org.openapitools.codegen.CodegenType;
+import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.meta.GeneratorMetadata;
 import org.openapitools.codegen.meta.Stability;
 
 import java.io.File;
 
+/**
+ * <p>Mustache templates are located in {@code src/main/resources/julia-server/}.
+ */
 public class JuliaServerCodegen extends AbstractJuliaCodegen {
     /**
      * Configures the type of generator.
