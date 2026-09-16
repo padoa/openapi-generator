@@ -139,16 +139,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <!-- The Helidon generator tests build a JavaHelidonCommonCodegen.VersionUtil,
-                         which fetches the supported versions from helidon.io and caches them through
-                         java.util.prefs. Both steps fail in an offline / sandboxed build (no network,
-                         and no writable prefs backing store), and the java.util.prefs failure aborts
-                         TestNG discovery for the whole module, not just these classes.
-                         HelidonCommonCodegenTest sits in .../codegen/languages/, outside the
-                         .../codegen/java/helidon/ package, so it needs its own exclude. -->
+                    <!-- The Helidon generator tests require network access (they fetch supported
+                         versions from helidon.io) and fail with a NullPointerException in an
+                         offline / CI build. Exclude them here so the build can run without network. -->
                     <excludes>
                         <exclude>**/java/helidon/**/*.java</exclude>
-                        <exclude>**/languages/HelidonCommonCodegenTest.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
