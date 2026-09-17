@@ -58,7 +58,7 @@ namespace Org.OpenAPITools.Client
         public enum ApiKeyHeader
         {
             /// <summary>
-            /// The api_key header
+            /// The api-key header
             /// </summary>
             Api_key,
             /// <summary>
@@ -78,7 +78,7 @@ namespace Org.OpenAPITools.Client
             switch(value)
             {
                 case ApiKeyHeader.Api_key:
-                    return "api_key";
+                    return "api-key";
                 case ApiKeyHeader.Api_key_query:
                     return "api_key_query";
                 default:
@@ -284,7 +284,7 @@ namespace Org.OpenAPITools.Client
         /// <returns>Encoded string.</returns>
         public static string Base64Encode(string text)
         {
-            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(text));
+            return Convert.ToBase64String(global::System.Text.Encoding.UTF8.GetBytes(text));
         }
 
         /// <summary>
